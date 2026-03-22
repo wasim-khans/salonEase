@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  h1 Salon Services
+  p Browse our available salon services
+  
+  .services-filter
+    h2 Filter by Category
+    .filter-buttons
+      a(href="/services?category=all") All
+      a(href="/services?category=male") Male
+      a(href="/services?category=female") Female
+      a(href="/services?category=both") Both
+      
+  .services-list
+    each service in services
+      .service-card
+        h3= service.name
+        .service-details
+          p.category Category: #{service.category}
+          p.price Price: $#{service.base_price}
+          p.duration Duration: #{service.duration} minutes
+        .service-actions
+          button.book-service(data-service-id=service.id) Book Service
+          
+  .actions
+    a(href="/appointments/book") Book Appointment
+    a(href="/") ← Back to Home

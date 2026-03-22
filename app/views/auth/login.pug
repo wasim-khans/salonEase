@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+  h1 Login to SalonEase
+  p Sign in to manage your appointments
+  
+  .login-form
+    h2 Login
+    form(action="/auth/login", method="post")
+      .form-group
+        label(for="email") Email:
+        input(type="email", id="email", name="email", required)
+      .form-group
+        label(for="password") Password:
+        input(type="password", id="password", name="password", required)
+      .form-actions
+        button(type="submit") Login
+        a(href="/auth/register") Don't have an account? Register
+        
+  .back-link
+    a(href="/") ← Back to Home

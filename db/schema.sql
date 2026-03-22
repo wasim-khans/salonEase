@@ -8,7 +8,7 @@ USE salonease_db;
 -- Users Table
 -- Stores all system users: customers, admins, and staff
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE users (
 -- Services Table
 -- Stores salon services offered
 CREATE TABLE services (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
     name VARCHAR(100) NOT NULL,
     category ENUM('male', 'female', 'both') NOT NULL,
     base_price DECIMAL(10,2) NOT NULL,
@@ -31,21 +31,21 @@ CREATE TABLE services (
 -- Appointments Table
 -- Stores booking information and lifecycle state
 CREATE TABLE appointments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    user_id CHAR(36) NOT NULL,
     appointment_date DATE NOT NULL,
     preferred_time TIME NOT NULL,
     start_time TIME NULL,
     preferred_staff_gender ENUM('male', 'female', 'any') NOT NULL DEFAULT 'any',
     status ENUM('in_review', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'in_review',
-    staff_id INT NULL,
-    service_provided_by INT NULL,
+    staff_id CHAR(36) NULL,
+    service_provided_by CHAR(36) NULL,
     cancelled_by ENUM('customer', 'admin') NULL,
     cancellation_reason TEXT NULL,
     actual_price DECIMAL(10,2) NULL,
     admin_notes TEXT NULL,
     confirmed_at TIMESTAMP NULL,
-    completed_by INT NULL,
+    completed_by CHAR(36) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
@@ -58,9 +58,9 @@ CREATE TABLE appointments (
 -- Appointment_Services Table
 -- Maps multiple services to a single appointment
 CREATE TABLE appointment_services (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    appointment_id INT NOT NULL,
-    service_id INT NOT NULL,
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    appointment_id CHAR(36) NOT NULL,
+    service_id CHAR(36) NOT NULL,
     price DECIMAL(10,2) NOT NULL COMMENT 'Snapshot price at booking',
     
     FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE,

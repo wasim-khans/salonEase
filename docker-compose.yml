@@ -15,10 +15,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: salonease123
-      MYSQL_DATABASE: salonease_db
-      MYSQL_USER: salonease_user
-      MYSQL_PASSWORD: salonease123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
     ports:
       - "3308:3306"
     volumes:
@@ -29,10 +29,10 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
     environment:
-      PMA_HOST: salonease-db
-      PMA_USER: root
-      PMA_PASSWORD: salonease123
-      MYSQL_ROOT_PASSWORD: salonease123
+      PMA_HOST: ${DB_CONTAINER}
+      PMA_USER: ${MYSQL_ROOT_USER}
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "8081:80"
     depends_on:

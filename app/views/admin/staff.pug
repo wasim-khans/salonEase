@@ -1,53 +1,6 @@
 extends ../../layout
 
 block content
-  h1 Manage Staff
-  p Add, edit, and manage salon staff members
-  
-  .staff-actions
-    button.add-staff(data-action="add") Add New Staff Member
-    
-  .staff-list
-    each staff in staff
-      .staff-card
-        h3= staff.name
-        .staff-details
-          p.email Email: #{staff.email}
-          p.gender Gender: #{staff.gender}
-          p.role Role: #{staff.role}
-          p.joined Joined: #{staff.created_at}
-          p.assigned Assigned Appointments: #{staff.appointment_count || 0}
-          
-        .staff-actions
-          button.edit(data-id=staff.id) Edit
-          button.delete(data-id=staff.id) Delete
-          button.view-assignments(data-id=staff.id) View Assignments
-          
-  .add-staff-form.hidden
-    h2 Add New Staff Member
-    form(action="/admin/staff/add", method="post")
-      .form-group
-        label(for="name") Full Name:
-        input(type="text", id="name", name="name", required)
-      .form-group
-        label(for="email") Email:
-        input(type="email", id="email", name="email", required)
-      .form-group
-        label(for="password") Password:
-        input(type="password", id="password", name="password", required)
-      .form-group
-        label(for="gender") Gender:
-        select(id="gender", name="gender")
-          option(value="male") Male
-          option(value="female") Female
-      .form-group
-        label(for="role") Role:
-        select(id="role", name="role")
-          option(value="staff") Staff
-          option(value="admin") Admin
-      .form-actions
-        button(type="submit") Add Staff
-        button.cancel-form Cancel
-        
-  .actions
-    a(href="/admin/dashboard") ← Back to Dashboard
+  h2 This is admin staff page
+  p This will be used by administrators for staff management
+  p The JS for this file should be at path /static/js/admin/staff.js

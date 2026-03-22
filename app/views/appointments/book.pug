@@ -1,50 +1,6 @@
 extends ../layout
 
 block content
-  h1 Book Appointment
-  p Schedule your salon appointment
-  
-  .booking-form
-    form(action="/appointments/book", method="post")
-      .form-section
-        h2 Select Services
-        .services-selection
-          each service in services
-            .service-option
-              input(type="checkbox", id="service-#{service.id}", name="services", value=service.id)
-              label(for="service-#{service.id}")
-                .service-info
-                  h4= service.name
-                  p Price: $#{service.base_price}
-                  p Duration: #{service.duration} minutes
-                  p Category: #{service.category}
-                  
-      .form-section
-        h2 Appointment Details
-        .form-group
-          label(for="appointment_date") Preferred Date:
-          input(type="date", id="appointment_date", name="appointment_date", required)
-        .form-group
-          label(for="preferred_time") Preferred Time:
-          input(type="time", id="preferred_time", name="preferred_time", required)
-        .form-group
-          label(for="preferred_staff_gender") Staff Preference:
-          select(id="preferred_staff_gender", name="preferred_staff_gender")
-            option(value="any") No Preference
-            option(value="male") Male Staff
-            option(value="female") Female Staff
-            
-      .form-section
-        h2 Booking Summary
-        .booking-summary
-          p.selected-services Services selected: 
-          p.estimated-cost Estimated cost: $0.00
-          p.selected-date Date: 
-          p.selected-time Time: 
-          
-      .form-actions
-        button(type="submit") Book Appointment
-        a(href="/appointments") Cancel
-        
-  .actions
-    a(href="/") ← Back to Home
+  h2 This is book appointment page
+  p This will be used by customers for booking salon appointments
+  p The JS for this file should be at path /static/js/appointments/book.js

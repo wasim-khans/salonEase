@@ -7,11 +7,11 @@ const mysql = require('mysql2/promise');
 
 const config = {
   db: {
-    host: process.env.MYSQL_HOST || 'localhost',
+    host: process.env.MYSQL_HOST,
     port: process.env.DB_PORT || 3306,
-    user: process.env.MYSQL_USER || 'salonease_user',
-    password: process.env.MYSQL_PASS || 'salonease123',
-    database: process.env.MYSQL_DATABASE || 'salonease_db',
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DATABASE,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,

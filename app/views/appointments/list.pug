@@ -1,39 +1,6 @@
 extends ../layout
 
 block content
-  h1 My Appointments
-  p View and manage your salon appointments
-  
-  .appointments-filter
-    h2 Filter by Status
-    .filter-buttons
-      a(href="/appointments?status=all") All
-      a(href="/appointments?status=in_review") In Review
-      a(href="/appointments?status=confirmed") Confirmed
-      a(href="/appointments?status=completed") Completed
-      a(href="/appointments?status=cancelled") Cancelled
-      
-  .appointments-list
-    each appointment in appointments
-      .appointment-card(class="status-#{appointment.status}")
-        .appointment-header
-          h3 Appointment ##{appointment.id}
-          span.status= appointment.status
-        .appointment-details
-          p.date Date: #{appointment.appointment_date}
-          p.time Time: #{appointment.start_time || appointment.preferred_time}
-          p.staff Staff: #{appointment.staff_name || 'Not assigned'}
-          p.services Services: #{appointment.service_names || 'Not specified'}
-          
-        .appointment-actions
-          if appointment.status === 'in_review'
-            button.cancel Cancel Request
-          if appointment.status === 'confirmed'
-            button.cancel Cancel Booking
-          if appointment.status === 'completed'
-            span.completed ✅ Completed
-          button.view-details View Details
-            
-  .actions
-    a(href="/appointments/book") Book New Appointment
-    a(href="/") ← Back to Home
+  h2 This is appointments list page
+  p This will be used by customers for viewing their appointments
+  p The JS for this file should be at path /static/js/appointments/list.js

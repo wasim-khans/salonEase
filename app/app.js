@@ -29,5 +29,45 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'SalonEase' });
 });
 
+// Auth routes
+app.get('/auth/login', (req, res) => {
+    res.render('auth/login', { title: 'Login - SalonEase' });
+});
+
+app.get('/auth/register', (req, res) => {
+    res.render('auth/register', { title: 'Register - SalonEase' });
+});
+
+// Admin routes
+app.get('/admin/dashboard', (req, res) => {
+    res.render('admin/dashboard', { title: 'Admin Dashboard - SalonEase' });
+});
+
+app.get('/admin/appointments', (req, res) => {
+    res.render('admin/appointments', { title: 'Manage Appointments - SalonEase' });
+});
+
+app.get('/admin/services', (req, res) => {
+    res.render('admin/services', { title: 'Manage Services - SalonEase' });
+});
+
+app.get('/admin/staff', (req, res) => {
+    res.render('admin/staff', { title: 'Manage Staff - SalonEase' });
+});
+
+// Appointment routes
+app.get('/appointments/book', (req, res) => {
+    res.render('appointments/book', { title: 'Book Appointment - SalonEase' });
+});
+
+app.get('/appointments', (req, res) => {
+    res.render('appointments/list', { title: 'My Appointments - SalonEase' });
+});
+
+// Services routes
+app.get('/services/list', (req, res) => {
+    res.render('services/list', { title: 'Services - SalonEase' });
+});
+
 // Export app for use in index.js
 module.exports = app;

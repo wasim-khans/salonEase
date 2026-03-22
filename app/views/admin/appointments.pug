@@ -1,51 +1,6 @@
 extends ../../layout
 
 block content
-  h1 Manage Appointments
-  p Review, confirm, and manage customer appointments
-  
-  .appointments-filter
-    h2 Filter by Status
-    .filter-buttons
-      a(href="/admin/appointments?status=all") All
-      a(href="/admin/appointments?status=in_review") In Review
-      a(href="/admin/appointments?status=confirmed") Confirmed
-      a(href="/admin/appointments?status=completed") Completed
-      a(href="/admin/appointments?status=cancelled") Cancelled
-      
-  .appointments-list
-    each appointment in appointments
-      .appointment-card.admin-view(class="status-#{appointment.status}")
-        .appointment-header
-          h3 Appointment ##{appointment.id}
-          span.status= appointment.status
-        .appointment-details
-          .customer-info
-            h4 Customer Information
-            p.name Name: #{appointment.customer_name}
-            p.email Email: #{appointment.customer_email}
-          .appointment-info
-            h4 Appointment Details
-            p.date Date: #{appointment.appointment_date}
-            p.time Preferred: #{appointment.preferred_time}
-            p.staff-gender Staff Preference: #{appointment.preferred_staff_gender}
-            
-        .appointment-services
-          h4 Services Requested:
-          .services-list
-            each service in appointment.services
-              .service-item= service.name + ' - $' + service.price
-              
-        .appointment-actions
-          if appointment.status === 'in_review'
-            button.confirm(data-id=appointment.id) Confirm
-            button.cancel(data-id=appointment.id) Cancel
-          if appointment.status === 'confirmed'
-            button.complete(data-id=appointment.id) Complete
-            button.cancel(data-id=appointment.id) Cancel
-            button.assign-staff(data-id=appointment.id) Assign Staff
-          if appointment.status === 'completed'
-            span.completed ✅ Completed
-            
-  .actions
-    a(href="/admin/dashboard") ← Back to Dashboard
+  h2 This is admin appointments page
+  p This will be used by administrators for appointment management
+  p The JS for this file should be at path /static/js/admin/appointments.js

@@ -1,32 +1,6 @@
 extends ../layout
 
 block content
-  h1 Register for SalonEase
-  p Create an account to book salon appointments
-  
-  .register-form
-    h2 Register
-    form(action="/auth/register", method="post")
-      .form-group
-        label(for="name") Full Name:
-        input(type="text", id="name", name="name", required)
-      .form-group
-        label(for="email") Email:
-        input(type="email", id="email", name="email", required)
-      .form-group
-        label(for="password") Password:
-        input(type="password", id="password", name="password", required)
-      .form-group
-        label(for="confirm_password") Confirm Password:
-        input(type="password", id="confirm_password", name="confirm_password", required)
-      .form-group
-        label(for="role") Account Type:
-        select(id="role", name="role")
-          option(value="customer") Customer
-          option(value="staff") Staff
-      .form-actions
-        button(type="submit") Register
-        a(href="/auth/login") Already have an account? Login
-        
-  .back-link
-    a(href="/") ← Back to Home
+  h2 This is register page
+  p This will be used by new customers for account creation
+  p The JS for this file should be at path /static/js/auth/register.js

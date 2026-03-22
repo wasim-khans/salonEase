@@ -1,39 +1,6 @@
 extends ../../layout
 
 block content
-  h1 Admin Dashboard
-  p Manage salon operations and appointments
-  
-  .dashboard-stats
-    .stat-card
-      h3 Total Appointments
-      .number= stats.totalAppointments || 0
-    .stat-card
-      h3 Pending Review
-      .number= stats.pendingAppointments || 0
-    .stat-card
-      h3 Today's Bookings
-      .number= stats.todayBookings || 0
-    .stat-card
-      h3 Active Staff
-      .number= stats.activeStaff || 0
-      
-  .dashboard-actions
-    h2 Quick Actions
-    .action-buttons
-      a(href="/admin/appointments") Manage Appointments
-      a(href="/admin/services") Manage Services
-      a(href="/admin/staff") Manage Staff
-      
-  .recent-activity
-    h2 Recent Activity
-    .activity-list
-      each activity in recentActivities
-        .activity-item
-          p= activity.description
-          small= activity.timestamp
-      else
-        p No recent activity
-        
-  .actions
-    a(href="/") ← Back to Home
+  h2 This is admin dashboard page
+  p This will be used by administrators for salon management
+  p The JS for this file should be at path /static/js/admin/dashboard.js

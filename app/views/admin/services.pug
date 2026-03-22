@@ -1,47 +1,6 @@
 extends ../../layout
 
 block content
-  h1 Manage Services
-  p Add, edit, and remove salon services
-  
-  .services-actions
-    button.add-service(data-action="add") Add New Service
-    
-  .services-list
-    each service in services
-      .service-card.admin-view
-        h3= service.name
-        .service-details
-          p.category Category: #{service.category}
-          p.price Price: $#{service.base_price}
-          p.duration Duration: #{service.duration} minutes
-          p.created Created: #{service.created_at}
-          
-        .service-actions
-          button.edit(data-id=service.id) Edit
-          button.delete(data-id=service.id) Delete
-          
-  .add-service-form.hidden
-    h2 Add New Service
-    form(action="/admin/services/add", method="post")
-      .form-group
-        label(for="name") Service Name:
-        input(type="text", id="name", name="name", required)
-      .form-group
-        label(for="category") Category:
-        select(id="category", name="category")
-          option(value="male") Male
-          option(value="female") Female
-          option(value="both") Both
-      .form-group
-        label(for="base_price") Base Price:
-        input(type="number", id="base_price", name="base_price", step="0.01", required)
-      .form-group
-        label(for="duration") Duration (minutes):
-        input(type="number", id="duration", name="duration", required)
-      .form-actions
-        button(type="submit") Add Service
-        button.cancel-form Cancel
-        
-  .actions
-    a(href="/admin/dashboard") ← Back to Dashboard
+  h2 This is admin services page
+  p This will be used by administrators for service management
+  p The JS for this file should be at path /static/js/admin/services.js

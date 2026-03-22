@@ -1,0 +1,42 @@
+services:
+  salonease-web:
+    build:
+      context: ./
+    volumes:
+      - .:/src
+    command: supervisor -e  'js,pug,html' index.js
+    ports:
+      - "3000:3000"
+    depends_on:
+      - salonease-db
+    environment:
+      - NODE_ENV=development
+  salonease-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: salonease123
+      MYSQL_DATABASE: salonease_db
+      MYSQL_USER: salonease_user
+      MYSQL_PASSWORD: salonease123
+    ports:
+      - "3308:3306"
+    volumes:
+      - salonease_db_data:/var/lib/mysql
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    command: --default-authentication-plugin=mysql_native_password
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: salonease-db
+      PMA_USER: root
+      PMA_PASSWORD: salonease123
+      MYSQL_ROOT_PASSWORD: salonease123
+    ports:
+      - "8081:80"
+    depends_on:
+      - salonease-db
+
+volumes:
+  salonease_db_data:

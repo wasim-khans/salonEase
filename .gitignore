@@ -1,7 +1,7 @@
 # Documentation folders
 docs/
 mvpdocs/
-projectTemplate/
+pg-sd2
 
 # Dependencies
 node_modules/
@@ -11,7 +11,7 @@ yarn-error.log*
 
 # Environment variables
 .env
-.env.local
+.env.localç
 .env.development.local
 .env.test.local
 .env.production.local

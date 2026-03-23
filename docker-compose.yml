@@ -31,8 +31,8 @@ services:
     restart: always
     environment:
       PMA_HOST: ${DB_CONTAINER}
-      PMA_USER: ${MYSQL_ROOT_USER}
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "8081:80"

@@ -5,34 +5,61 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
 
-// Generate JWT token
-const generateToken = (user) => {
+// Generate JWT token for customer
+const generateCustomerToken = (customer) => {
     return jwt.sign(
         { 
-            id: user.id, 
-            email: user.email, 
-            role: user.role 
+            id: customer.id, 
+            email: customer.email, 
+            type: 'customer'
         },
         process.env.JWT_SECRET,
         { expiresIn: '24h' }
     );
 };
 
-// Register new user
-const register = async (userData) => {
-    try {
-        const { name, email, password, role = 'customer', gender } = userData;
+// Generate JWT token for admin
+const generateAdminToken = (admin) => {
+    return jwt.sign(
+        { 
+            id: admin.id, 
+            email: admin.email, 
+            type: 'admin'
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+};
 
-        // Check if user already exists
-        const existingUser = await db.query(
-            'SELECT id FROM users WHERE email = ?', 
+// Generate JWT token for staff
+const generateStaffToken = (staff) => {
+    return jwt.sign(
+        { 
+            id: staff.id, 
+            email: staff.email, 
+            type: 'staff',
+            gender: staff.gender
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+    );
+};
+
+// Register new customer
+const registerCustomer = async (userData) => {
+    try {
+        const { name, email, password, gender } = userData;
+
+        // Check if customer already exists
+        const existingCustomer = await db.query(
+            'SELECT id FROM customers WHERE email = ?', 
             [email]
         );
 
-        if (existingUser.length > 0) {
+        if (existingCustomer.length > 0) {
             return {
                 success: false,
-                message: 'User already exists with this email'
+                message: 'Customer already exists with this email'
             };
         }
 
@@ -40,29 +67,29 @@ const register = async (userData) => {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Insert new user
+        // Insert new customer
         const result = await db.query(
-            'INSERT INTO users (name, email, password, role, gender) VALUES (?, ?, ?, ?, ?)',
-            [name, email, hashedPassword, role, gender]
+            'INSERT INTO customers (name, email, password, gender) VALUES (?, ?, ?, ?)',
+            [name, email, hashedPassword, gender]
         );
 
-        // Get the created user
-        const newUser = await db.query(
-            'SELECT id, name, email, role, gender FROM users WHERE id = ?',
+        // Get the created customer
+        const newCustomer = await db.query(
+            'SELECT id, name, email, gender FROM customers WHERE id = ?',
             [result.insertId]
         );
 
-        const token = generateToken(newUser[0]);
+        const token = generateCustomerToken(newCustomer[0]);
 
         return {
             success: true,
-            message: 'User registered successfully',
+            message: 'Customer registered successfully',
             user: {
-                id: newUser[0].id,
-                name: newUser[0].name,
-                email: newUser[0].email,
-                role: newUser[0].role,
-                gender: newUser[0].gender
+                id: newCustomer[0].id,
+                name: newCustomer[0].name,
+                email: newCustomer[0].email,
+                type: 'customer',
+                gender: newCustomer[0].gender
             },
             token
         };
@@ -76,48 +103,150 @@ const register = async (userData) => {
     }
 };
 
-// Login user
-const login = async (email, password) => {
+// Register new admin (separate function for security)
+const registerAdmin = async (userData) => {
     try {
-        // Find user by email
-        const users = await db.query(
-            'SELECT id, name, email, password, role, gender FROM users WHERE email = ?',
+        const { name, email, password } = userData;
+
+        // Check if admin already exists
+        const existingAdmin = await db.query(
+            'SELECT id FROM admins WHERE email = ?', 
             [email]
         );
 
-        if (users.length === 0) {
+        if (existingAdmin.length > 0) {
             return {
                 success: false,
-                message: 'Invalid email or password'
+                message: 'Admin already exists with this email'
             };
         }
 
-        const user = users[0];
+        // Hash password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Verify password
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        // Insert new admin
+        const result = await db.query(
+            'INSERT INTO admins (name, email, password) VALUES (?, ?, ?)',
+            [name, email, hashedPassword]
+        );
 
-        if (!isValidPassword) {
-            return {
-                success: false,
-                message: 'Invalid email or password'
-            };
-        }
+        // Get the created admin
+        const newAdmin = await db.query(
+            'SELECT id, name, email FROM admins WHERE id = ?',
+            [result.insertId]
+        );
 
-        // Generate token
-        const token = generateToken(user);
+        const token = generateAdminToken(newAdmin[0]);
 
         return {
             success: true,
-            message: 'Login successful',
+            message: 'Admin registered successfully',
             user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                gender: user.gender
+                id: newAdmin[0].id,
+                name: newAdmin[0].name,
+                email: newAdmin[0].email,
+                type: 'admin'
             },
             token
+        };
+
+    } catch (error) {
+        return {
+            success: false,
+            message: 'Admin registration failed',
+            error: error.message
+        };
+    }
+};
+
+// Login user (checks all tables)
+const login = async (email, password) => {
+    try {
+        // Try customer table first
+        let customers = await db.query(
+            'SELECT id, name, email, password, gender FROM customers WHERE email = ?',
+            [email]
+        );
+
+        if (customers.length > 0) {
+            const customer = customers[0];
+            const isValidPassword = await bcrypt.compare(password, customer.password);
+            
+            if (isValidPassword) {
+                const token = generateCustomerToken(customer);
+                return {
+                    success: true,
+                    message: 'Login successful',
+                    user: {
+                        id: customer.id,
+                        name: customer.name,
+                        email: customer.email,
+                        type: 'customer',
+                        gender: customer.gender
+                    },
+                    token
+                };
+            }
+        }
+
+        // Try admin table
+        let admins = await db.query(
+            'SELECT id, name, email, password FROM admins WHERE email = ?',
+            [email]
+        );
+
+        if (admins.length > 0) {
+            const admin = admins[0];
+            const isValidPassword = await bcrypt.compare(password, admin.password);
+            
+            if (isValidPassword) {
+                const token = generateAdminToken(admin);
+                return {
+                    success: true,
+                    message: 'Login successful',
+                    user: {
+                        id: admin.id,
+                        name: admin.name,
+                        email: admin.email,
+                        type: 'admin'
+                    },
+                    token
+                };
+            }
+        }
+
+        // Try staff table
+        let staff = await db.query(
+            'SELECT id, name, email, password, gender FROM staff WHERE email = ?',
+            [email]
+        );
+
+        if (staff.length > 0) {
+            const staffMember = staff[0];
+            const isValidPassword = await bcrypt.compare(password, staffMember.password);
+            
+            if (isValidPassword) {
+                const token = generateStaffToken(staffMember);
+                return {
+                    success: true,
+                    message: 'Login successful',
+                    user: {
+                        id: staffMember.id,
+                        name: staffMember.name,
+                        email: staffMember.email,
+                        type: 'staff',
+                        gender: staffMember.gender
+                    },
+                    token
+                };
+            }
+        }
+
+        // No user found or invalid password
+        return {
+            success: false,
+            message: 'Invalid email or password'
         };
 
     } catch (error) {
@@ -139,8 +268,11 @@ const verifyToken = (token) => {
 };
 
 module.exports = {
-    register,
+    registerCustomer,
+    registerAdmin,
     login,
     verifyToken,
-    generateToken
+    generateCustomerToken,
+    generateAdminToken,
+    generateStaffToken
 };

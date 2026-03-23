@@ -28,8 +28,8 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Middleware to check user role
-const requireRole = (roles) => {
+// Middleware to check user type
+const requireType = (types) => {
     return (req, res, next) => {
         if (!req.user) {
             return res.status(401).json({ 
@@ -38,7 +38,7 @@ const requireRole = (roles) => {
             });
         }
 
-        if (!roles.includes(req.user.role)) {
+        if (!types.includes(req.user.type)) {
             return res.status(403).json({ 
                 success: false, 
                 message: 'Insufficient permissions' 
@@ -67,6 +67,6 @@ const optionalAuth = (req, res, next) => {
 
 module.exports = {
     authenticateToken,
-    requireRole,
+    requireType,
     optionalAuth
 };

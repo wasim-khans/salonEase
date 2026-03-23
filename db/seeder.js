@@ -45,29 +45,67 @@ const services = [
   { name: 'Hair Wash & Blow Dry', category: 'both', base_price: 35.00, duration: 45 }
 ];
 
-function generateUsers(count) {
-  const users = [];
-  const roles = ['customer', 'customer', 'customer', 'staff', 'staff', 'admin'];
-  const genders = ['male', 'female'];
+function generateCustomers(count) {
+  const customers = [];
+  const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
   
   for (let i = 0; i < count; i++) {
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
     const domain = domains[Math.floor(Math.random() * domains.length)];
-    const role = roles[Math.floor(Math.random() * roles.length)];
     const gender = genders[Math.floor(Math.random() * genders.length)];
     
-    users.push({
+    customers.push({
       id: uuidv4(),
       name: `${firstName} ${lastName}`,
       email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`,
       password: '$2b$10$placeholder_hash',
-      role: role,
       gender: gender
     });
   }
   
-  return users;
+  return customers;
+}
+
+function generateAdmins(count) {
+  const admins = [];
+  
+  for (let i = 0; i < count; i++) {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    
+    admins.push({
+      id: uuidv4(),
+      name: `${firstName} ${lastName}`,
+      email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`,
+      password: '$2b$10$placeholder_hash'
+    });
+  }
+  
+  return admins;
+}
+
+function generateStaff(count) {
+  const staff = [];
+  const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
+  
+  for (let i = 0; i < count; i++) {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    const gender = genders[Math.floor(Math.random() * genders.length)];
+    
+    staff.push({
+      id: uuidv4(),
+      name: `${firstName} ${lastName}`,
+      email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`,
+      password: '$2b$10$placeholder_hash',
+      gender: gender
+    });
+  }
+  
+  return staff;
 }
 
 function generateServices() {
@@ -77,34 +115,33 @@ function generateServices() {
   }));
 }
 
-function generateAppointments(users, services, count) {
+function generateAppointments(customers, staff, count) {
   const appointments = [];
-  const statuses = ['in_review', 'confirmed', 'confirmed', 'completed', 'cancelled'];
+  const statuses = ['in_review', 'confirmed', 'confirmed', 'completed', 'cancelled', 'no_show'];
   const staffGenders = ['male', 'female', 'any'];
-  const adminUser = users.find(u => u.role === 'admin');
   
   for (let i = 0; i < count; i++) {
-    const user = users[Math.floor(Math.random() * users.length)];
-    const staff = users.filter(u => u.role === 'staff')[Math.floor(Math.random() * 2)];
+    const customer = customers[Math.floor(Math.random() * customers.length)];
+    const staffMember = staff[Math.floor(Math.random() * staff.length)];
     const status = statuses[Math.floor(Math.random() * statuses.length)];
-    const date = new Date(2024, 0, 15 + Math.floor(Math.random() * 10));
+    const date = new Date(2026, 0, 15 + Math.floor(Math.random() * 10));
     const time = `${9 + Math.floor(Math.random() * 10)}:${Math.random() > 0.5 ? '00' : '30'}:00`;
     
     const appointment = {
       id: uuidv4(),
-      user_id: user.id,
+      customer_id: customer.id,
       appointment_date: date.toISOString().split('T')[0],
       preferred_time: time,
       preferred_staff_gender: staffGenders[Math.floor(Math.random() * staffGenders.length)],
       status: status,
-      staff_id: status !== 'in_review' && status !== 'cancelled' ? staff.id : null,
-      service_provided_by: status === 'completed' ? staff.id : null,
+      staff_id: status !== 'in_review' && status !== 'cancelled' ? staffMember.id : null,
+      service_provided_by: status === 'completed' ? staffMember.id : null,
       cancelled_by: status === 'cancelled' ? 'customer' : null,
       cancellation_reason: status === 'cancelled' ? 'Schedule conflict' : null,
       actual_price: status === 'completed' ? 35.00 : null,
       admin_notes: null,
       confirmed_at: status === 'confirmed' || status === 'completed' ? new Date().toISOString().slice(0, 19).replace('T', ' ') : null,
-      completed_by: status === 'completed' && adminUser ? adminUser.id : null,
+      completed_by: status === 'completed' ? staffMember.id : null,
       created_at: new Date(date.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' '),
       updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
     };
@@ -144,14 +181,24 @@ async function seedDatabase() {
   try {
     console.log('Generating seed data...');
     
-    const users = generateUsers(6);
+    const customers = generateCustomers(3);
+    const admins = generateAdmins(1);
+    const staff = generateStaff(2);
     const serviceList = generateServices();
-    const appointments = generateAppointments(users, serviceList, 5);
+    const appointments = generateAppointments(customers, staff, 5);
     const appointmentServices = generateAppointmentServices(appointments, serviceList);
     
     // Build SQL statements
-    const userValues = users.map(user => 
-      `('${user.id}', '${user.name}', '${user.email}', '${user.password}', '${user.role}', '${user.gender}')`
+    const customerValues = customers.map(customer => 
+      `('${customer.id}', '${customer.name}', '${customer.email}', '${customer.password}', '${customer.gender}')`
+    ).join(',');
+    
+    const adminValues = admins.map(admin => 
+      `('${admin.id}', '${admin.name}', '${admin.email}', '${admin.password}')`
+    ).join(',');
+    
+    const staffValues = staff.map(staffMember => 
+      `('${staffMember.id}', '${staffMember.name}', '${staffMember.email}', '${staffMember.password}', '${staffMember.gender}')`
     ).join(',');
     
     const serviceValues = serviceList.map(service => 
@@ -161,7 +208,7 @@ async function seedDatabase() {
     const appointmentValues = appointments.map(appointment => {
       const values = [
         `'${appointment.id}'`,
-        `'${appointment.user_id}'`,
+        `'${appointment.customer_id}'`,
         `'${appointment.appointment_date}'`,
         `'${appointment.preferred_time}'`,
         `'${appointment.preferred_staff_gender}'`,
@@ -184,7 +231,7 @@ async function seedDatabase() {
       `('${as.id}', '${as.appointment_id}', '${as.service_id}', ${as.price})`
     ).join(',');
     
-    const sql = `INSERT INTO users (id, name, email, password, role, gender) VALUES ${userValues}; INSERT INTO services (id, name, category, base_price, duration) VALUES ${serviceValues}; INSERT INTO appointments (id, user_id, appointment_date, preferred_time, preferred_staff_gender, status, staff_id, service_provided_by, cancelled_by, cancellation_reason, actual_price, admin_notes, confirmed_at, completed_by, created_at, updated_at) VALUES ${appointmentValues}; INSERT INTO appointment_services (id, appointment_id, service_id, price) VALUES ${appointmentServiceValues}; SELECT 'Users:' as table_name, COUNT(*) as record_count FROM users UNION ALL SELECT 'Services:', COUNT(*) FROM services UNION ALL SELECT 'Appointments:', COUNT(*) FROM appointments UNION ALL SELECT 'Appointment Services:', COUNT(*) FROM appointment_services;`;
+    const sql = `INSERT INTO customers (id, name, email, password, gender) VALUES ${customerValues}; INSERT INTO admins (id, name, email, password) VALUES ${adminValues}; INSERT INTO staff (id, name, email, password, gender) VALUES ${staffValues}; INSERT INTO services (id, name, category, base_price, duration) VALUES ${serviceValues}; INSERT INTO appointments (id, customer_id, appointment_date, preferred_time, preferred_staff_gender, status, staff_id, service_provided_by, cancelled_by, cancellation_reason, actual_price, admin_notes, confirmed_at, completed_by, created_at, updated_at) VALUES ${appointmentValues}; INSERT INTO appointment_services (id, appointment_id, service_id, price) VALUES ${appointmentServiceValues}; SELECT 'Customers:' as table_name, COUNT(*) as record_count FROM customers UNION ALL SELECT 'Admins:', COUNT(*) FROM admins UNION ALL SELECT 'Staff:', COUNT(*) FROM staff UNION ALL SELECT 'Services:', COUNT(*) FROM services UNION ALL SELECT 'Appointments:', COUNT(*) FROM appointments UNION ALL SELECT 'Appointment Services:', COUNT(*) FROM appointment_services;`;
 
     console.log('Executing seed SQL...');
     const command = `docker exec -i ${containerName} mysql -u ${dbConfig.user} -p${dbConfig.password} ${dbConfig.database} -e "${sql}"`;

@@ -1,13 +1,12 @@
 // SalonEase Express App Configuration
-// Main application setup and middleware configuration
-
+// Modern JWT-based authentication only
 const express = require('express');
-const session = require('express-session');
 const path = require('path');
 
 // Import services and middleware
 const AuthMiddleware = require('./middleware/authMiddleware');
 const RoleMiddleware = require('./middleware/roleMiddleware');
+const ApiAuthMiddleware = require('./middleware/apiAuthMiddleware');
 const UserService = require('./services/userService');
 const ServiceService = require('./services/serviceService');
 const AppointmentService = require('./services/appointmentService');
@@ -19,23 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('static'));
 
-// Session configuration
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'fallback_secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // Set to true in production with HTTPS
-}));
-
 // View engine setup
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // Make user available to all templates
 app.use((req, res, next) => {
-    res.locals.user = req.session.user;
-    res.locals.messages = req.session.messages;
-    delete req.session.messages;
+    res.locals.user = req.user || null;
     next();
 });
 
@@ -54,13 +43,23 @@ app.post('/auth/login', async (req, res) => {
         const { email, password } = req.body;
         const result = await UserService.login(email, password);
         
-        req.session.user = result.user;
-        req.session.messages = { success: 'Login successful!' };
-        
-        res.redirect('/');
+        if (result.success) {
+            res.json({
+                success: true,
+                token: result.token,
+                user: result.user
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                error: result.error || 'Login failed'
+            });
+        }
     } catch (error) {
-        req.session.messages = { error: error.message };
-        res.redirect('/auth/login');
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 });
 
@@ -70,24 +69,31 @@ app.get('/auth/register', (req, res) => {
 
 app.post('/auth/register', async (req, res) => {
     try {
-        const userData = req.body;
-        await UserService.register(userData);
+        const result = await UserService.register(req.body);
         
-        req.session.messages = { success: 'Registration successful! Please login.' };
-        res.redirect('/auth/login');
-    } catch (error) {
-        req.session.messages = { error: error.message };
-        res.redirect('/auth/register');
-    }
-});
-
-app.post('/auth/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            req.session.messages = { error: 'Logout failed' };
+        if (result) {
+            res.status(201).json({
+                success: true,
+                token: result.token,
+                user: {
+                    id: result,
+                    name: req.body.name,
+                    email: req.body.email,
+                    role: req.body.role
+                }
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                error: 'Registration failed'
+            });
         }
-        res.redirect('/');
-    });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+                error: error.message
+        });
+    }
 });
 
 // Protected routes
@@ -203,8 +209,104 @@ app.get('/admin/staff', AuthMiddleware.requireAuth, RoleMiddleware.requireAdmin,
             staff: staff
         });
     } catch (error) {
-        req.session.messages = { error: error.message };
-        res.redirect('/admin/dashboard');
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// API Routes - Modern REST API endpoints
+// Authentication API
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const result = await UserService.login(email, password);
+        
+        if (result.success) {
+            res.json({
+                success: true,
+                token: result.token,
+                user: result.user
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                error: result.error || 'Login failed'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+app.post('/api/auth/register', async (req, res) => {
+    try {
+        const result = await UserService.register(req.body);
+        
+        if (result) {
+            const token = TokenService.generateToken({
+                id: result,
+                name: req.body.name,
+                email: req.body.email,
+                role: req.body.role
+            });
+            
+            res.status(201).json({
+                success: true,
+                token: token,
+                user: {
+                    id: result,
+                    name: req.body.name,
+                    email: req.body.email,
+                    role: req.body.role
+                }
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                error: 'Registration failed'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Protected API routes
+app.get('/api/user/profile', ApiAuthMiddleware.requireAuth, async (req, res) => {
+    try {
+        const user = await UserService.getProfile(req.user.id);
+        res.json({
+            success: true,
+            user: user
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+app.get('/api/services', async (req, res) => {
+    try {
+        const services = await ServiceService.getAll();
+        res.json({
+            success: true,
+            services: services
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 });
 

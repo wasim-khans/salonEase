@@ -1,9 +1,15 @@
-// Login Form JavaScript
+// Modern Login Form with API Integration
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is already logged in
+    if (window.ApiAuthClient && window.ApiAuthClient.isLoggedIn()) {
+        window.location.href = '/services';
+        return;
+    }
+    
     const loginForm = document.querySelector('.auth-form');
     
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('email').value;
@@ -26,8 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.textContent = 'Logging in...';
             submitBtn.disabled = true;
             
-            // Submit form normally (server-side validation will handle the rest)
-            loginForm.submit();
+            try {
+                // Use API client for login
+                await window.ApiAuthClient.login(email, password);
+            } catch (error) {
+                showError('Login failed. Please try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
     }
     

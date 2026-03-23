@@ -1,19 +1,54 @@
 // User Service - Business logic layer for user operations
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const TokenService = require('./tokenService');
 
 class UserService {
   // Register new user
   static async register(userData) {
     try {
-      return await User.create(userData);
+      // Hash password before storing
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const { password, ...userDataWithoutPassword } = userData;
+      
+      const result = await User.create({
+        ...userDataWithoutPassword,
+        password: hashedPassword
+      });
+      return result;
     } catch (error) {
       throw new Error(`Registration failed: ${error.message}`);
     }
   }
 
-  // Login user
+  // Login user (API version)
   static async login(email, password) {
+    try {
+      const user = await User.authenticate(email, password);
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+      
+      const token = TokenService.generateToken(user);
+      
+      return {
+        success: true,
+        token: token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          gender: user.gender
+        }
+      };
+    } catch (error) {
+      throw new Error(`Login failed: ${error.message}`);
+    }
+  }
+
+  // Legacy login for web forms (session-based)
+  static async loginWithSession(email, password) {
     try {
       const user = await User.authenticate(email, password);
       if (!user) {

@@ -11,7 +11,7 @@ html(lang="en")
       nav.navbar
         .nav-container
           a.navbar-brand(href="/") 
-            i.fas fa-cut
+            i.fas.fa-cut
             | SalonEase
           
           .nav-menu
@@ -22,7 +22,7 @@ html(lang="en")
                 a.nav-link(href="/admin/dashboard") Admin Dashboard
               .nav-user
                 span.nav-username= user.name
-                a.nav-link(href="/auth/logout") Logout
+                a.nav-link(href="#" onclick="ApiAuthClient.logout()") Logout
             else
               a.nav-link(href="/auth/login") Login
               a.nav-link(href="/auth/register") Register

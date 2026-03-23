@@ -18,6 +18,18 @@ block content
         
         .form-actions
           button.btn.btn-primary.btn-block(type="submit") Login
+    
+    .auth-links
+      p Don't have an account? 
+        a(href="/auth/register") Register here
+      
+    .auth-links
+      p 
+        a(href="/") Forgot Password?
+
+block scripts
+  script(src="/js/auth/api-client.js")
+  script(src="/js/auth/login.js")
           
         .auth-links
           p Don't have an account? 

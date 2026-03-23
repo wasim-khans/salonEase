@@ -1,59 +1,96 @@
 extends layout
 
 block content
-  .hero-section
-    .hero-content
-      h1 Welcome to SalonEase
-      p Your premium salon appointment management system
-      .hero-description
-        p Book appointments, manage services, and streamline your salon operations with ease.
+  .container
+    if user
+      .welcome-section
+        .welcome-card
+          h1 Welcome back, #{user.name}!
+          p Your premium salon appointment management system
+          .user-info
+            .info-item
+              i.fas.fa-user
+              span Role: 
+              strong= user.role
+            .info-item
+              i.fas.fa-envelope
+              span= user.email
+          .action-buttons
+            if user.role === 'admin'
+              a.btn.btn-primary.btn-large(href="/admin/dashboard") 
+                i.fas.fa-tachometer-alt
+                | Admin Dashboard
+            a.btn.btn-primary.btn-large(href="/services") 
+              i.fas.fa-calendar-check
+              | Book Appointment
+            a.btn.btn-outline.btn-large(href="/my-appointments") 
+              i.fas.fa-list
+              | My Appointments
       
-      .hero-actions
-        if !user
-          a.btn.btn-primary(href="/auth/login") Login
-          a.btn.btn-outline(href="/auth/register") Register
-        else
-          a.btn.btn-primary(href="/services") Book Appointment
+      .features-section
+        h2 Quick Actions
+        .features-grid
+          .feature-card
+            .feature-icon
+              i.fas.fa-calendar-plus
+            h3 Book New Appointment
+            p Schedule your next salon visit
+          .feature-card
+            .feature-icon
+              i.fas.fa-clock
+            h3 View Appointments
+            p Check your upcoming bookings
           if user.role === 'admin'
-            a.btn.btn-outline(href="/admin/dashboard") Admin Dashboard
-          else
-            a.btn.btn-outline(href="/my-appointments") My Appointments
-
-  .features-section
-    h2 Why Choose SalonEase?
-    .features-grid
-      .feature-card
-        .feature-icon
-          i.fas fa-calendar-check
-        h3 Easy Booking
-        p Simple and intuitive appointment booking system
-        
-      .feature-card
-        .feature-icon
-          i.fas fa-user-shield
-        h3 Secure Management
-        p Role-based access control and secure authentication
-        
-      .feature-card
-        .feature-icon
-          i.fas fa-clock
-        h3 Real-time Updates
-        p Track appointment status in real-time
-        
-      .feature-card
-        .feature-icon
-          i.fas fa-cogs
-        h3 Service Management
-        p Comprehensive service catalog and pricing
-
-  .cta-section
-    .cta-content
-      h2 Ready to Get Started?
-      p Join hundreds of salons using SalonEase for efficient appointment management.
+            .feature-card
+              .feature-icon
+              i.fas.fa-cogs
+              h3 Manage Services
+              p Add or edit salon services
+            .feature-card
+              .feature-icon
+              i.fas.fa-users
+              h3 Manage Staff
+              p Add or manage team members
+    
+    else
+      .hero-section
+        .hero-content
+          h1 Welcome to SalonEase
+          p Your premium salon appointment management system
+          .hero-description
+            p Book appointments, manage services, and streamline your salon operations with ease.
+          .hero-actions
+            a.btn.btn-primary(href="/auth/login") Login
+            a.btn.btn-outline(href="/auth/register") Register
       
-      .cta-actions
-        if !user
-          a.btn.btn-primary.btn-large(href="/auth/register") Create Account
-          a.btn.btn-outline.btn-large(href="/services") Browse Services
-        else
-          a.btn.btn-primary.btn-large(href="/services") Book Your First Appointment
+      .features-section
+        h2 Why Choose SalonEase?
+        .features-grid
+          .feature-card
+            .feature-icon
+              i.fas.fa-calendar-check
+            h3 Easy Booking
+            p Simple and intuitive appointment booking system
+          .feature-card
+            .feature-icon
+              i.fas.fa-user-shield
+            h3 Secure Management
+            p Role-based access control and secure authentication
+          .feature-card
+            .feature-icon
+              i.fas.fa-clock
+            h3 Real-time Updates
+            p Track appointment status in real-time
+          .feature-card
+            .feature-icon
+              i.fas.fa-cogs
+            h3 Service Management
+            p Comprehensive service catalog and pricing
+      
+      .cta-section
+        .cta-content
+          h2 Ready to Get Started?
+          p Join hundreds of salons using SalonEase for efficient appointment management.
+          .cta-actions
+            a.btn.btn-primary.btn-large(href="/auth/register") Create Account
+            a.btn.btn-outline.btn-large(href="/auth/login") Login

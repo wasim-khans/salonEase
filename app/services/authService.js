@@ -218,32 +218,32 @@ const login = async (email, password) => {
             }
         }
 
-        // Try staff table
-        let staff = await db.query(
-            'SELECT id, name, email, password, gender FROM staff WHERE email = ?',
-            [email]
-        );
+        // // Try staff table
+        // let staff = await db.query(
+        //     'SELECT id, name, email, password, gender FROM staff WHERE email = ?',
+        //     [email]
+        // );
 
-        if (staff.length > 0) {
-            const staffMember = staff[0];
-            const isValidPassword = await bcrypt.compare(password, staffMember.password);
+        // if (staff.length > 0) {
+        //     const staffMember = staff[0];
+        //     const isValidPassword = await bcrypt.compare(password, staffMember.password);
             
-            if (isValidPassword) {
-                const token = generateStaffToken(staffMember);
-                return {
-                    success: true,
-                    message: 'Login successful',
-                    user: {
-                        id: staffMember.id,
-                        name: staffMember.name,
-                        email: staffMember.email,
-                        type: 'staff',
-                        gender: staffMember.gender
-                    },
-                    token
-                };
-            }
-        }
+        //     if (isValidPassword) {
+        //         const token = generateStaffToken(staffMember);
+        //         return {
+        //             success: true,
+        //             message: 'Login successful',
+        //             user: {
+        //                 id: staffMember.id,
+        //                 name: staffMember.name,
+        //                 email: staffMember.email,
+        //                 type: 'staff',
+        //                 gender: staffMember.gender
+        //             },
+        //             token
+        //         };
+        //     }
+        // }
 
         // No user found or invalid password
         return {

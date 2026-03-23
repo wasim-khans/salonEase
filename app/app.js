@@ -245,6 +245,7 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.post('/api/auth/register', async (req, res) => {
     try {
+        const TokenService = require('./services/tokenService');
         const result = await UserService.register(req.body);
         
         if (result) {

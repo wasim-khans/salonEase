@@ -1,16 +1,18 @@
 // User Model - Database access layer for users table
 const db = require('../services/db');
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
 
 class User {
   // Create new user
   static async create(userData) {
     const { name, email, password, role, gender } = userData;
+    const userId = uuidv4();
     const result = await db.query(
-      `INSERT INTO users (name, email, password, role, gender) VALUES (?, ?, ?, ?, ?)`,
-      [name, email, password, role, gender]
+      `INSERT INTO users (id, name, email, password, role, gender) VALUES (?, ?, ?, ?, ?, ?)`,
+      [userId, name, email, password, role, gender]
     );
-    return result.insertId;
+    return userId;
   }
 
   // Find user by email

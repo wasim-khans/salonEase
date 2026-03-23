@@ -1,4 +1,3 @@
-================================================================================
 SALONEASE — TEAM CODE OF CONDUCT
 Second Chance Agreement — Effective immediately
 Version 2.0 | March 2026 | University of Roehampton

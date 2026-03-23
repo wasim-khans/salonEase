@@ -22,5 +22,5 @@ docker-compose down
 docker exec -i saloneease-salonease-db-1 mysql -u root -psalonease123 salonease_db < db/seedData.sql
 
 
-# sd2_labs
+# salonEase
 This is the repository that showcases my lab work for the MSc in Web Development - Software Development module

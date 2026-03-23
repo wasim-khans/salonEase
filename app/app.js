@@ -105,8 +105,10 @@ app.get('/services', async (req, res) => {
             services: services
         });
     } catch (error) {
-        req.session.messages = { error: error.message };
-        res.redirect('/');
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 });
 
@@ -246,14 +248,21 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/auth/register', async (req, res) => {
     try {
         const TokenService = require('./services/tokenService');
-        const result = await UserService.register(req.body);
+        
+        // Force role to be 'customer' for public registration
+        const userData = {
+            ...req.body,
+            role: 'customer'
+        };
+        
+        const result = await UserService.register(userData);
         
         if (result) {
             const token = TokenService.generateToken({
                 id: result,
                 name: req.body.name,
                 email: req.body.email,
-                role: req.body.role
+                role: 'customer'
             });
             
             res.status(201).json({
@@ -263,13 +272,59 @@ app.post('/api/auth/register', async (req, res) => {
                     id: result,
                     name: req.body.name,
                     email: req.body.email,
-                    role: req.body.role
+                    role: 'customer'
                 }
             });
         } else {
             res.status(400).json({
                 success: false,
                 error: 'Registration failed'
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Admin-only staff creation endpoint
+app.post('/api/admin/create-staff', ApiAuthMiddleware.requireAuth, async (req, res) => {
+    try {
+        // Check if user is admin
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                error: 'Admin access required'
+            });
+        }
+        
+        const TokenService = require('./services/tokenService');
+        
+        // Force role to be 'staff' for staff creation
+        const userData = {
+            ...req.body,
+            role: 'staff'
+        };
+        
+        const result = await UserService.register(userData);
+        
+        if (result) {
+            res.status(201).json({
+                success: true,
+                message: 'Staff account created successfully',
+                user: {
+                    id: result,
+                    name: req.body.name,
+                    email: req.body.email,
+                    role: 'staff'
+                }
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                error: 'Staff creation failed'
             });
         }
     } catch (error) {

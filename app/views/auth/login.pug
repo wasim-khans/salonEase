@@ -7,7 +7,7 @@ block content
         h2 Login to SalonEase
         p Welcome back! Please login to your account.
       
-      form.auth-form(method="POST", action="/auth/login")
+      form.auth-form#loginForm
         .form-group
           label(for="email") Email Address
           input.form-control(type="email", id="email", name="email", required, placeholder="Enter your email")

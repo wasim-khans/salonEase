@@ -28,20 +28,20 @@ html(lang="en")
               a.nav-link(href="/auth/register") Register
         
     main
-      .container
-        if messages && messages.error
-          .alert.alert-danger= messages.error
-        if messages && messages.success
-          .alert.alert-success= messages.success
-        if messages && messages.info
-          .alert.alert-info= messages.info
-          
-        block content
-      
+      block content
+    
     footer
       .footer-container
         p &copy; 2026 SalonEase. All rights reserved.
         p Salon appointment management system
     
-    script(src="/js/main.js")
+    script(src="/js/auth/api-client.js")
+    
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.ApiAuthClient) {
+          window.ApiAuthClient.updateAuthUI();
+        }
+      });
+    
     block scripts

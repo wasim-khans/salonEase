@@ -60,8 +60,12 @@ block content
           .hero-description
             p Book appointments, manage services, and streamline your salon operations with ease.
           .hero-actions
-            a.btn.btn-primary(href="/auth/login") Login
-            a.btn.btn-outline(href="/auth/register") Register
+            a.btn.btn-primary.btn-large(href="/auth/login") 
+              i.fas.fa-sign-in-alt
+              | Login
+            a.btn.btn-outline.btn-large(href="/auth/register") 
+              i.fas.fa-user-plus
+              | Register
       
       .features-section
         h2 Why Choose SalonEase?
@@ -86,11 +90,3 @@ block content
               i.fas.fa-cogs
             h3 Service Management
             p Comprehensive service catalog and pricing
-      
-      .cta-section
-        .cta-content
-          h2 Ready to Get Started?
-          p Join hundreds of salons using SalonEase for efficient appointment management.
-          .cta-actions
-            a.btn.btn-primary.btn-large(href="/auth/register") Create Account
-            a.btn.btn-outline.btn-large(href="/auth/login") Login

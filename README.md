@@ -1,26 +1,61 @@
-* Make sure that you don't have any other containers running usind docker ps
-* run ```docker-compose up --build```
+# SalonEase - Salon Appointment Management System
 
-#### Visit phphmyadmin at:
+## 🚀 Quick Start
 
-http://localhost:8081/
+### Prerequisites
+- Docker Desktop installed and running
+- Git
 
-#### Visit your express app at:
+### Setup (2 commands)
+```bash
+# 1. Create environment file from template
+cp .env.example .env
 
-http://localhost:3000
-
-Useful commands:
-# Run the containers
-docker-compose up 
-# Run in detached mode
+# 2. Start the application
 docker-compose up -d
-# Stop the containers
+```
+
+### 📱 Access Points
+- **Application**: http://localhost:3000
+- **phpMyAdmin**: http://localhost:8081
+  - Username: `root`
+  - Password: Check your `.env` file
+
+## 🛠️ Useful Commands
+```bash
+# Start containers
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop containers
 docker-compose down
 
+# Rebuild containers
+docker-compose up --build
 
-# Seed the database with data
-docker exec -i saloneease-salonease-db-1 mysql -u root -psalonease123 salonease_db < db/seedData.sql
+# Seed database with test data
+npm run db:seed
+```
 
+## 📁 Project Structure
+- `index.js` - Application entry point
+- `app/` - Main application code
+- `db/` - Database schema and utilities
+- `static/` - CSS, images, client-side JS
+- `.env` - Environment variables (create from `.env.example`)
 
-# salonEase
-This is the repository that showcases my lab work for the MSc in Web Development - Software Development module
+## 🔐 Authentication
+- JWT-based authentication
+- Register: `POST /api/auth/register`
+- Login: `POST /api/auth/login`
+
+## 🗄️ Database
+- MySQL 8.0 with Docker
+- Automatic schema creation from `db/schema.sql`
+- Persistent data storage
+
+---
+
+This repository showcases lab work for the MSc in Web Development - Software Development module

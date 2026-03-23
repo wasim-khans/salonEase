@@ -8,6 +8,8 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
 const { promisify } = require('util');
+const bcrypt = require('bcrypt');
+const mysql = require('mysql2/promise');
 const execAsync = promisify(exec);
 
 const containerName = 'salonease-salonease-db-1';
@@ -38,11 +40,30 @@ const generators = {
 class SmartSeeder {
   constructor() {
     this.tableDefinitions = new Map();
+    this.connection = null;
+  }
+
+  async connect() {
+    this.connection = await mysql.createConnection({
+      host: process.env.MYSQL_HOST || 'salonease-db',
+      user: 'root',
+      password: process.env.MYSQL_ROOT_PASSWORD || 'root',
+      database: process.env.MYSQL_DATABASE || 'salonease_db'
+    });
+  }
+
+  async disconnect() {
+    if (this.connection) {
+      await this.connection.end();
+    }
   }
 
   async run() {
     try {
       console.log('🚀 Starting Smart Database Seeder...');
+      
+      // Connect to database
+      await this.connect();
       
       // Define table structures based on schema
       this.defineTableStructures();
@@ -50,9 +71,9 @@ class SmartSeeder {
       // Generate data
       console.log('📊 Generating realistic test data...');
       
-      const customers = this.generateCustomers(8);
-      const admins = this.generateAdmins(2);
-      const staff = this.generateStaff(4);
+      const customers = await this.generateCustomers(8);
+      const admins = await this.generateAdmins(2);
+      const staff = await this.generateStaff(4);
       const services = this.generateServices();
       const appointments = this.generateAppointments(customers, staff, 12);
       const appointmentServices = this.generateAppointmentServices(appointments, services);
@@ -79,6 +100,8 @@ class SmartSeeder {
     } catch (error) {
       console.error('❌ Error during seeding:', error.message);
       throw error;
+    } finally {
+      await this.disconnect();
     }
   }
 
@@ -111,21 +134,21 @@ class SmartSeeder {
     console.log(`📋 Defined ${this.tableDefinitions.size} table structures`);
   }
 
-  generateCustomers(count) {
+  async generateCustomers(count) {
     const customers = [];
     const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
+    const passwordHash = await bcrypt.hash('test123', 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
       const lastName = generators.randomChoice(generators.lastNames);
-      const domain = generators.randomChoice(generators.domains);
       
       customers.push({
         id: uuidv4(),
         name: `${firstName} ${lastName}`,
-        email: generators.randomEmail(firstName, lastName, domain),
+        email: `customer${i + 1}@gmail.com`,
         phone: generators.randomPhone(),
-        password: '$2b$10$placeholder_hash',
+        password: passwordHash,
         gender: generators.randomChoice(genders),
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
       });
@@ -135,20 +158,20 @@ class SmartSeeder {
     return customers;
   }
 
-  generateAdmins(count) {
+  async generateAdmins(count) {
     const admins = [];
+    const passwordHash = await bcrypt.hash('test123', 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
       const lastName = generators.randomChoice(generators.lastNames);
-      const domain = generators.randomChoice(generators.domains);
       
       admins.push({
         id: uuidv4(),
         name: `${firstName} ${lastName}`,
-        email: generators.randomEmail(firstName, lastName, domain),
+        email: `admin${i + 1}@gmail.com`,
         phone: generators.randomPhone(),
-        password: '$2b$10$placeholder_hash',
+        password: passwordHash,
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
       });
     }
@@ -157,9 +180,10 @@ class SmartSeeder {
     return admins;
   }
 
-  generateStaff(count) {
+  async generateStaff(count) {
     const staff = [];
     const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
+    const passwordHash = await bcrypt.hash('test123', 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
@@ -170,7 +194,7 @@ class SmartSeeder {
         name: `${firstName} ${lastName}`,
         email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@salonease.com`,
         phone: generators.randomPhone(),
-        password: '$2b$10$placeholder_hash',
+        password: passwordHash,
         gender: generators.randomChoice(genders),
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
       });
@@ -258,9 +282,10 @@ class SmartSeeder {
     
     for (const table of tables) {
       try {
-        await execAsync(`docker exec -i ${containerName} mysql -u root -proot123 salonease_db -e "DELETE FROM ${table};"`);
+        await this.connection.execute(`DELETE FROM ${table}`);
+        console.log(`✅ Cleared ${table}`);
       } catch (error) {
-        // Table might not exist
+        console.log(`⚠️  Could not clear ${table}: ${error.message}`);
       }
     }
   }
@@ -288,7 +313,7 @@ class SmartSeeder {
     const sql = `INSERT INTO ${tableName} (${columnNames}) VALUES ${values};`;
     
     try {
-      await execAsync(`docker exec -i ${containerName} mysql -u root -proot123 salonease_db -e "${sql}"`);
+      await this.connection.execute(sql);
       console.log(`✅ Inserted ${records.length} records into ${tableName}`);
     } catch (error) {
       console.log(`⚠️  Could not insert into ${tableName}: ${error.message}`);
@@ -301,8 +326,8 @@ class SmartSeeder {
     console.log('\n📊 Seeding Results:');
     for (const table of tables) {
       try {
-        const { stdout } = await execAsync(`docker exec -i ${containerName} mysql -u root -proot123 salonease_db -e "SELECT COUNT(*) as count FROM ${table};"`);
-        const count = stdout.match(/(\d+)/)?.[1] || '0';
+        const [rows] = await this.connection.execute(`SELECT COUNT(*) as count FROM ${table}`);
+        const count = rows[0].count;
         console.log(`   ${table}: ${count} records`);
       } catch (error) {
         console.log(`   ${table}: Not found`);

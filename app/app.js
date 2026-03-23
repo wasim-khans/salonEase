@@ -1,9 +1,10 @@
 // SalonEase Express App Configuration
-// Main application setup and middleware configuration
+// JWT-based authentication with JSON APIs
 
 const express = require('express');
-const session = require('express-session');
 const path = require('path');
+const { authenticateToken, requireRole } = require('./middleware/authMiddleware');
+const { register, login } = require('./services/authService');
 
 const app = express();
 
@@ -12,24 +13,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('static'));
 
-// Session configuration
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'fallback_secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // Set to true in production with HTTPS
-}));
-
 // View engine setup
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-// Basic routes (to be implemented)
+// Basic routes
 app.get('/', (req, res) => {
     res.render('index', { title: 'SalonEase' });
 });
 
-// Auth routes
+// Auth page routes
 app.get('/auth/login', (req, res) => {
     res.render('auth/login', { title: 'Login - SalonEase' });
 });
@@ -38,35 +31,63 @@ app.get('/auth/register', (req, res) => {
     res.render('auth/register', { title: 'Register - SalonEase' });
 });
 
-// Admin routes
-app.get('/admin/dashboard', (req, res) => {
-    res.render('admin/dashboard', { title: 'Admin Dashboard - SalonEase' });
+// Auth API routes
+app.post('/api/auth/register', async (req, res) => {
+    const { name, email, password, role, gender } = req.body;
+
+    // Basic validation
+    if (!name || !email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: 'Name, email, and password are required'
+        });
+    }
+
+    const result = await register({ name, email, password, role, gender });
+
+    if (result.success) {
+        res.status(201).json(result);
+    } else {
+        res.status(400).json(result);
+    }
 });
 
-app.get('/admin/appointments', (req, res) => {
-    res.render('admin/appointments', { title: 'Manage Appointments - SalonEase' });
+app.post('/api/auth/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    // Basic validation
+    if (!email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: 'Email and password are required'
+        });
+    }
+
+    const result = await login(email, password);
+
+    if (result.success) {
+        res.json(result);
+    } else {
+        res.status(401).json(result);
+    }
 });
 
-app.get('/admin/services', (req, res) => {
-    res.render('admin/services', { title: 'Manage Services - SalonEase' });
+// Protected API routes
+app.get('/api/user/profile', authenticateToken, (req, res) => {
+    res.json({
+        success: true,
+        message: 'Access granted to protected route',
+        user: req.user
+    });
 });
 
-app.get('/admin/staff', (req, res) => {
-    res.render('admin/staff', { title: 'Manage Staff - SalonEase' });
-});
-
-// Appointment routes
-app.get('/appointments/book', (req, res) => {
-    res.render('appointments/book', { title: 'Book Appointment - SalonEase' });
-});
-
-app.get('/appointments', (req, res) => {
-    res.render('appointments/list', { title: 'My Appointments - SalonEase' });
-});
-
-// Services routes
-app.get('/services/list', (req, res) => {
-    res.render('services/list', { title: 'Services - SalonEase' });
+// Admin-only route example
+app.get('/api/admin/dashboard', authenticateToken, requireRole(['admin']), (req, res) => {
+    res.json({
+        success: true,
+        message: 'Admin dashboard access granted',
+        user: req.user
+    });
 });
 
 // Export app for use in index.js

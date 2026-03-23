@@ -26,13 +26,13 @@ HOW IT WORKS
 ------------
 Appointments follow a controlled lifecycle:
 
-  Customer books --> in_review --> Admin confirms --> confirmed --> Service done --> completed
+  Customer books --> in_review --> Admin calls customer and discusses --> Admin confirms/rejects --> incase confirmed --> Service done --> completed
 
 - Customers register, select services, and submit a booking request.
-- Admins review requests, assign staff, and confirm or cancel.
+- Admins review requests, calls customers to discuss and finalize --> if agreed confirms appointment otherwise rejects --> incase confirmed --> assign staff --> customer arrives at appointment time --> staff provides service.
 - After the service, admins mark the appointment as completed with the final price.
 
-Three user roles: Customer, Admin, Staff.
+Three user roles: Customer, Admin, ( Staff is there but has nothing to do with the app in MVP )
 
 
 PROJECT STRUCTURE

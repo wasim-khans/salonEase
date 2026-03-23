@@ -28,28 +28,37 @@ salonease/
 
 ### **📁 Root Files**
 - `index.js` - Starts Node.js server on port 3000
-- `.env` - Secret keys and database passwords
-- `docker-compose.yml` - Runs MySQL database in container
+- `.env` - Secret keys and database passwords (create from `.env.example`)
+- `.env.example` - Template for environment variables
+- `docker-compose.yml` - Runs MySQL database + app + phpMyAdmin
+- `Dockerfile` - Builds the Node.js application container
 
 ### **📁 app/ - Main Application**
 - `app.js` - All website routes (pages + APIs)
 - `middleware/` - Security checks (JWT tokens)
 - `services/` - Business logic (login, database)
-- `models/` - Database operations (empty for now)
+- `models/` - Database operations
 - `views/` - HTML pages user sees
+
+### **📁 db/ - Database Management**
+- `schema.sql` - Creates all database tables automatically
+- `seeder.js` - Populates database with test data (run with `npm run db:seed`)
+- `cleaner.js` - Clears all data from tables (run with `npm run db:clean`)
+- `updater.js` - Updates database schema when needed
 
 ### **📁 Purpose of Each Type**
 
 **🔧 Services** - Business logic
 ```javascript
-// authService.js - handles login/register
+// authService.js - handles login/register with JWT
 // db.js - connects to MySQL database
 ```
 
 **📊 Models** - Database operations  
 ```javascript
-// user.js - user database queries (empty placeholder)
-// appointment.js - appointment queries (empty placeholder)
+// user.js - user database queries
+// appointment.js - appointment queries
+// Add more models as needed
 ```
 
 **🛡️ Middleware** - Security
@@ -144,28 +153,44 @@ Returns: User's appointments
 
 ## 🚀 Quick Start for Team
 
-1. **Start Everything:**
-   ```bash
-   docker-compose up -d
-   ```
+### Prerequisites
+- Docker Desktop installed and running
+- Git
 
-2. **Visit Website:**
-   ```
-   http://localhost:3000
-   ```
+### Setup (2 commands)
+```bash
+# 1. Clone the repository
+git clone [your-repo-url]
+cd salonEase
 
-3. **Test API:**
-   ```bash
-   # Register
-   curl -X POST http://localhost:3000/api/auth/register \
-     -d '{"name":"Test","email":"test@example.com","password":"123"}' \
-     -H "Content-Type: application/json"
-   
-   # Login  
-   curl -X POST http://localhost:3000/api/auth/login \
-     -d '{"email":"test@example.com","password":"123"}' \
-     -H "Content-Type: application/json"
-   ```
+# 2. Create environment file and start
+cp .env.example .env
+docker-compose up -d
+```
+
+### 📱 Access Points
+- **Application**: http://localhost:3000
+- **phpMyAdmin**: http://localhost:8081
+  - Username: `root`
+  - Password: From your `.env` file
+
+### 🛠️ Common Commands
+```bash
+# Start everything
+docker-compose up -d
+
+# View logs
+docker-compose logs -f salonease-web
+
+# Stop everything
+docker-compose down
+
+# Seed database with test data
+npm run db:seed
+
+# Clean database
+npm run db:clean
+```
 
 ---
 

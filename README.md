@@ -9,11 +9,12 @@ Built with Node.js, Express, MySQL, and Pug -- containerised with Docker.
 
 
 TEAM
-----
 Name                    Role                  Student ID
 ----------------------  --------------------  ----------
 Muhammad Wasim Khan     Scrum Master          A00069573
+
 America Bernal Hluz     Product Owner         A00081045
+
 Ravula Bhavya Sree      Database Developer    A00080748
 
 

@@ -45,6 +45,7 @@ salonease/
 - `seeder.js` - Populates database with test data (run with `npm run db:seed`)
 - `cleaner.js` - Clears all data from tables (run with `npm run db:clean`)
 - `updater.js` - Updates database schema when needed
+- `migration*.sql` - Database migration scripts for schema updates
 
 ### **📁 Purpose of Each Type**
 
@@ -61,9 +62,11 @@ salonease/
 // Add more models as needed
 ```
 
-**🛡️ Middleware** - Security
+### **🛡️ Middleware** - Security
 ```javascript
-// authMiddleware.js - checks JWT tokens, user roles
+// authMiddleware.js - checks JWT tokens, user types
+// authenticateToken - verifies JWT token
+// requireType - checks user type (customer/admin/staff)
 ```
 
 **🎨 Views** - HTML pages
@@ -95,6 +98,8 @@ Goes to: /auth/login
 Shows: auth/login.pug (login form)
 ↓
 User enters email/password
+↓
+System checks: customers → admins → staff tables
 ```
 
 ### **Step 3: User Submits Login Form**
@@ -105,9 +110,9 @@ app.js route handles POST request
 ↓
 Calls: authService.login(email, password)
 ↓
-Checks database for user
+Checks customers table, then admins, then staff
 ↓
-If valid: Returns JWT token
+If valid: Returns JWT token with user type
 ↓
 If invalid: Returns error message
 ```
@@ -117,7 +122,7 @@ If invalid: Returns error message
 Frontend receives:
 {
   "success": true,
-  "user": { "name": "John", "role": "customer" },
+  "user": { "name": "John", "type": "customer", "gender": "male" },
   "token": "eyJhbGciOiJIUzI1NiIs..."
 }
 ↓
@@ -148,6 +153,30 @@ If valid: Continues to route handler
 ↓
 Returns: User's appointments
 ```
+
+## 🔐 Authentication System Details
+
+### **User Types & Security**
+- **Customers**: Register via `/api/auth/register`, can book appointments
+- **Admins**: Created via `/api/auth/register-admin`, full system access
+- **Staff**: Created by admins, no login access, assigned to appointments
+
+### **Registration Endpoints**
+```
+POST /api/auth/register
+Body: { "name": "John", "email": "john@email.com", "password": "123", "gender": "male" }
+→ Creates customer only (no role parameter accepted)
+
+POST /api/auth/register-admin  
+Body: { "name": "Admin", "email": "admin@email.com", "password": "123" }
+→ Creates admin only (separate secure endpoint)
+```
+
+### **Security Features**
+- ✅ Separate tables prevent role escalation attacks
+- ✅ JWT tokens contain `type` instead of manipulable `role`
+- ✅ Customer registration cannot create admin accounts
+- ✅ Inclusive gender options: `male`, `female`, `other`, `prefer_not_to_say`
 
 ---
 
@@ -224,4 +253,4 @@ npm run db:clean
    };
    ```
 
-That's it! Simple JWT authentication template ready for salon features. 🚀
+That's it! Secure JWT authentication system with role-based protection ready for salon features. 🚀

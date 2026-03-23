@@ -3,8 +3,8 @@
 
 const express = require('express');
 const path = require('path');
-const { authenticateToken, requireRole } = require('./middleware/authMiddleware');
-const { register, login } = require('./services/authService');
+const { authenticateToken, requireType } = require('./middleware/authMiddleware');
+const { registerCustomer, registerAdmin, login } = require('./services/authService');
 
 const app = express();
 
@@ -31,9 +31,9 @@ app.get('/auth/register', (req, res) => {
     res.render('auth/register', { title: 'Register - SalonEase' });
 });
 
-// Auth API routes
+// Customer registration API route
 app.post('/api/auth/register', async (req, res) => {
-    const { name, email, password, role, gender } = req.body;
+    const { name, email, password, gender } = req.body;
 
     // Basic validation
     if (!name || !email || !password) {
@@ -43,7 +43,29 @@ app.post('/api/auth/register', async (req, res) => {
         });
     }
 
-    const result = await register({ name, email, password, role, gender });
+    // Force role to be customer - no role parameter accepted
+    const result = await registerCustomer({ name, email, password, gender });
+
+    if (result.success) {
+        res.status(201).json(result);
+    } else {
+        res.status(400).json(result);
+    }
+});
+
+// Admin registration API route (separate endpoint for security)
+app.post('/api/auth/register-admin', async (req, res) => {
+    const { name, email, password } = req.body;
+
+    // Basic validation
+    if (!name || !email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: 'Name, email, and password are required'
+        });
+    }
+
+    const result = await registerAdmin({ name, email, password });
 
     if (result.success) {
         res.status(201).json(result);
@@ -70,6 +92,15 @@ app.post('/api/auth/login', async (req, res) => {
     } else {
         res.status(401).json(result);
     }
+});
+
+// Admin-only routes (examples)
+app.get('/admin/dashboard', authenticateToken, requireType(['admin']), (req, res) => {
+    res.render('admin/dashboard', { title: 'Admin Dashboard - SalonEase', user: req.user });
+});
+
+app.get('/admin/appointments', authenticateToken, requireType(['admin']), (req, res) => {
+    res.render('admin/appointments', { title: 'Appointments - SalonEase', user: req.user });
 });
 
 // Export app for use in index.js

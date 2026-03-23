@@ -57,25 +57,22 @@ GETTING STARTED
 Requirements: Docker (https://www.docker.com/)
 
 Run the app:
-  docker-compose up -d
+  docker-compose up
 
 App:        http://localhost:3000
-phpMyAdmin: http://localhost:8081  (user: root / password: root)
-
-Reset the database:
-  docker exec -i salonease-salonease-web-1 bash -c "MYSQL_ROOT_PASSWORD=root npm run db:clean"
-  docker exec -i salonease-salonease-web-1 bash -c "MYSQL_ROOT_PASSWORD=root npm run db:seed"
+phpMyAdmin: http://localhost:8081
 
 
 TEST ACCOUNTS
 -------------
+customer1@gmail.com
+admin1@gmail.com
 All accounts use the password: test123
 
 Role        Email
 ----------  ------------------------------------------
 Admin       admin1@gmail.com, admin2@gmail.com
 Customer    customer1@gmail.com to customer8@gmail.com
-Staff       firstname.lastname@salonease.com
 
 
 TECH STACK

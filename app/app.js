@@ -72,23 +72,5 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// Protected API routes
-app.get('/api/user/profile', authenticateToken, (req, res) => {
-    res.json({
-        success: true,
-        message: 'Access granted to protected route',
-        user: req.user
-    });
-});
-
-// Admin-only route example
-app.get('/api/admin/dashboard', authenticateToken, requireRole(['admin']), (req, res) => {
-    res.json({
-        success: true,
-        message: 'Admin dashboard access granted',
-        user: req.user
-    });
-});
-
 // Export app for use in index.js
 module.exports = app;

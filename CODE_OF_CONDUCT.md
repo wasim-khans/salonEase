@@ -117,5 +117,5 @@ of the SalonEase project.
 Name                    Date              
 ----------------------  ---------------------  
 Muhammad Wasim Khan     ___________________    
-America Bernal Hluz     March 23, 2026    
+America Bernal Hluz  -   March 23, 2026    
 Ravula Bhavya Sree      ___________________    

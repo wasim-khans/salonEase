@@ -1,10 +1,59 @@
 extends layout
 
 block content
-  h2 This is landing page of SalonEase
-  p Here we will show static content and login / register buttons
-  
-  .actions
-    a(href="/auth/login") Login
-    a(href="/auth/register") Register
-    a(href="/services/list") View Services
+  .hero-section
+    .hero-content
+      h1 Welcome to SalonEase
+      p Your premium salon appointment management system
+      .hero-description
+        p Book appointments, manage services, and streamline your salon operations with ease.
+      
+      .hero-actions
+        if !user
+          a.btn.btn-primary(href="/auth/login") Login
+          a.btn.btn-outline(href="/auth/register") Register
+        else
+          a.btn.btn-primary(href="/services") Book Appointment
+          if user.role === 'admin'
+            a.btn.btn-outline(href="/admin/dashboard") Admin Dashboard
+          else
+            a.btn.btn-outline(href="/my-appointments") My Appointments
+
+  .features-section
+    h2 Why Choose SalonEase?
+    .features-grid
+      .feature-card
+        .feature-icon
+          i.fas fa-calendar-check
+        h3 Easy Booking
+        p Simple and intuitive appointment booking system
+        
+      .feature-card
+        .feature-icon
+          i.fas fa-user-shield
+        h3 Secure Management
+        p Role-based access control and secure authentication
+        
+      .feature-card
+        .feature-icon
+          i.fas fa-clock
+        h3 Real-time Updates
+        p Track appointment status in real-time
+        
+      .feature-card
+        .feature-icon
+          i.fas fa-cogs
+        h3 Service Management
+        p Comprehensive service catalog and pricing
+
+  .cta-section
+    .cta-content
+      h2 Ready to Get Started?
+      p Join hundreds of salons using SalonEase for efficient appointment management.
+      
+      .cta-actions
+        if !user
+          a.btn.btn-primary.btn-large(href="/auth/register") Create Account
+          a.btn.btn-outline.btn-large(href="/services") Browse Services
+        else
+          a.btn.btn-primary.btn-large(href="/services") Book Your First Appointment

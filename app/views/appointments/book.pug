@@ -1,9 +1,51 @@
 extends ../layout
 
 block content
-  h2 This is book appointment page
-  p This will be used by customers for booking salon appointments
-  p The JS for this file should be at path /static/js/appointments/book.js
+  .booking-success
+    .success-card
+      .success-icon
+        i.fas fa-check-circle
+      
+      .success-content
+        h1 Booking Request Submitted!
+        p Your appointment request has been successfully submitted and is now under review.
+        
+        .booking-details
+          h3 Request Details
+          .detail-row
+            span.label Request ID:
+            span.value ##{bookingId ? bookingId.substring(0, 8) : 'Processing...'}
+          .detail-row
+            span.label Status:
+            span.value 
+              span.badge.badge-in_review IN REVIEW
+          .detail-row
+            span.label Submitted:
+            span.value= new Date().toLocaleString()
+        
+        .next-steps
+          h3 What Happens Next?
+          .step-list
+            .step-item
+              .step-number 1
+              .step-content
+                h4 Admin Review
+                p Our salon administrator will review your booking request
+            .step-item
+              .step-number 2
+              .step-content
+                h4 Contact & Confirmation
+                p We'll contact you to confirm details and finalize the appointment
+            .step-item
+              .step-number 3
+              .step-content
+                h4 Appointment Confirmed
+                p Your appointment will be confirmed and added to your calendar
+        
+        .actions
+          a.btn.btn-primary(href="/my-appointments") View My Appointments
+          a.btn.btn-outline(href="/services") Book Another Appointment
+          a.btn.btn-outline(href="/") Return Home
 
 block scripts
   script(src="/js/appointments/book.js")

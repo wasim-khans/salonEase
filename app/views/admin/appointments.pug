@@ -1,9 +1,116 @@
 extends ../../layout
 
 block content
-  h2 This is admin appointments page
-  p This will be used by administrators for appointment management
-  p The JS for this file should be at path /static/js/admin/appointments.js
+  .admin-appointments
+    .appointments-header
+      h1 Appointment Management
+      p Review, confirm, and manage all salon appointments.
+      
+      .appointments-filters
+        .filter-group
+          label(for="statusFilter") Filter by Status:
+          select#statusFilter.form-control
+            option(value="all") All Appointments
+            option(value="in_review") In Review
+            option(value="confirmed") Confirmed
+            option(value="completed") Completed
+            option(value="cancelled") Cancelled
+        
+        .filter-group
+          label(for="dateFilter") Filter by Date:
+          input.form-control(type="date", id="dateFilter")
+
+    .appointments-container
+      if appointments && appointments.length > 0
+        .appointments-table
+          table.table
+            thead
+              tr
+                th Appointment ID
+                th Customer
+                th Date
+                th Time
+                th Services
+                th Status
+                th Actions
+            
+            tbody
+              each appointment in appointments
+                tr(class=`appointment-${appointment.status}`)
+                  td
+                    .appointment-id ##{appointment.id.substring(0, 8)}
+                  td
+                    .customer-info
+                      .name= appointment.user_name
+                      .email= appointment.user_email
+                  td= appointment.appointment_date
+                  td
+                    .time-info
+                      if appointment.start_time
+                        span.confirmed-time= appointment.start_time
+                        .preferred-time (Preferred: #{appointment.preferred_time})
+                      else
+                        span.preferred-time= appointment.preferred_time
+                  td
+                    .services-list
+                      span.services-count Loading...
+                  td
+                    span.badge(class=`badge-${appointment.status}`)= appointment.status.replace('_', ' ').toUpperCase()
+                  td
+                    .action-buttons
+                      if appointment.status === 'in_review'
+                        button.btn.btn-sm.btn-primary.review-appointment(data-id=appointment.id) Review
+                        button.btn.btn-sm.btn-danger.cancel-appointment(data-id=appointment.id) Cancel
+                      if appointment.status === 'confirmed'
+                        button.btn.btn-sm.btn-success.complete-appointment(data-id=appointment.id) Complete
+                        button.btn.btn-sm.btn-warning.cancel-appointment(data-id=appointment.id) Cancel
+                      if appointment.status === 'completed'
+                        button.btn.btn-sm.btn-outline.view-appointment(data-id=appointment.id) View
+                      if appointment.status === 'cancelled'
+                        button.btn.btn-sm.btn-outline.view-appointment(data-id=appointment.id) View
+      else
+        .no-appointments
+          i.fas fa-calendar-times
+          h3 No Appointments Found
+          p There are no appointments matching your current filters.
+
+  // Appointment Review Modal
+  .appointment-review-modal
+    .modal-content
+      .modal-header
+        h3 Review Appointment
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        #appointmentReviewContent
+          // Content will be loaded dynamically
+
+  // Appointment Complete Modal
+  .appointment-complete-modal
+    .modal-content
+      .modal-header
+        h3 Complete Appointment
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        form#completeAppointmentForm
+          .form-group
+            label(for="actualPrice") Actual Price Charged *
+            input.form-control(type="number", id="actualPrice", name="actual_price", step="0.01", required, placeholder="Enter actual amount charged")
+          
+          .form-group
+            label(for="serviceProvidedBy") Service Provided By *
+            select.form-control(id="serviceProvidedBy", name="service_provided_by", required)
+              option(value="") Select Staff Member
+              // Staff options will be loaded dynamically
+          
+          .form-group
+            label(for="adminNotes") Admin Notes
+            textarea.form-control(id="adminNotes", name="admin_notes", rows="3", placeholder="Any notes about the completed appointment...")
+          
+          .form-actions
+            button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+            button.btn.btn-primary(type="submit") Complete Appointment
 
 block scripts
   script(src="/js/admin/appointments.js")

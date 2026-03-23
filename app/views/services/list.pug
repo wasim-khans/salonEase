@@ -1,9 +1,73 @@
 extends ../layout
 
 block content
-  h2 This is services list page
-  p This will be used by customers for browsing available services
-  p The JS for this file should be at path /static/js/services/list.js
+  .services-header
+    h1 Available Services
+    p Browse our comprehensive range of salon services and book your appointment today.
+    
+    .services-filters
+      .filter-group
+        label(for="genderFilter") Filter by Gender:
+        select#genderFilter.form-control
+          option(value="all") All Services
+          option(value="male") Male Services
+          option(value="female") Female Services
+      
+      .filter-group
+        label(for="categoryFilter") Filter by Category:
+        select#categoryFilter.form-control
+          option(value="all") All Categories
+          option(value="male") Male
+          option(value="female") Female
+          option(value="both") Both
+
+  .services-grid
+    if services && services.length > 0
+      each service in services
+        .service-card(data-category=service.category data-gender=service.category)
+          .service-image
+            i.fas.fa-cut
+          
+          .service-content
+            h3.service-name= service.name
+            .service-category
+              span.badge(class=`badge-${service.category}`)= service.category
+            
+            .service-details
+              .service-price
+                i.fas.fa-dollar-sign
+                | #{service.base_price}
+              
+              .service-duration
+                i.fas.fa-clock
+                | #{service.duration} min
+            
+            .service-description
+              p Professional #{service.name.toLowerCase()} service with experienced staff.
+            
+            .service-actions
+              button.btn.btn-primary.select-service(data-service-id=service.id data-service-name=service.name data-price=service.base_price) 
+                i.fas fa-plus
+                | Add to Booking
+    else
+      .no-services
+        i.fas fa-info-circle
+        h3 No Services Available
+        p We're currently updating our service catalog. Please check back soon.
+
+  .booking-summary
+    .booking-card
+      h3 Your Booking Summary
+      #selectedServices
+        .empty-selection
+          p No services selected yet. Browse our services above to get started.
+      
+      .booking-actions
+        button.btn.btn-primary#proceedToBooking(disabled) Proceed to Booking
+        
+      .estimated-total
+        span.label Estimated Total:
+        span#totalAmount $0.00
 
 block scripts
   script(src="/js/services/list.js")

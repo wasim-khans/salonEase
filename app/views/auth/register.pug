@@ -1,9 +1,48 @@
 extends ../layout
 
 block content
-  h2 This is register page
-  p This will be used by new customers for account creation
-  p The JS for this file should be at path /static/js/auth/register.js
+  .auth-container
+    .auth-card
+      .auth-header
+        h2 Create Your Account
+        p Join SalonEase and start managing your appointments efficiently.
+      
+      form.auth-form(method="POST", action="/auth/register")
+        .form-group
+          label(for="name") Full Name
+          input.form-control(type="text", id="name", name="name", required, placeholder="Enter your full name")
+        
+        .form-group
+          label(for="email") Email Address
+          input.form-control(type="email", id="email", name="email", required, placeholder="Enter your email")
+        
+        .form-group
+          label(for="password") Password
+          input.form-control(type="password", id="password", name="password", required, placeholder="Create a password")
+        
+        .form-group
+          label(for="confirmPassword") Confirm Password
+          input.form-control(type="password", id="confirmPassword", name="confirmPassword", required, placeholder="Confirm your password")
+        
+        .form-group
+          label(for="role") Account Type
+          select.form-control(id="role", name="role", required)
+            option(value="customer") Customer
+            option(value="staff") Staff Member
+        
+        .form-group
+          label(for="gender") Gender (for staff)
+          select.form-control(id="gender", name="gender")
+            option(value="") Select Gender
+            option(value="male") Male
+            option(value="female") Female
+        
+        .form-actions
+          button.btn.btn-primary.btn-block(type="submit") Create Account
+          
+        .auth-links
+          p Already have an account? 
+            a(href="/auth/login") Login here
 
 block scripts
   script(src="/js/auth/register.js")

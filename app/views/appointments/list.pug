@@ -1,9 +1,82 @@
 extends ../layout
 
 block content
-  h2 This is appointments list page
-  p This will be used by customers for viewing their appointments
-  p The JS for this file should be at path /static/js/appointments/list.js
+  .appointments-header
+    h1 My Appointments
+    p Track and manage all your salon appointments in one place.
+    
+    .appointments-filters
+      .filter-group
+        label(for="statusFilter") Filter by Status:
+        select#statusFilter.form-control
+          option(value="all") All Appointments
+          option(value="in_review") In Review
+          option(value="confirmed") Confirmed
+          option(value="completed") Completed
+          option(value="cancelled") Cancelled
+
+  .appointments-container
+    if appointments && appointments.length > 0
+      .appointments-grid
+        each appointment in appointments
+          .appointment-card(class=`appointment-${appointment.status}`)
+            .appointment-header
+              h3.appointment-id Appointment ##{appointment.id.substring(0, 8)}
+              .appointment-status
+                span.badge(class=`badge-${appointment.status}`)= appointment.status.replace('_', ' ').toUpperCase()
+            
+            .appointment-details
+              .appointment-info
+                .info-row
+                  span.label Date:
+                  span.value= appointment.appointment_date
+                .info-row
+                  span.label Preferred Time:
+                  span.value= appointment.preferred_time
+                if appointment.start_time
+                  .info-row
+                    span.label Confirmed Time:
+                    span.value= appointment.start_time
+                if appointment.staff_id
+                  .info-row
+                    span.label Assigned Staff:
+                    span.value Staff Member
+                if appointment.actual_price
+                  .info-row
+                    span.label Final Price:
+                    span.value $#{appointment.actual_price}
+              
+              .appointment-services
+                h4 Services:
+                .services-list
+                  // Services will be loaded via JavaScript
+                  span.loading-services Loading services...
+            
+            .appointment-actions
+              if appointment.status === 'in_review'
+                button.btn.btn-warning.cancel-appointment(data-id=appointment.id) Cancel Request
+              if appointment.status === 'confirmed'
+                button.btn.btn-warning.cancel-appointment(data-id=appointment.id) Cancel Appointment
+              if appointment.status === 'completed'
+                button.btn.btn-primary.book-again Book Similar Appointment
+              
+              button.btn.btn-outline.view-details(data-id=appointment.id) View Details
+    else
+      .no-appointments
+        i.fas fa-calendar-times
+        h3 No Appointments Found
+        p You haven't made any appointments yet.
+        a.btn.btn-primary(href="/services") Book Your First Appointment
+
+  .appointment-details-modal
+    .modal-content
+      .modal-header
+        h3 Appointment Details
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        #appointmentDetailsContent
+          // Details will be loaded dynamically
 
 block scripts
   script(src="/js/appointments/list.js")

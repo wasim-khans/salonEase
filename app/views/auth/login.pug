@@ -1,9 +1,29 @@
 extends ../layout
 
 block content
-  h2 This is login page
-  p This will be used by customers for authentication
-  p The JS for this file should be at path /static/js/auth/login.js
+  .auth-container
+    .auth-card
+      .auth-header
+        h2 Login to SalonEase
+        p Welcome back! Please login to your account.
+      
+      form.auth-form(method="POST", action="/auth/login")
+        .form-group
+          label(for="email") Email Address
+          input.form-control(type="email", id="email", name="email", required, placeholder="Enter your email")
+        
+        .form-group
+          label(for="password") Password
+          input.form-control(type="password", id="password", name="password", required, placeholder="Enter your password")
+        
+        .form-actions
+          button.btn.btn-primary.btn-block(type="submit") Login
+          
+        .auth-links
+          p Don't have an account? 
+            a(href="/auth/register") Register here
+          p 
+            a(href="/auth/forgot-password") Forgot Password?
 
 block scripts
   script(src="/js/auth/login.js")

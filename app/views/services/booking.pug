@@ -1,0 +1,82 @@
+extends ../layout
+
+block content
+  .booking-container
+    .booking-header
+      h1 Book Your Appointment
+      p Complete the details below to schedule your salon appointment.
+    
+    .booking-progress
+      .progress-steps
+        .step.active(data-step="1")
+          .step-number 1
+          .step-label Select Services
+        .step(data-step="2")
+          .step-number 2
+          .step-label Appointment Details
+        .step(data-step="3")
+          .step-number 3
+          .step-label Confirmation
+
+    .booking-form
+      form#appointmentForm(method="POST", action="/appointments")
+        .booking-section.selected-services
+          h2 Selected Services
+          #selectedServicesList
+            if selectedServices && selectedServices.length > 0
+              each service in selectedServices
+                .selected-service-item(data-service-id=service.id)
+                  .service-info
+                    h4= service.name
+                    .service-price $#{service.price}
+                  .service-remove
+                    button.btn.btn-sm.btn-outline.remove-service(type="button")
+                      i.fas fa-times
+            else
+              .no-services-selected
+                p No services selected. 
+                a(href="/services") Go back to select services.
+        
+        .booking-section.appointment-details
+          h2 Appointment Details
+          
+          .form-row
+            .form-group.col-md-6
+              label(for="appointmentDate") Preferred Date *
+              input.form-control(type="date", id="appointmentDate", name="appointment_date", required, min=tomorrow)
+            
+            .form-group.col-md-6
+              label(for="preferredTime") Preferred Time *
+              input.form-control(type="time", id="preferredTime", name="preferred_time", required)
+          
+          .form-group
+            label(for="preferredStaffGender") Preferred Staff Gender *
+            select.form-control(id="preferredStaffGender", name="preferred_staff_gender", required)
+              option(value="any") No Preference
+              option(value="male") Male Staff
+              option(value="female") Female Staff
+          
+          .form-group
+            label(for="notes") Additional Notes (Optional)
+            textarea.form-control(id="notes", name="notes", rows="3", placeholder="Any special requests or preferences...")
+        
+        .booking-summary
+          .summary-card
+            h3 Booking Summary
+            .summary-details
+              .summary-row
+                span.label Services Selected:
+                span.value#serviceCount 0 services
+              .summary-row
+                span.label Estimated Duration:
+                span.value#totalDuration 0 min
+              .summary-row.total
+                span.label Estimated Total:
+                span.value#estimatedTotal $0.00
+            
+            .booking-actions
+              button.btn.btn-secondary(type="button", onclick="history.back()") Back to Services
+              button.btn.btn-primary(type="submit") Submit Booking Request
+
+block scripts
+  script(src="/js/services/booking.js")

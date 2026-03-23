@@ -1,11 +1,12 @@
 // User Model - Database access layer for users table
 const db = require('../services/db');
+const bcrypt = require('bcrypt');
 
 class User {
   // Create new user
   static async create(userData) {
     const { name, email, password, role, gender } = userData;
-    const [result] = await db.query(
+    const result = await db.query(
       `INSERT INTO users (name, email, password, role, gender) VALUES (?, ?, ?, ?, ?)`,
       [name, email, password, role, gender]
     );
@@ -14,7 +15,7 @@ class User {
 
   // Find user by email
   static async findByEmail(email) {
-    const [rows] = await db.query(
+    const rows = await db.query(
       `SELECT * FROM users WHERE email = ?`,
       [email]
     );
@@ -23,7 +24,7 @@ class User {
 
   // Find user by ID (UUID)
   static async findById(id) {
-    const [rows] = await db.query(
+    const rows = await db.query(
       `SELECT * FROM users WHERE id = ?`,
       [id]
     );
@@ -32,7 +33,7 @@ class User {
 
   // Get all users (for admin management)
   static async findAll() {
-    const [rows] = await db.query(
+    const rows = await db.query(
       `SELECT id, name, email, role, gender, created_at FROM users ORDER BY created_at DESC`
     );
     return rows;
@@ -40,7 +41,7 @@ class User {
 
   // Get users by role
   static async findByRole(role) {
-    const [rows] = await db.query(
+    const rows = await db.query(
       `SELECT id, name, email, gender FROM users WHERE role = ? ORDER BY name`,
       [role]
     );
@@ -49,7 +50,7 @@ class User {
 
   // Get staff members (role = 'staff')
   static async getStaff() {
-    const [rows] = await db.query(
+    const rows = await db.query(
       `SELECT id, name, email, gender FROM users WHERE role = 'staff' ORDER BY name`
     );
     return rows;
@@ -58,7 +59,7 @@ class User {
   // Update user
   static async update(id, userData) {
     const { name, email, role, gender } = userData;
-    const [result] = await db.query(
+    const result = await db.query(
       `UPDATE users SET name = ?, email = ?, role = ?, gender = ? WHERE id = ?`,
       [name, email, role, gender, id]
     );
@@ -67,7 +68,7 @@ class User {
 
   // Delete user
   static async delete(id) {
-    const [result] = await db.query(
+    const result = await db.query(
       `DELETE FROM users WHERE id = ?`,
       [id]
     );
@@ -76,7 +77,7 @@ class User {
 
   // Update password
   static async updatePassword(id, hashedPassword) {
-    const [result] = await db.query(
+    const result = await db.query(
       `UPDATE users SET password = ? WHERE id = ?`,
       [hashedPassword, id]
     );
@@ -85,7 +86,7 @@ class User {
 
   // Authenticate user (for login)
   static async authenticate(email, password) {
-    const [rows] = await db.query(
+    const rows = await db.query(
       `SELECT * FROM users WHERE email = ?`,
       [email]
     );
@@ -95,9 +96,9 @@ class User {
     }
     
     const user = rows[0];
-    // In production, you'd use bcrypt.compare here
-    // For now, simple password check
-    const isValid = password === user.password; // Replace with bcrypt.compare
+    
+    // Use bcrypt.compare for secure password verification
+    const isValid = await bcrypt.compare(password, user.password);
     
     if (!isValid) {
       return null;

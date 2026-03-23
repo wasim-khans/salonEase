@@ -5,17 +5,43 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title= title || 'SalonEase - Salon Appointment Management'
     link(rel="stylesheet", href="/css/style.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
   body
     header
-      nav
-        a(href="/") SalonEase
-        // Navigation will be added here
+      nav.navbar
+        .nav-container
+          a.navbar-brand(href="/") 
+            i.fas fa-cut
+            | SalonEase
+          
+          .nav-menu
+            if user
+              a.nav-link(href="/services") Services
+              a.nav-link(href="/my-appointments") My Appointments
+              if user.role === 'admin'
+                a.nav-link(href="/admin/dashboard") Admin Dashboard
+              .nav-user
+                span.nav-username= user.name
+                a.nav-link(href="/auth/logout") Logout
+            else
+              a.nav-link(href="/auth/login") Login
+              a.nav-link(href="/auth/register") Register
         
     main
-      block content
+      .container
+        if messages && messages.error
+          .alert.alert-danger= messages.error
+        if messages && messages.success
+          .alert.alert-success= messages.success
+        if messages && messages.info
+          .alert.alert-info= messages.info
+          
+        block content
       
     footer
-      p &copy; 2026 SalonEase. All rights reserved.
+      .footer-container
+        p &copy; 2026 SalonEase. All rights reserved.
+        p Salon appointment management system
     
     script(src="/js/main.js")
     block scripts

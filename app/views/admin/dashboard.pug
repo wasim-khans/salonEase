@@ -1,9 +1,95 @@
 extends ../../layout
 
 block content
-  h2 This is admin dashboard page
-  p This will be used by administrators for salon management
-  p The JS for this file should be at path /static/js/admin/dashboard.js
+  .admin-dashboard
+    .dashboard-header
+      h1 Admin Dashboard
+      p Manage appointments, services, and staff for your salon.
+    
+    .dashboard-stats
+      .stats-grid
+        .stat-card
+          .stat-icon
+            i.fas fa-calendar-check
+          .stat-content
+            h3= stats.totalAppointments || 0
+            p Total Appointments
+        .stat-card
+          .stat-icon
+            i.fas fa-clock
+          .stat-content
+            h3= stats.pendingAppointments || 0
+            p Pending Review
+        .stat-card
+          .stat-icon
+            i.fas fa-users
+          .stat-content
+            h3= stats.totalUsers || 0
+            p Total Users
+        .stat-card
+          .stat-icon
+            i.fas fa-cut
+          .stat-content
+            h3= stats.totalServices || 0
+            p Services Offered
+    
+    .dashboard-content
+      .dashboard-sections
+        .section-card
+          .section-header
+            h3 Recent Appointments
+            a.btn.btn-outline(href="/admin/appointments") View All
+          
+          .section-content
+            if recentAppointments && recentAppointments.length > 0
+              .appointments-list
+                each appointment in recentAppointments
+                  .appointment-item(class=`appointment-${appointment.status}`)
+                    .appointment-info
+                      h4= appointment.user_name
+                      .appointment-details
+                        span.date= appointment.appointment_date
+                        span.time= appointment.preferred_time
+                        span.status= appointment.status.replace('_', ' ').toUpperCase()
+                    .appointment-actions
+                      if appointment.status === 'in_review'
+                        a.btn.btn-sm.btn-primary(href=`/admin/appointments/${appointment.id}`) Review
+                      else
+                        a.btn.btn-sm.btn-outline(href=`/admin/appointments/${appointment.id}`) View
+            else
+              .no-data
+                p No recent appointments found.
+        
+        .section-card
+          .section-header
+            h3 Quick Actions
+            p Common administrative tasks
+          
+          .section-content
+            .quick-actions
+              .action-item
+                .action-icon
+                  i.fas fa-plus
+                .action-content
+                  h4 Add New Service
+                  p Add a new service to your catalog
+                  a.btn.btn-sm.btn-primary(href="/admin/services/add") Add Service
+              
+              .action-item
+                .action-icon
+                  i.fas fa-user-plus
+                .action-content
+                  h4 Add Staff Member
+                  p Register a new staff member
+                  a.btn.btn-sm.btn-primary(href="/admin/staff/add") Add Staff
+              
+              .action-item
+                .action-icon
+                  i.fas fa-chart-bar
+                .action-content
+                  h4 View Reports
+                  p Generate business reports
+                  a.btn.btn-sm.btn-outline(href="/admin/reports") View Reports
 
 block scripts
   script(src="/js/admin/dashboard.js")

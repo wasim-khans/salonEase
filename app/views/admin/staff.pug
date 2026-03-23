@@ -1,9 +1,113 @@
 extends ../../layout
 
 block content
-  h2 This is admin staff page
-  p This will be used by administrators for staff management
-  p The JS for this file should be at path /static/js/admin/staff.js
+  .admin-staff
+    .staff-header
+      h1 Staff Management
+      p Add, edit, and manage salon staff members.
+      
+      .staff-actions
+        button.btn.btn-primary#addStaffBtn
+          i.fas fa-user-plus
+          | Add New Staff
+
+    .staff-container
+      if staff && staff.length > 0
+        .staff-table
+          table.table
+            thead
+              tr
+                th Name
+                th Email
+                th Gender
+                th Role
+                th Created
+                th Actions
+            
+            tbody
+              each staffMember in staff
+                tr
+                  td
+                    .staff-name= staffMember.name
+                  td
+                    .staff-email= staffMember.email
+                  td
+                    span.badge(class=`badge-${staffMember.gender}`)= staffMember.gender
+                  td
+                    span.badge.badge-staff= staffMember.role
+                  td
+                    .staff-date= new Date(staffMember.created_at).toLocaleDateString()
+                  td
+                    .action-buttons
+                      button.btn.btn-sm.btn-outline.edit-staff(data-id=staffMember.id) Edit
+                      button.btn.btn-sm.btn-danger.delete-staff(data-id=staffMember.id) Delete
+      else
+        .no-staff
+          i.fas fa-users
+          h3 No Staff Members Found
+          p Start by adding your first staff member.
+          button.btn.btn-primary#addStaffBtnEmpty Add First Staff
+
+  // Add/Edit Staff Modal
+  .staff-modal
+    .modal-content
+      .modal-header
+        h3#staffModalTitle Add New Staff Member
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        form#staffForm
+          .form-group
+            label(for="staffName") Full Name *
+            input.form-control(type="text", id="staffName", name="name", required, placeholder="Enter full name")
+          
+          .form-group
+            label(for="staffEmail") Email Address *
+            input.form-control(type="email", id="staffEmail", name="email", required, placeholder="Enter email address")
+          
+          .form-group
+            label(for="staffPassword") Password *
+            input.form-control(type="password", id="staffPassword", name="password", required, placeholder="Create password")
+          
+          .form-group
+            label(for="staffGender") Gender *
+            select.form-control(id="staffGender", name="gender", required)
+              option(value="") Select Gender
+              option(value="male") Male
+              option(value="female") Female
+          
+          .form-group
+            label(for="staffRole") Role *
+            select.form-control(id="staffRole", name="role", required)
+              option(value="") Select Role
+              option(value="staff") Staff Member
+              option(value="admin") Administrator
+          
+          .form-actions
+            button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+            button.btn.btn-primary(type="submit") Save Staff Member
+
+  // Delete Confirmation Modal
+  .delete-staff-modal
+    .modal-content
+      .modal-header
+        h3 Delete Staff Member
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        .delete-warning
+          i.fas fa-exclamation-triangle
+          h4 Are you sure?
+          p This action cannot be undone. This will permanently delete the staff member and remove their access to the system.
+        
+        .delete-details
+          p 
+            strong Staff Member: 
+            span#deleteStaffName Loading...
+        
+        .form-actions
+          button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+          button.btn.btn-danger#confirmDeleteStaffBtn(type="button") Delete Staff Member
 
 block scripts
   script(src="/js/admin/staff.js")

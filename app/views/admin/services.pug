@@ -1,9 +1,108 @@
 extends ../../layout
 
 block content
-  h2 This is admin services page
-  p This will be used by administrators for service management
-  p The JS for this file should be at path /static/js/admin/services.js
+  .admin-services
+    .services-header
+      h1 Service Management
+      p Add, edit, and manage salon services.
+      
+      .services-actions
+        button.btn.btn-primary#addServiceBtn
+          i.fas fa-plus
+          | Add New Service
+
+    .services-container
+      if services && services.length > 0
+        .services-table
+          table.table
+            thead
+              tr
+                th Service Name
+                th Category
+                th Price
+                th Duration
+                th Created
+                th Actions
+            
+            tbody
+              each service in services
+                tr
+                  td
+                    .service-name= service.name
+                  td
+                    span.badge(class=`badge-${service.category}`)= service.category
+                  td
+                    .service-price $#{service.base_price}
+                  td
+                    .service-duration #{service.duration} min
+                  td
+                    .service-date= new Date(service.created_at).toLocaleDateString()
+                  td
+                    .action-buttons
+                      button.btn.btn-sm.btn-outline.edit-service(data-id=service.id) Edit
+                      button.btn.btn-sm.btn-danger.delete-service(data-id=service.id) Delete
+      else
+        .no-services
+          i.fas fa-cut
+          h3 No Services Found
+          p Start by adding your first salon service.
+          button.btn.btn-primary#addServiceBtnEmpty Add First Service
+
+  // Add/Edit Service Modal
+  .service-modal
+    .modal-content
+      .modal-header
+        h3#serviceModalTitle Add New Service
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        form#serviceForm
+          .form-group
+            label(for="serviceName") Service Name *
+            input.form-control(type="text", id="serviceName", name="name", required, placeholder="Enter service name")
+          
+          .form-group
+            label(for="serviceCategory") Category *
+            select.form-control(id="serviceCategory", name="category", required)
+              option(value="") Select Category
+              option(value="male") Male
+              option(value="female") Female
+              option(value="both") Both
+          
+          .form-row
+            .form-group.col-md-6
+              label(for="servicePrice") Base Price *
+              input.form-control(type="number", id="servicePrice", name="base_price", step="0.01", required, placeholder="0.00")
+            
+            .form-group.col-md-6
+              label(for="serviceDuration") Duration (min) *
+              input.form-control(type="number", id="serviceDuration", name="duration", required, placeholder="30")
+          
+          .form-actions
+            button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+            button.btn.btn-primary(type="submit") Save Service
+
+  // Delete Confirmation Modal
+  .delete-modal
+    .modal-content
+      .modal-header
+        h3 Delete Service
+        button.close-modal(type="button") &times;
+      
+      .modal-body
+        .delete-warning
+          i.fas fa-exclamation-triangle
+          h4 Are you sure?
+          p This action cannot be undone. This will permanently delete the service from your catalog.
+        
+        .delete-details
+          p 
+            strong Service: 
+            span#deleteServiceName Loading...
+        
+        .form-actions
+          button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+          button.btn.btn-danger#confirmDeleteBtn(type="button") Delete Service
 
 block scripts
   script(src="/js/admin/services.js")

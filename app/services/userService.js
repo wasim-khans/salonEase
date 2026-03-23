@@ -24,10 +24,10 @@ class UserService {
         success: true,
         user: {
           id: user.id,
-          name: User.name,
-          email: User.email,
-          role: User.role,
-          gender: User.gender
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          gender: user.gender
         }
       };
     } catch (error) {

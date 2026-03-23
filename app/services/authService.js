@@ -48,12 +48,12 @@ const generateStaffToken = (staff) => {
 // Register new customer
 const registerCustomer = async (userData) => {
     try {
-        const { name, email, password, gender } = userData;
+        const { name, email, phone, password, gender } = userData;
 
         // Check if customer already exists
         const existingCustomer = await db.query(
-            'SELECT id FROM customers WHERE email = ?', 
-            [email]
+            'SELECT id FROM customers WHERE email = ? OR phone = ?', 
+            [email, phone]
         );
 
         if (existingCustomer.length > 0) {
@@ -69,13 +69,13 @@ const registerCustomer = async (userData) => {
 
         // Insert new customer
         const result = await db.query(
-            'INSERT INTO customers (name, email, password, gender) VALUES (?, ?, ?, ?)',
-            [name, email, hashedPassword, gender]
+            'INSERT INTO customers (name, email, phone, password, gender) VALUES (?, ?, ?, ?, ?)',
+            [name, email, phone, hashedPassword, gender]
         );
 
         // Get the created customer
         const newCustomer = await db.query(
-            'SELECT id, name, email, gender FROM customers WHERE id = ?',
+            'SELECT id, name, email, phone, gender FROM customers WHERE id = ?',
             [result.insertId]
         );
 
@@ -88,6 +88,7 @@ const registerCustomer = async (userData) => {
                 id: newCustomer[0].id,
                 name: newCustomer[0].name,
                 email: newCustomer[0].email,
+                phone: newCustomer[0].phone,
                 type: 'customer',
                 gender: newCustomer[0].gender
             },
@@ -106,12 +107,12 @@ const registerCustomer = async (userData) => {
 // Register new admin (separate function for security)
 const registerAdmin = async (userData) => {
     try {
-        const { name, email, password } = userData;
+        const { name, email, phone, password } = userData;
 
         // Check if admin already exists
         const existingAdmin = await db.query(
-            'SELECT id FROM admins WHERE email = ?', 
-            [email]
+            'SELECT id FROM admins WHERE email = ? OR phone = ?', 
+            [email, phone]
         );
 
         if (existingAdmin.length > 0) {
@@ -127,13 +128,13 @@ const registerAdmin = async (userData) => {
 
         // Insert new admin
         const result = await db.query(
-            'INSERT INTO admins (name, email, password) VALUES (?, ?, ?)',
-            [name, email, hashedPassword]
+            'INSERT INTO admins (name, email, phone, password) VALUES (?, ?, ?, ?)',
+            [name, email, phone, hashedPassword]
         );
 
         // Get the created admin
         const newAdmin = await db.query(
-            'SELECT id, name, email FROM admins WHERE id = ?',
+            'SELECT id, name, email, phone FROM admins WHERE id = ?',
             [result.insertId]
         );
 
@@ -146,6 +147,7 @@ const registerAdmin = async (userData) => {
                 id: newAdmin[0].id,
                 name: newAdmin[0].name,
                 email: newAdmin[0].email,
+                phone: newAdmin[0].phone,
                 type: 'admin'
             },
             token

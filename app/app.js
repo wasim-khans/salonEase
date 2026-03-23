@@ -33,18 +33,18 @@ app.get('/auth/register', (req, res) => {
 
 // Customer registration API route
 app.post('/api/auth/register', async (req, res) => {
-    const { name, email, password, gender } = req.body;
+    const { name, email, phone, password, gender } = req.body;
 
     // Basic validation
-    if (!name || !email || !password) {
+    if (!name || !email || !phone || !password) {
         return res.status(400).json({
             success: false,
-            message: 'Name, email, and password are required'
+            message: 'Name, email, phone, and password are required'
         });
     }
 
     // Force role to be customer - no role parameter accepted
-    const result = await registerCustomer({ name, email, password, gender });
+    const result = await registerCustomer({ name, email, phone, password, gender });
 
     if (result.success) {
         res.status(201).json(result);
@@ -55,17 +55,17 @@ app.post('/api/auth/register', async (req, res) => {
 
 // Admin registration API route (separate endpoint for security)
 app.post('/api/auth/register-admin', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, phone, password } = req.body;
 
     // Basic validation
-    if (!name || !email || !password) {
+    if (!name || !email || !phone || !password) {
         return res.status(400).json({
             success: false,
-            message: 'Name, email, and password are required'
+            message: 'Name, email, phone, and password are required'
         });
     }
 
-    const result = await registerAdmin({ name, email, password });
+    const result = await registerAdmin({ name, email, phone, password });
 
     if (result.success) {
         res.status(201).json(result);

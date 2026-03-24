@@ -105,3 +105,7 @@ app.get('/admin/appointments', authenticateToken, requireType(['admin']), (req, 
 
 // Export app for use in index.js
 module.exports = app;
+
+app.get('/customer/services', (req, res) => {
+    res.render('customer/services', { title: 'Services - SalonEase' });
+});

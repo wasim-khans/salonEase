@@ -1,9 +1,21 @@
 extends ../layout
 
 block content
-  h2 This is login page
-  p This will be used by customers for authentication
-  p The JS for this file should be at path /static/js/auth/login.js
+  .auth-wrapper
+    .auth-card
+      h1.auth-title Sign in
+      p.auth-subtitle Welcome back
 
-block scripts
-  script(src="/js/auth/login.js")
+      form(action="/api/auth/login" method="POST")
+        .field
+          label(for="email") Email address
+          input#email(type="email" name="email" placeholder="email@example.com")
+
+        .field
+          label(for="password") Password
+          input#password(type="password" name="password" placeholder="••••••••")
+
+        button.btn-primary(type="submit") Sign in
+
+      p.auth-footer Don't have an account?&nbsp;
+        a(href="/auth/register") Register

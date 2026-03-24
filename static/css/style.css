@@ -303,3 +303,15 @@ body {
   .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
   .services-grid { grid-template-columns: 1fr; }
 }
+
+.page-header {
+  padding: 18px 32px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+}
+
+.page-body {
+  padding: 32px;
+}

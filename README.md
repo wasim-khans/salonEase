@@ -1,11 +1,8 @@
-================================================================================
-SALONEASE
-================================================================================
 
-A web-based salon booking system where customers request appointments and
+SalonEase: Is a web-based salon booking system where customers request appointments and
 admins review, confirm, and manage them.
 
-Built with Node.js, Express, MySQL, and Pug -- containerised with Docker.
+Built with Node.js, Express, MySQL, and Pug - containerised with Docker.
 
 
 TEAM

@@ -1,8 +1,7 @@
-
-SalonEase: Is a web-based salon booking system where customers request appointments and
-admins review, confirm, and manage them.
-
-Built with Node.js, Express, MySQL, and Pug - containerised with Docker.
+SALONEASE
+---------
+A web-based salon booking system where customers request appointments and
+admins review, confirm, and manage them. Built with Node.js, Express, MySQL, and Pug - containerised with Docker.
 
 
 TEAM
@@ -12,12 +11,12 @@ Muhammad Wasim Khan     Scrum Master          A00069573
 
 America Bernal Hluz     Product Owner         A00081045
 
-Ravula Bhavya Sree      Database Developer    A00080748
+Ravula Bhavya Sree      Full Stack Dev        A00080748
 
 
 TASKBOARD
 ---------
-GitHub Projects: [replace with your Projects link]
+GitHub Projects: https://github.com/wasim-khans/salonEase
 
 
 HOW IT WORKS
@@ -29,8 +28,7 @@ Appointments follow a controlled lifecycle:
 - Customers register, select services, and submit a booking request.
 - Admins review requests, calls customers to discuss and finalize --> if agreed confirms appointment otherwise rejects --> incase confirmed --> assign staff --> customer arrives at appointment time --> staff provides service.
 - After the service, admins mark the appointment as completed with the final price.
-
-Three user roles: Customer, Admin, ( Staff is there but has nothing to do with the app in MVP )
+- 2 user roles: Customer and Admin
 
 
 PROJECT STRUCTURE
@@ -75,12 +73,19 @@ Customer    customer1@gmail.com to customer8@gmail.com
 
 TECH STACK
 ----------
-Backend:    Node.js, Express
-Database:   MySQL
-Templates:  Pug
-DB Admin:   phpMyAdmin
-Container:  Docker
+Backend:       Node.js, Express
+Database:      MySQL
+Templates:     Pug
+DB Admin:      phpMyAdmin
+Container:     Docker
 
+TOOLS & COLLABORATION
+---------------------
+Editor:        Visual Studio Code
+Meetings:      Google Meet
+Communication: Slack
+Project Mgmt:  Jira
+Design:        Figma
 
 ================================================================================
 University of Roehampton | 2025-2026

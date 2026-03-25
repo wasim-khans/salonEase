@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Login response:', data);
             
             if (data.success) {
+                localStorage.clear();
                 localStorage.setItem('jwtToken', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
@@ -28,9 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = '/customer/services';
                 } else if (data.user.type === 'admin') {
                     window.location.href = '/admin/appointments';
-                } else if (data.user.type === 'staff') {
-                    window.location.href = '/staff/appointments';
-                }
+                } 
+                // else if (data.user.type === 'staff') {
+                //     window.location.href = '/staff/appointments';
+                // }
             } else {
                 alert(data.message || 'Login failed');
             }

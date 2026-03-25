@@ -1,21 +1,13 @@
 doctype html
-html(lang="en")
+html
   head
     meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title= title || 'SalonEase - Salon Appointment Management'
-    link(rel="stylesheet", href="/css/style.css")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title SalonEase
+    link(rel="stylesheet" href="/css/style.css")
   body
-    header
-      nav
-        a(href="/") SalonEase
-        // Navigation will be added here
-        
-    main
-      block content
-      
-    footer
-      p &copy; 2026 SalonEase. All rights reserved.
+    header.topbar
+      .topbar-inner
+        a.brand(href="/") SalonEase
+    block content
     
-    script(src="/js/main.js")
-    block scripts

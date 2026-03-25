@@ -1,10 +1,9 @@
 extends layout
 
 block content
-  .container
-    h1 Welcome to SalonEase
-    p This is the landing page of SalonEase - Salon Appointment Management System
-    
-    .actions
-      a(href="/auth/login") Login
-      a(href="/auth/register") Register
+  .landing-wrapper
+    h1.landing-title SalonEase
+    p.landing-subtitle Salon appointment management
+    .landing-actions
+      a.btn-landing(href="/auth/login") Sign in
+      a.btn-landing-outline(href="/auth/register") Register

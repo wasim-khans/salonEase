@@ -86,7 +86,3 @@ Meetings:      Google Meet
 Communication: Slack
 Project Mgmt:  Jira
 Design:        Figma
-
-================================================================================
-University of Roehampton | 2025-2026
-================================================================================

@@ -51,7 +51,7 @@ app.post('/api/auth/register', async (req, res) => {
     res.status(result.success ? 201 : 400).json(result);
 });
 
-app.post('/api/auth/register-admin', async (req, res) => {
+app.post('/api/auth/registerAdmin', authenticateToken, requireType(['admin']), async (req, res) => {
     const { name, email, phone, password } = req.body;
     if (!name || !email || !phone || !password) {
         return res.status(400).json({ success: false, message: 'All fields are required' });

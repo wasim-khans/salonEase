@@ -41,7 +41,7 @@ const requireType = (types) => {
         if (!types.includes(req.user.type)) {
             return res.status(403).json({ 
                 success: false, 
-                message: 'Insufficient permissions' 
+                message: `Access denied. Required role: ${types.join(' or ')}` 
             });
         }
 

@@ -6,7 +6,7 @@ block content
       h1.auth-title Sign in
       p.auth-subtitle Welcome back
 
-      form(action="/api/auth/login" method="POST")
+      form#loginForm
         .field
           label(for="email") Email address
           input#email(type="email" name="email" placeholder="email@example.com")
@@ -17,5 +17,43 @@ block content
 
         button.btn-primary(type="submit") Sign in
 
+      #errorMessage.error-message(style="display: none; margin-top: 16px; color: #d32f2f; font-size: 14px;")
+
       p.auth-footer Don't have an account?&nbsp;
         a(href="/auth/register") Register
+
+  script.
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('errorMessage');
+      
+      errorDiv.style.display = 'none';
+      errorDiv.textContent = '';
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Login failed');
+        }
+        
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          window.location.href = '/customer/services';
+        }
+      } catch (error) {
+        errorDiv.textContent = error.message || 'An error occurred during login';
+        errorDiv.style.display = 'block';
+      }
+    });

@@ -6,24 +6,34 @@ block content
       h1.auth-title Create account
       p.auth-subtitle Sign up to start booking appointments
 
-      form(action="/api/auth/register" method="POST")
+      form#registerForm
         .field
           label(for="name") Full name
-          input#name(type="text" name="name" placeholder="Your name")
+          input#name(type="text" name="name" placeholder="Your name" required)
 
         .field
           label(for="email") Email address
-          input#email(type="email" name="email" placeholder="email@example.com")
+          input#email(type="email" name="email" placeholder="email@example.com" required)
 
         .field
           label(for="phone") Phone number
-          input#phone(type="tel" name="phone" placeholder="+44 7700 000000")
+          input#phone(type="tel" name="phone" placeholder="+44 7700 000000" required)
 
         .field
           label(for="password") Password
-          input#password(type="password" name="password" placeholder="••••••••")
+          input#password(type="password" name="password" placeholder="••••••••" required)
+
+        .field
+          label(for="gender") Gender
+          select#gender(name="gender")
+            option(value="prefer_not_to_say") Prefer not to say
+            option(value="male") Male
+            option(value="female") Female
+            option(value="other") Other
 
         button.btn-primary(type="submit") Create account
 
       p.auth-footer Already have an account?&nbsp;
         a(href="/auth/login") Sign in
+
+  script(src="/js/auth/register.js")

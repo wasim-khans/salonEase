@@ -1,7 +1,62 @@
 extends ../layout
 
 block content
-  h1 Book Appointment
-  p Schedule a new appointment
-  
-block scripts
+  .app-layout
+    nav.sidebar
+      a.sidebar-item(href="#") Services
+      a.sidebar-item(href="#") My Appointments
+      a.sidebar-item.active(href="#") Book
+
+    .main-content
+      .page-header
+        span.breadcrumb Book Appointment
+
+      .page-body
+        h1.page-title New Booking
+
+        form(action="#" method="POST")
+          .form-group
+            label(for="service") Service
+            select#service(name="service_id")
+              option(value="") Select a service...
+              option(value="1") Haircut — £15.00
+              option(value="2") Hair colouring — £45.00
+              option(value="3") Hair treatment — £30.00
+              option(value="4") Manicure — £20.00
+              option(value="5") Pedicure — £25.00
+              option(value="6") Waxing — £18.00
+
+          .form-row
+            .form-group
+              label(for="date") Preferred date
+              input#date(type="date" name="appointment_date")
+
+            .form-group
+              label(for="time") Preferred time
+              select#time(name="preferred_time")
+                option(value="") Select a time slot...
+                option(value="09:00") 09:00
+                option(value="09:30") 09:30
+                option(value="10:00") 10:00
+                option(value="10:30") 10:30
+                option(value="11:00") 11:00
+                option(value="11:30") 11:30
+                option(value="12:00") 12:00
+                option(value="14:00") 14:00
+                option(value="14:30") 14:30
+                option(value="15:00") 15:00
+                option(value="15:30") 15:30
+                option(value="16:00") 16:00
+                option(value="17:00") 17:00
+
+          .form-group
+            label Staff preference
+            .radio-group
+              label.radio-label
+                input(type="radio" name="preferred_staff_gender" value="male")
+                span Male
+              label.radio-label
+                input(type="radio" name="preferred_staff_gender" value="female")
+                span Female
+
+          button.btn-primary(type="submit") Confirm booking

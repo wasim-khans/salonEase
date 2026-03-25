@@ -1,7 +1,22 @@
 extends ../layout
 
 block content
-  h1 Cancel Appointment
-  p Cancel an existing appointment
-  
-block scripts
+  .app-layout
+    nav.sidebar
+      a.sidebar-item(href="#") Services
+      a.sidebar-item.active(href="#") My Appointments
+      a.sidebar-item(href="#") Book
+
+    .main-content
+      .cancel-overlay
+        .cancel-modal
+          h2.modal-title Cancel this appointment?
+          p.modal-subtitle This action cannot be undone.
+
+          .modal-appt-info
+            p.modal-appt-name Haircut
+            p.modal-appt-date 12 April 2025 · 10:00
+
+          .modal-actions
+            button.btn-primary(type="button") Yes, cancel it
+            button.btn-outline(type="button") No, go back

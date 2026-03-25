@@ -1,117 +1,435 @@
 /* SalonEase Stylesheet */
-/* Basic styling for the salon appointment management system */
 
-/* Global Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f4f4;
 }
 
-/* Header & Navigation */
-header {
-    background: #2c3e50;
-    color: white;
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
+/* ── Topbar ── */
+.topbar {
+  background: #2c3e50;
+  color: white;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
 }
 
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1.2rem;
+.topbar .brand {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
-/* Main Content */
-main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 2rem;
+/* ── Auth pages ── */
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  padding: 40px 16px;
 }
 
-/* Cards */
-.card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+.auth-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 2rem;
+  width: 100%;
+  max-width: 440px;
 }
 
-/* Forms */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  color: #333;
 }
 
-label {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+.auth-subtitle {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 1.5rem;
 }
 
-input, select, textarea {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+/* ── Form fields ── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
 }
 
-button {
-    background: #3498db;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
+.field label {
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #333;
 }
 
-button:hover {
-    background: #2980b9;
+.field input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
-/* Status Classes */
-.status-in_review { border-left: 4px solid #f39c12; }
-.status-confirmed { border-left: 4px solid #27ae60; }
-.status-completed { border-left: 4px solid #8e44ad; }
-.status-cancelled { border-left: 4px solid #e74c3c; }
-
-/* Footer */
-footer {
-    background: #2c3e50;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
+.field input:focus {
+  outline: none;
+  border-color: #3498db;
 }
 
-/* Responsive Design */
+/* ── Buttons ── */
+.btn-primary {
+  width: 100%;
+  background: #3498db;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.btn-primary:hover { background: #2980b9; }
+
+/* ── Auth footer ── */
+.auth-footer {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.auth-footer a { color: #3498db; text-decoration: none; }
+
+/* ── Landing page ── */
+.landing-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px);
+  gap: 8px;
+}
+
+.landing-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.landing-subtitle {
+  font-size: 1rem;
+  color: #999;
+  margin-bottom: 1.5rem;
+}
+
+.landing-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-landing {
+  padding: 0.75rem 2rem;
+  background: #3498db;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.btn-landing:hover { background: #2980b9; }
+
+.btn-landing-outline {
+  padding: 0.75rem 2rem;
+  background: white;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  color: #3498db;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.btn-landing-outline:hover { background: #f0f8ff; }
+
+/* ── App layout with sidebar ── */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  gap: 2rem;
+}
+
+.sidebar {
+  width: 220px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-label {
+  font-size: 0.7rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.sidebar-item {
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  color: #555;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.sidebar-item:hover { background: #e8e8e8; }
+
+.sidebar-item.active {
+  color: #2c3e50;
+  font-weight: bold;
+  background: #e8e8e8;
+}
+
+.main-content {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+/* ── Page titles ── */
+.page-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 1.5rem;
+}
+
+.section-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #aaa;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+/* ── Services grid ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.service-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 1rem;
+  position: relative;
+  min-height: 100px;
+}
+
+.service-name {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.service-desc {
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 0.75rem;
+}
+
+.service-price {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.btn-book {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-size: 0.8rem;
+  color: #3498db;
+  text-decoration: none;
+  border: 1px solid #3498db;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.btn-book:hover { background: #f0f8ff; }
+
+/* ── Status badges ── */
+.status-in_review  { border-left: 4px solid #f39c12; }
+.status-confirmed  { border-left: 4px solid #27ae60; }
+.status-completed  { border-left: 4px solid #8e44ad; }
+.status-cancelled  { border-left: 4px solid #e74c3c; }
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
-    nav {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    main {
-        padding: 0 1rem;
-    }
+  .app-layout { flex-direction: column; padding: 0 1rem; }
+  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .services-grid { grid-template-columns: 1fr; }
+}
+
+.page-header {
+  padding: 18px 32px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+}
+
+.page-body {
+  padding: 32px;
+}
+
+/* ── Appointments table ── */
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.appointments-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  color: #999;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.appointments-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+
+.appt-service { font-weight: bold; }
+
+.badge {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.badge-confirmed  { background: #e8f5e9; color: #2e7d32; }
+.badge-review     { background: #fff8e1; color: #f57f17; }
+.badge-completed  { background: #ede7f6; color: #4527a0; }
+.badge-cancelled  { background: #fce4ec; color: #b71c1c; }
+
+.btn-cancel {
+  font-size: 0.8rem;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 4px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  background: #fff;
+}
+
+/* ── Cancel modal ── */
+.cancel-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  background: rgba(0,0,0,0.15);
+}
+
+.cancel-modal {
+  background: #fff;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 4px;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.modal-subtitle {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.modal-appt-info {
+  background: #f5f5f5;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+  border-radius: 4px;
+}
+
+.modal-appt-name { font-weight: bold; font-size: 0.95rem; }
+.modal-appt-date { font-size: 0.85rem; color: #999; margin-top: 4px; }
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-outline {
+  flex: 1;
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-primary { flex: 1; }
+
+/* ── Modal buttons override ── */
+.modal-actions .btn-primary {
+  flex: 1;
+  width: auto;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.modal-actions .btn-primary:hover {
+  background: #f5f5f5;
 }

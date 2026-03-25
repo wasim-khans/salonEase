@@ -109,7 +109,3 @@ module.exports = app;
 app.get('/customer/services', (req, res) => {
     res.render('customer/services', { title: 'Services - SalonEase' });
 });
-
-app.get('/customer/book', (req, res) => {
-    res.render('customer/book', { title: 'Book Appointment - SalonEase' });
-});

@@ -24,11 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.clear();
                 localStorage.setItem('jwtToken', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-                
+                await new Promise(resolve => setTimeout(resolve, 2000)); // this is added to make sure the request life cycle completes properly to shows the reponse in the network tab
                 if (data.user.type === 'customer') {
                     window.location.href = '/customer/services';
+                    return response;
                 } else if (data.user.type === 'admin') {
                     window.location.href = '/admin/appointments';
+                    return response;
                 } 
                 // else if (data.user.type === 'staff') {
                 //     window.location.href = '/staff/appointments';

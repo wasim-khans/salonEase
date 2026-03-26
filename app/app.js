@@ -66,12 +66,34 @@ app.post('/api/auth/login', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
     const result = await login(email, password);
+    console.log('Login result:', result);
     res.status(result.success ? 200 : 401).json(result);
 });
 
+// Admin API routes
+app.get('/api/admin/appointments', authenticateToken, requireType(['admin']), async (req, res) => {
+    try {
+        // TODO: Fetch appointments from database
+        // For now, return mock data
+        res.json({
+            success: true,
+            appointments: [
+                { id: 1, customer: 'John Doe', service: 'Haircut', date: '2024-01-15', time: '10:00' },
+                { id: 2, customer: 'Jane Smith', service: 'Hair Colouring', date: '2024-01-16', time: '14:00' }
+            ]
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch appointments',
+            error: error.message
+        });
+    }
+});
+
 // Admin pages
-app.get('/admin/appointments', authenticateToken, requireType(['admin']), (req, res) => {
-    res.render('admin/appointments', { title: 'Appointments - SalonEase', user: req.user });
+app.get('/admin/appointments', (req, res) => {
+    res.render('admin/appointments', { title: 'Appointments - SalonEase' });
 });
 
 app.get('/customer/appointments', (req, res) => {

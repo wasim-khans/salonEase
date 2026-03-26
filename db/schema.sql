@@ -14,7 +14,8 @@ CREATE TABLE customers (
     phone VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     gender ENUM('male', 'female', 'other', 'prefer_not_to_say') NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Admins Table
@@ -25,7 +26,8 @@ CREATE TABLE admins (
     email VARCHAR(150) UNIQUE NOT NULL,
     phone VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Staff Table
@@ -37,7 +39,8 @@ CREATE TABLE staff (
     phone VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     gender ENUM('male', 'female', 'other', 'prefer_not_to_say') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Services Table
@@ -48,7 +51,8 @@ CREATE TABLE services (
     category ENUM('male', 'female', 'both') NOT NULL,
     base_price DECIMAL(10,2) NOT NULL,
     duration INT NOT NULL COMMENT 'Duration in minutes',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Appointments Table
@@ -63,6 +67,7 @@ CREATE TABLE appointments (
     status ENUM('in_review', 'confirmed', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'in_review',
     staff_id CHAR(36) NULL,
     service_provided_by CHAR(36) NULL,
+    services_requested_by_customer JSON NULL,
     cancelled_by ENUM('customer', 'admin') NULL,
     cancellation_reason TEXT NULL,
     actual_price DECIMAL(10,2) NULL,
@@ -85,6 +90,8 @@ CREATE TABLE appointment_services (
     appointment_id CHAR(36) NOT NULL,
     service_id CHAR(36) NOT NULL,
     price DECIMAL(10,2) NOT NULL COMMENT 'Snapshot price at booking',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE,
     FOREIGN KEY (service_id) REFERENCES services(id)

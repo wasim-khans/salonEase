@@ -1,56 +1,7 @@
 extends ../layout
 
 block content
-  .app-layout
-    nav.sidebar
-      a.sidebar-item.active(href="/customer/services") Services
-      a.sidebar-item(href="/customer/appointments") My Appointments
-      a.sidebar-item(href="/customer/book") Book
-
-    .main-content
-      .page-header
-        span.breadcrumb Our Services
-
-      .page-body
-        h1.page-title Services
-        p.page-subtitle Browse all available services
-        p.section-label ALL SERVICES
-
-        .services-grid
-          .service-card
-            h3.service-name Haircut
-            p.service-desc Quick trim to full restyle
-            p.service-price from £15.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Hair colouring
-            p.service-desc Tints, highlights, balayage
-            p.service-price from £45.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Hair treatment
-            p.service-desc Deep conditioning & repair
-            p.service-price from £30.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Manicure
-            p.service-desc Classic & gel options
-            p.service-price from £20.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Pedicure
-            p.service-desc Relaxing foot treatment
-            p.service-price from £25.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Waxing
-            p.service-desc Full body waxing available
-            p.service-price from £18.00
-            a.btn-book(href="/customer/book") Book →
-
+  h1 Services Management
+  p Manage salon services
+  
 block scripts

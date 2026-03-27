@@ -48,3 +48,16 @@ node db/smart-seeder.js
 4. Access the app: 
 http://localhost:3000
 
+--------------------------
+
+# Complete cleanup and rebuild:
+docker-compose down --volumes --remove-orphans
+docker-compose build --no-cache
+docker-compose up -d
+
+
+
+
+
+
+---------------------------

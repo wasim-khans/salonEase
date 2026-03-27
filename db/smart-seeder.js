@@ -124,7 +124,7 @@ class SmartSeeder {
     });
     
     this.tableDefinitions.set('appointments', {
-      columns: ['id', 'customer_id', 'appointment_date', 'preferred_time', 'preferred_staff_gender', 'status', 'staff_id', 'service_provided_by', 'cancelled_by', 'cancellation_reason', 'actual_price', 'admin_notes', 'confirmed_at', 'completed_by', 'created_at', 'updated_at']
+      columns: ['id', 'customer_id', 'appointment_date', 'preferred_time', 'preferred_staff_gender', 'status', 'staff_id', 'cancelled_by', 'cancellation_reason', 'actual_price', 'admin_notes', 'confirmed_at', 'completed_by', 'created_at', 'updated_at']
     });
     
     this.tableDefinitions.set('appointment_services', {
@@ -238,7 +238,6 @@ class SmartSeeder {
         preferred_staff_gender: generators.randomChoice(staffGenders),
         status: status,
         staff_id: (status !== 'in_review' && status !== 'cancelled' && status !== 'no_show') ? staffMember.id : null,
-        service_provided_by: status === 'completed' ? staffMember.id : null,
         cancelled_by: status === 'cancelled' ? 'customer' : null,
         cancellation_reason: status === 'cancelled' ? 'Schedule conflict' : null,
         actual_price: status === 'completed' ? generators.randomInt(25, 80) : null,

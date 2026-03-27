@@ -65,21 +65,18 @@ CREATE TABLE appointments (
     start_time TIME NULL,
     preferred_staff_gender ENUM('male', 'female', 'any') NOT NULL DEFAULT 'any',
     status ENUM('in_review', 'confirmed', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'in_review',
-    staff_id CHAR(36) NULL,
-    service_provided_by CHAR(36) NULL,
-    services_requested_by_customer JSON NULL,
+    staff_id CHAR(36) NULL COMMENT 'Staff member assigned to this appointment',
     cancelled_by ENUM('customer', 'admin') NULL,
     cancellation_reason TEXT NULL,
     actual_price DECIMAL(10,2) NULL,
     admin_notes TEXT NULL,
     confirmed_at TIMESTAMP NULL,
-    completed_by CHAR(36) NULL,
+    completed_by CHAR(36) NULL COMMENT 'Staff member who marked appointment as complete',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (customer_id) REFERENCES customers(id),
     FOREIGN KEY (staff_id) REFERENCES staff(id),
-    FOREIGN KEY (service_provided_by) REFERENCES staff(id),
     FOREIGN KEY (completed_by) REFERENCES staff(id)
 );
 

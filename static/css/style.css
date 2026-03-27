@@ -433,3 +433,12 @@ body {
 .modal-actions .btn-primary:hover {
   background: #f5f5f5;
 }
+
+.sidebar-item.logout {
+  margin-top: 2rem;
+  color: #e74c3c;
+}
+
+.sidebar-item.logout:hover {
+  background: #fce4ec;
+}

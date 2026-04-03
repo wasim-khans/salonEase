@@ -1,17 +1,108 @@
-// SalonEase Appointment Model
-// Database queries for appointments table
-
 const db = require('../services/db');
 
-// Appointment model methods to be implemented
-// Examples:
-// - findById
-// - findByUserId
-// - create
-// - update
-// - updateStatus
-// - findByStatus
+const Appointment = {
+    async create(connection, appointmentData) {
+        const { 
+            customer_id, 
+            appointment_date, 
+            preferred_time, 
+            preferred_staff_gender = 'any'
+        } = appointmentData;
+        
+        const [result] = await connection.execute(
+            `INSERT INTO appointments 
+            (customer_id, appointment_date, preferred_time, preferred_staff_gender, status) 
+            VALUES (?, ?, ?, ?, 'in_review')`,
+            [customer_id, appointment_date, preferred_time, preferred_staff_gender]
+        );
+        
+        return result.insertId;
+    },
 
-module.exports = {
-    // Placeholder for appointment methods
+    async findById(appointmentId) {
+        const [rows] = await db.pool.execute(
+            `SELECT * FROM appointments WHERE id = ?`,
+            [appointmentId]
+        );
+        return rows[0];
+    },
+
+    async findByCustomerId(customerId) {
+        const [rows] = await db.pool.execute(
+            `SELECT * FROM appointments WHERE customer_id = ? ORDER BY appointment_date DESC`,
+            [customerId]
+        );
+        return rows;
+    },
+
+    async findByStatus(status) {
+        const [rows] = await db.pool.execute(
+            `SELECT * FROM appointments WHERE status = ? ORDER BY appointment_date ASC`,
+            [status]
+        );
+        return rows;
+    },
+
+    async updateStatus(appointmentId, status, additionalData = {}) {
+        const fields = ['status = ?'];
+        const values = [status];
+
+        if (additionalData.staff_id) {
+            fields.push('staff_id = ?');
+            values.push(additionalData.staff_id);
+        }
+
+        if (additionalData.start_time) {
+            fields.push('start_time = ?');
+            values.push(additionalData.start_time);
+        }
+
+        if (additionalData.actual_price) {
+            fields.push('actual_price = ?');
+            values.push(additionalData.actual_price);
+        }
+
+        if (additionalData.admin_notes) {
+            fields.push('admin_notes = ?');
+            values.push(additionalData.admin_notes);
+        }
+
+        if (status === 'confirmed') {
+            fields.push('confirmed_at = NOW()');
+        }
+
+        if (additionalData.completed_by) {
+            fields.push('completed_by = ?');
+            values.push(additionalData.completed_by);
+        }
+
+        if (additionalData.cancelled_by) {
+            fields.push('cancelled_by = ?');
+            values.push(additionalData.cancelled_by);
+        }
+
+        if (additionalData.cancellation_reason) {
+            fields.push('cancellation_reason = ?');
+            values.push(additionalData.cancellation_reason);
+        }
+
+        values.push(appointmentId);
+
+        const [result] = await db.pool.execute(
+            `UPDATE appointments SET ${fields.join(', ')} WHERE id = ?`,
+            values
+        );
+
+        return result.affectedRows > 0;
+    },
+
+    async delete(appointmentId) {
+        const [result] = await db.pool.execute(
+            `DELETE FROM appointments WHERE id = ?`,
+            [appointmentId]
+        );
+        return result.affectedRows > 0;
+    }
 };
+
+module.exports = Appointment;

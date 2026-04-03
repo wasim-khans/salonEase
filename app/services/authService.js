@@ -1,9 +1,8 @@
-// SalonEase JWT Authentication Service
-// Login/Register logic with JWT token management
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const db = require('./db');
+const Customer = require('../models/customer');
+const Admin = require('../models/admin');
+const Staff = require('../models/staff');
 
 // Generate JWT token for customer
 const generateCustomerToken = (customer) => {
@@ -45,52 +44,44 @@ const generateStaffToken = (staff) => {
     );
 };
 
-// Register new customer
 const registerCustomer = async (userData) => {
     try {
         const { name, email, phone, password, gender } = userData;
 
-        // Check if customer already exists
-        const existingCustomer = await db.query(
-            'SELECT id FROM customers WHERE email = ? OR phone = ?', 
-            [email, phone]
-        );
+        const existingCustomer = await Customer.findByEmailOrPhone(email, phone);
 
-        if (existingCustomer.length > 0) {
+        if (existingCustomer) {
             return {
                 success: false,
                 message: 'Customer already exists with this email'
             };
         }
 
-        // Hash password
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Insert new customer
-        const result = await db.query(
-            'INSERT INTO customers (name, email, phone, password, gender) VALUES (?, ?, ?, ?, ?)',
-            [name, email, phone, hashedPassword, gender]
-        );
+        const customerId = await Customer.create({
+            name,
+            email,
+            phone,
+            password: hashedPassword,
+            gender
+        });
 
-        // Get the created customer
-        const newCustomer = await db.query(
-            'SELECT id, name, email, phone, gender FROM customers WHERE id = ?',
-            [result.insertId]
-        );
+        const newCustomer = await Customer.findById(customerId);
 
-        const token = generateCustomerToken(newCustomer[0]);
+        const token = generateCustomerToken(newCustomer);
 
         return {
             success: true,
             message: 'Customer registered successfully',
             user: {
-                id: newCustomer[0].id,
-                name: newCustomer[0].name,
-                email: newCustomer[0].email,
-                phone: newCustomer[0].phone,
+                id: newCustomer.id,
+                name: newCustomer.name,
+                email: newCustomer.email,
+                phone: newCustomer.phone,
                 type: 'customer',
-                gender: newCustomer[0].gender
+                gender: newCustomer.gender
             },
             token
         };
@@ -104,50 +95,41 @@ const registerCustomer = async (userData) => {
     }
 };
 
-// Register new admin (separate function for security)
 const registerAdmin = async (userData) => {
     try {
         const { name, email, phone, password } = userData;
 
-        // Check if admin already exists
-        const existingAdmin = await db.query(
-            'SELECT id FROM admins WHERE email = ? OR phone = ?', 
-            [email, phone]
-        );
+        const existingAdmin = await Admin.findByEmailOrPhone(email, phone);
 
-        if (existingAdmin.length > 0) {
+        if (existingAdmin) {
             return {
                 success: false,
                 message: 'Admin already exists with this email'
             };
         }
 
-        // Hash password
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Insert new admin
-        const result = await db.query(
-            'INSERT INTO admins (name, email, phone, password) VALUES (?, ?, ?, ?)',
-            [name, email, phone, hashedPassword]
-        );
+        const adminId = await Admin.create({
+            name,
+            email,
+            phone,
+            password: hashedPassword
+        });
 
-        // Get the created admin
-        const newAdmin = await db.query(
-            'SELECT id, name, email, phone FROM admins WHERE id = ?',
-            [result.insertId]
-        );
+        const newAdmin = await Admin.findById(adminId);
 
-        const token = generateAdminToken(newAdmin[0]);
+        const token = generateAdminToken(newAdmin);
 
         return {
             success: true,
             message: 'Admin registered successfully',
             user: {
-                id: newAdmin[0].id,
-                name: newAdmin[0].name,
-                email: newAdmin[0].email,
-                phone: newAdmin[0].phone,
+                id: newAdmin.id,
+                name: newAdmin.name,
+                email: newAdmin.email,
+                phone: newAdmin.phone,
                 type: 'admin'
             },
             token
@@ -162,18 +144,12 @@ const registerAdmin = async (userData) => {
     }
 };
 
-// Login user (checks all tables)
 const login = async (email, password) => {
     try {
-        // Try customer table first
-        let customers = await db.query(
-            'SELECT id, name, email, password, gender FROM customers WHERE email = ?',
-            [email]
-        );
+        const customer = await Customer.findByEmail(email);
 
-        if (customers.length > 0) {
-            const customer = customers[0];
-            const isValidPassword = await bcrypt.compare(password, customer.password);
+        if (customer) {
+            // const isValidPassword = await bcrypt.compare(password, customer.password);
             
             if (isValidPassword) {
                 const token = generateCustomerToken(customer);
@@ -192,14 +168,9 @@ const login = async (email, password) => {
             }
         }
 
-        // Try admin table
-        let admins = await db.query(
-            'SELECT id, name, email, password FROM admins WHERE email = ?',
-            [email]
-        );
+        const admin = await Admin.findByEmail(email);
 
-        if (admins.length > 0) {
-            const admin = admins[0];
+        if (admin) {
             const isValidPassword = await bcrypt.compare(password, admin.password);
             
             if (isValidPassword) {
@@ -218,34 +189,6 @@ const login = async (email, password) => {
             }
         }
 
-        // // Try staff table
-        // let staff = await db.query(
-        //     'SELECT id, name, email, password, gender FROM staff WHERE email = ?',
-        //     [email]
-        // );
-
-        // if (staff.length > 0) {
-        //     const staffMember = staff[0];
-        //     const isValidPassword = await bcrypt.compare(password, staffMember.password);
-            
-        //     if (isValidPassword) {
-        //         const token = generateStaffToken(staffMember);
-        //         return {
-        //             success: true,
-        //             message: 'Login successful',
-        //             user: {
-        //                 id: staffMember.id,
-        //                 name: staffMember.name,
-        //                 email: staffMember.email,
-        //                 type: 'staff',
-        //                 gender: staffMember.gender
-        //             },
-        //             token
-        //         };
-        //     }
-        // }
-
-        // No user found or invalid password
         return {
             success: false,
             message: 'Invalid email or password'

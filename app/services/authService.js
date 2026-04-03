@@ -149,7 +149,7 @@ const login = async (email, password) => {
         const customer = await Customer.findByEmail(email);
 
         if (customer) {
-            // const isValidPassword = await bcrypt.compare(password, customer.password);
+            const isValidPassword = await bcrypt.compare(password, customer.password);
             
             if (isValidPassword) {
                 const token = generateCustomerToken(customer);

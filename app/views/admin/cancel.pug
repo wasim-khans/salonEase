@@ -1,7 +1,16 @@
 extends ../layout
+include ../partials/_adminSidebar
 
 block content
-  h1 Cancel Appointment
-  p Cancel customer appointments
-  
+  .app-layout
+    +adminSidebar('appointments')
+
+    .main-content
+      .page-header
+        span.breadcrumb Cancel Appointment
+
+      .page-body
+        h1.page-title Cancel Appointment
+        p.page-subtitle Cancel customer appointments
+
 block scripts

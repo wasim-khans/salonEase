@@ -1,7 +1,16 @@
 extends ../layout
+include ../partials/_adminSidebar
 
 block content
-  h1 Confirm Appointment
-  p Confirm customer appointments
-  
+  .app-layout
+    +adminSidebar('appointments')
+
+    .main-content
+      .page-header
+        span.breadcrumb Confirm Appointment
+
+      .page-body
+        h1.page-title Confirm Appointment
+        p.page-subtitle Confirm customer appointments
+
 block scripts

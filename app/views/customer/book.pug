@@ -1,12 +1,9 @@
 extends ../layout
+include ../partials/_customerSidebar
 
 block content
   .app-layout
-    nav.sidebar
-      a.sidebar-item(href="#") Services
-      a.sidebar-item(href="#") My Appointments
-      a.sidebar-item.active(href="#") Book
-      a.sidebar-item.logout(href="#") Log out
+    +customerSidebar('book')
 
     .main-content
       .page-header

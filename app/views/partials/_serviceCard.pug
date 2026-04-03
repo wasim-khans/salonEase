@@ -1,0 +1,6 @@
+mixin serviceCard(service)
+  .service-card
+    h3.service-name= service.name
+    p.service-desc= service.category
+    p.service-price from £#{service.base_price.toFixed(2)}
+    a.btn-book(href="/customer/book?service=" + service.id) Book →

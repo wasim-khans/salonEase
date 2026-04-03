@@ -4,6 +4,8 @@ const { authenticateToken, requireType } = require('./middleware/authMiddleware'
 const { registerCustomer, registerAdmin, login } = require('./services/authService');
 const { getAllServices, getServicesByCategory, getServiceById } = require('./services/serviceService');
 const { createAppointment } = require('./services/appointmentService');
+const Appointment = require('./models/appointment');
+const AppointmentServiceMap = require('./models/appointmentServiceMap');
 
 const app = express();
 
@@ -110,24 +112,86 @@ app.post('/api/customer/appointments', authenticateToken, requireType(['customer
     res.status(result.success ? 201 : 400).json(result);
 });
 
+// Customer Cancel Appointment API
+app.put('/api/customer/appointments/:id/cancel', authenticateToken, requireType(['customer']), async (req, res) => {
+    try {
+        const appointmentId = req.params.id;
+        const { cancellation_reason } = req.body;
+
+        if (!cancellation_reason || cancellation_reason.trim() === '') {
+            return res.status(400).json({ success: false, message: 'Cancellation reason is required' });
+        }
+
+        const appointment = await Appointment.findById(appointmentId);
+
+        if (!appointment) {
+            return res.status(404).json({ success: false, message: 'Appointment not found' });
+        }
+
+        if (appointment.customer_id !== req.user.id) {
+            return res.status(403).json({ success: false, message: 'You can only cancel your own appointments' });
+        }
+
+        if (!['in_review', 'confirmed'].includes(appointment.status)) {
+            return res.status(400).json({ success: false, message: 'This appointment cannot be cancelled' });
+        }
+
+        const updated = await Appointment.updateStatus(appointmentId, 'cancelled', {
+            cancelled_by: req.user.id,
+            cancellation_reason: cancellation_reason.trim()
+        });
+
+        if (updated) {
+            res.json({ success: true, message: 'Appointment cancelled successfully' });
+        } else {
+            res.status(500).json({ success: false, message: 'Failed to cancel appointment' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to cancel appointment', error: error.message });
+    }
+});
+
+// Customer Appointments API — fetch own appointments with services
+app.get('/api/customer/appointments', authenticateToken, requireType(['customer']), async (req, res) => {
+    try {
+        const appointments = await Appointment.findByCustomerId(req.user.id);
+
+        const appointmentsWithServices = await Promise.all(
+            appointments.map(async (appt) => {
+                const services = await AppointmentServiceMap.findByAppointmentId(appt.id);
+                const estimatedTotal = await AppointmentServiceMap.getTotalPrice(appt.id);
+                return { ...appt, services, estimated_total: estimatedTotal };
+            })
+        );
+
+        res.json({ success: true, appointments: appointmentsWithServices });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch appointments', error: error.message });
+    }
+});
+
 // Admin API routes
 app.get('/api/admin/appointments', authenticateToken, requireType(['admin']), async (req, res) => {
     try {
-        // TODO: Fetch appointments from database
-        // For now, return mock data
-        res.json({
-            success: true,
-            appointments: [
-                { id: 1, customer: 'John Doe', service: 'Haircut', date: '2024-01-15', time: '10:00' },
-                { id: 2, customer: 'Jane Smith', service: 'Hair Colouring', date: '2024-01-16', time: '14:00' }
-            ]
-        });
+        const db = require('./services/db');
+        const [appointments] = await db.pool.execute(
+            `SELECT a.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone
+             FROM appointments a
+             JOIN customers c ON a.customer_id = c.id
+             ORDER BY a.appointment_date DESC`
+        );
+
+        const appointmentsWithServices = await Promise.all(
+            appointments.map(async (appt) => {
+                const services = await AppointmentServiceMap.findByAppointmentId(appt.id);
+                const estimatedTotal = await AppointmentServiceMap.getTotalPrice(appt.id);
+                return { ...appt, services, estimated_total: estimatedTotal };
+            })
+        );
+
+        res.json({ success: true, appointments: appointmentsWithServices });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Failed to fetch appointments',
-            error: error.message
-        });
+        res.status(500).json({ success: false, message: 'Failed to fetch appointments', error: error.message });
     }
 });
 

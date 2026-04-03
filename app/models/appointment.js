@@ -1,4 +1,5 @@
 const db = require('../services/db');
+const { v4: uuidv4 } = require('uuid');
 
 const Appointment = {
     async create(connection, appointmentData) {
@@ -9,14 +10,16 @@ const Appointment = {
             preferred_staff_gender = 'any'
         } = appointmentData;
         
-        const [result] = await connection.execute(
+        const id = uuidv4();
+        
+        await connection.execute(
             `INSERT INTO appointments 
-            (customer_id, appointment_date, preferred_time, preferred_staff_gender, status) 
-            VALUES (?, ?, ?, ?, 'in_review')`,
-            [customer_id, appointment_date, preferred_time, preferred_staff_gender]
+            (id, customer_id, appointment_date, preferred_time, preferred_staff_gender, status) 
+            VALUES (?, ?, ?, ?, ?, 'in_review')`,
+            [id, customer_id, appointment_date, preferred_time, preferred_staff_gender]
         );
         
-        return result.insertId;
+        return id;
     },
 
     async findById(appointmentId) {

@@ -12,26 +12,20 @@ block content
       .page-body
         h1.page-title New Booking
 
-        form(action="#" method="POST")
+        form#bookingForm
           .form-group
-            label(for="service") Service
-            select#service(name="service_id")
-              option(value="") Select a service...
-              option(value="1") Haircut — £15.00
-              option(value="2") Hair colouring — £45.00
-              option(value="3") Hair treatment — £30.00
-              option(value="4") Manicure — £20.00
-              option(value="5") Pedicure — £25.00
-              option(value="6") Waxing — £18.00
+            label Select Services
+            #services-checkboxes
+              p Loading services...
 
           .form-row
             .form-group
               label(for="date") Preferred date
-              input#date(type="date" name="appointment_date")
+              input#date(type="date" name="appointment_date" required)
 
             .form-group
               label(for="time") Preferred time
-              select#time(name="preferred_time")
+              select#time(name="preferred_time" required)
                 option(value="") Select a time slot...
                 option(value="09:00") 09:00
                 option(value="09:30") 09:30
@@ -51,10 +45,17 @@ block content
             label Staff preference
             .radio-group
               label.radio-label
+                input(type="radio" name="preferred_staff_gender" value="any" checked)
+                span Any
+              label.radio-label
                 input(type="radio" name="preferred_staff_gender" value="male")
                 span Male
               label.radio-label
                 input(type="radio" name="preferred_staff_gender" value="female")
                 span Female
 
+          p#estimated-total.estimated-total
+
           button.btn-primary(type="submit") Confirm booking
+
+  script(src="/js/customer/book.js")

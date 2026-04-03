@@ -29,7 +29,7 @@ Create `POST`, `PUT`, `DELETE` endpoints for staff.
 
 | Task | Detail |
 |------|--------|
-| Create `staffService.js` | `createStaff`, `updateStaff`, `deleteStaff` — validate inputs, hash password, call `Staff` model |
+| Add to `staffService.js` | `createStaff`, `updateStaff`, `deleteStaff` — validate inputs, hash password, call `Staff` model (`getAllStaff` already done) |
 | Add routes to `app.js` | `POST /api/admin/staff` (admin), `PUT /api/admin/staff/:id` (admin), `DELETE /api/admin/staff/:id` (admin) |
 | Protect with middleware | `authenticateToken` + `requireType(['admin'])` |
 | Validation | name, email (unique), phone (unique), password, gender (male/female/other/prefer_not_to_say) |
@@ -43,9 +43,6 @@ Create `POST`, `PUT`, `DELETE` endpoints for staff.
 
 | Task | Detail |
 |------|--------|
-| Remove dead `/customer/cancel` route | `app.js` line 181-183 — cancel flow now uses modals |
-| Remove `console.log('Login result:')` | `app.js` line 80 — debug log left in |
-| Move `Staff.getAll()` into a service | Currently called directly in `app.js` route handler — should go through `staffService.js` |
 | Fill or remove `apiRequests.js` | `static/js/utilities/apiRequests.js` is 0 bytes |
 | Fill or remove `notifications.js` | `static/js/utilities/notifications.js` is 0 bytes |
 
@@ -68,10 +65,7 @@ Create `POST`, `PUT`, `DELETE` endpoints for staff.
 |---|------|----------|--------|
 | 1 | Services CRUD API (`POST`, `PUT`, `DELETE /api/services`) | High | ❌ | ( admin should be able to create, update, delete services)
 | 2 | Staff Management API (`POST`, `PUT`, `DELETE /api/admin/staff`) | High | ❌ | ( admin should be able to create, update, delete staff)
-| 3 | Remove dead `/customer/cancel` route | Medium | ❌ | ( remove the dead route)
-| 4 | Remove `console.log('Login result:')` from `app.js` | Medium | ❌ | ( remove the debug log)
-| 5 | Move `Staff.getAll()` into `staffService.js` | Medium | ❌ | ( move the method to the service)
-| 6 | Fill or remove empty utility JS files | Medium | ❌ | ( fill or remove the empty files)
-| 7 | `no_show` status endpoint | Low | ❌ | ( add endpoint to set appointment status to no_show)
-| 8 | Dashboard statistics API | Low | ❌ | ( add endpoint to get dashboard statistics)
-| 9 | Appointment pagination | Low | ❌ | ( add pagination to appointments endpoint)
+| 3 | Fill or remove empty utility JS files | Medium | ❌ | ( fill or remove the empty files)
+| 4 | `no_show` status endpoint | Low | ❌ | ( add endpoint to set appointment status to no_show)
+| 5 | Dashboard statistics API | Low | ❌ | ( add endpoint to get dashboard statistics)
+| 6 | Appointment pagination | Low | ❌ | ( add pagination to appointments endpoint)

@@ -1,3 +1,6 @@
+let currentEditId = null;
+let currentCancelId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwtToken');
     const user = JSON.parse(localStorage.getItem('user'));
@@ -9,7 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadAppointments();
+    setupEditForm();
+    setupCancelForm();
 });
+
+// ── Modal helpers ──
+
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+// ── Load appointments ──
 
 async function loadAppointments() {
     const container = document.getElementById('appointments-container');
@@ -28,8 +45,7 @@ async function loadAppointments() {
         if (data.success && data.appointments.length > 0) {
             container.innerHTML = '';
             data.appointments.forEach(appt => {
-                const card = createAppointmentCard(appt);
-                container.appendChild(card);
+                container.appendChild(createAppointmentCard(appt));
             });
         } else if (data.success) {
             container.innerHTML = '<p>You have no appointments yet. <a href="/customer/book">Book one now</a>.</p>';
@@ -42,6 +58,8 @@ async function loadAppointments() {
     }
 }
 
+// ── Build appointment card ──
+
 function createAppointmentCard(appt) {
     const template = document.getElementById('appointment-card-template');
     const card = template.content.cloneNode(true);
@@ -50,30 +68,26 @@ function createAppointmentCard(appt) {
     const date = new Date(appt.appointment_date).toLocaleDateString('en-GB', {
         day: 'numeric', month: 'short', year: 'numeric'
     });
-    const badgeClass = getBadgeClass(appt.status);
 
-    // Populate card
     card.querySelector('.appt-card-services').textContent = serviceNames;
 
     const badge = card.querySelector('.badge');
     badge.textContent = appt.status.replace('_', ' ');
-    badge.classList.add(badgeClass);
+    badge.classList.add(getBadgeClass(appt.status));
 
     card.querySelector('[data-field="date"]').textContent = date;
     card.querySelector('[data-field="time"]').textContent = appt.preferred_time || 'TBC';
     card.querySelector('[data-field="cost"]').textContent = `£${parseFloat(appt.estimated_total || 0).toFixed(2)}`;
 
-    // Add status class to card for left-border colour
     card.querySelector('.appointment-card').classList.add(`status-${appt.status}`);
 
-    // Actions
     const footer = card.querySelector('.appt-card-footer');
 
     if (appt.status === 'in_review') {
-        const editBtn = document.createElement('a');
+        const editBtn = document.createElement('button');
         editBtn.className = 'btn-action';
-        editBtn.href = `/customer/book?edit=${appt.id}`;
         editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', () => openEditModal(appt));
         footer.appendChild(editBtn);
     }
 
@@ -81,7 +95,7 @@ function createAppointmentCard(appt) {
         const cancelBtn = document.createElement('button');
         cancelBtn.className = 'btn-action btn-action-danger';
         cancelBtn.textContent = 'Cancel';
-        cancelBtn.addEventListener('click', () => cancelAppointment(appt.id));
+        cancelBtn.addEventListener('click', () => openCancelModal(appt.id));
         footer.appendChild(cancelBtn);
     }
 
@@ -98,36 +112,163 @@ function getBadgeClass(status) {
     return map[status] || '';
 }
 
-async function cancelAppointment(appointmentId) {
-    const reason = prompt('Please provide a reason for cancellation (required):');
+// ── Edit Modal ──
 
-    if (!reason || reason.trim() === '') {
-        alert('Cancellation reason is required.');
-        return;
-    }
-
-    const token = localStorage.getItem('jwtToken');
+async function openEditModal(appt) {
+    currentEditId = appt.id;
+    const container = document.getElementById('edit-services-checkboxes');
 
     try {
-        const response = await fetch(`/api/customer/appointments/${appointmentId}/cancel`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ cancellation_reason: reason.trim() })
-        });
-
+        const response = await fetch('/api/services');
         const data = await response.json();
 
-        if (data.success) {
-            alert('Appointment cancelled successfully.');
-            loadAppointments();
+        if (data.success && data.services.length > 0) {
+            container.innerHTML = '';
+
+            const selectedIds = appt.services.map(s => s.service_id);
+
+            data.services.forEach(service => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-label';
+                const isChecked = selectedIds.includes(service.id) ? 'checked' : '';
+                label.innerHTML = `
+                    <input type="checkbox" name="edit_services" value="${service.id}" data-price="${service.base_price}" ${isChecked}>
+                    <span>${service.name} — £${parseFloat(service.base_price).toFixed(2)}</span>
+                `;
+                container.appendChild(label);
+            });
+
+            container.addEventListener('change', updateEditTotal);
+            updateEditTotal();
         } else {
-            alert(data.message || 'Failed to cancel appointment.');
+            container.innerHTML = '<p>No services available.</p>';
         }
     } catch (error) {
-        console.error('Cancel error:', error);
-        alert('An error occurred while cancelling.');
+        container.innerHTML = '<p>Failed to load services.</p>';
     }
+
+    // Pre-fill date
+    const rawDate = appt.appointment_date;
+    const dateStr = new Date(rawDate).toISOString().split('T')[0];
+    document.getElementById('edit-date').value = dateStr;
+
+    // Pre-fill time
+    const timeSelect = document.getElementById('edit-time');
+    const timeVal = appt.preferred_time ? appt.preferred_time.substring(0, 5) : '';
+    timeSelect.value = timeVal;
+
+    // Pre-fill staff gender
+    const genderRadio = document.querySelector(`input[name="edit_staff_gender"][value="${appt.preferred_staff_gender || 'any'}"]`);
+    if (genderRadio) genderRadio.checked = true;
+
+    openModal('edit-modal');
+}
+
+function updateEditTotal() {
+    const checked = document.querySelectorAll('input[name="edit_services"]:checked');
+    let total = 0;
+    checked.forEach(cb => { total += parseFloat(cb.dataset.price); });
+
+    const el = document.getElementById('edit-estimated-total');
+    el.textContent = checked.length > 0 ? `Estimated total: £${total.toFixed(2)}` : '';
+}
+
+function setupEditForm() {
+    const form = document.getElementById('edit-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem('jwtToken');
+        const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
+
+        if (checkedServices.length === 0) {
+            alert('Please select at least one service.');
+            return;
+        }
+
+        const services = Array.from(checkedServices).map(cb => ({
+            service_id: cb.value,
+            price: parseFloat(cb.dataset.price)
+        }));
+
+        const body = {
+            appointment_date: document.getElementById('edit-date').value,
+            preferred_time: document.getElementById('edit-time').value,
+            preferred_staff_gender: document.querySelector('input[name="edit_staff_gender"]:checked')?.value || 'any',
+            services
+        };
+
+        try {
+            const response = await fetch(`/api/customer/appointments/${currentEditId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                closeModal('edit-modal');
+                loadAppointments();
+            } else {
+                alert(data.message || 'Failed to update appointment.');
+            }
+        } catch (error) {
+            console.error('Edit error:', error);
+            alert('An error occurred while updating.');
+        }
+    });
+}
+
+// ── Cancel Modal ──
+
+function openCancelModal(appointmentId) {
+    currentCancelId = appointmentId;
+    document.getElementById('cancel-reason').value = '';
+    openModal('cancel-modal');
+}
+
+function setupCancelForm() {
+    const form = document.getElementById('cancel-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const reason = document.getElementById('cancel-reason').value.trim();
+        if (!reason) {
+            alert('Cancellation reason is required.');
+            return;
+        }
+
+        const token = localStorage.getItem('jwtToken');
+
+        try {
+            const response = await fetch(`/api/customer/appointments/${currentCancelId}/cancel`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ cancellation_reason: reason })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                closeModal('cancel-modal');
+                loadAppointments();
+            } else {
+                alert(data.message || 'Failed to cancel appointment.');
+            }
+        } catch (error) {
+            console.error('Cancel error:', error);
+            alert('An error occurred while cancelling.');
+        }
+    });
 }

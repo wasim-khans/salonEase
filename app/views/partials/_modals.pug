@@ -1,0 +1,133 @@
+mixin editModal()
+  .modal-overlay#edit-modal
+    .modal
+      .modal-header
+        h3 Edit Appointment
+        button.modal-close(onclick="closeModal('edit-modal')") &times;
+      .modal-body
+        form#edit-form
+          .form-group
+            label Select Services
+            #edit-services-checkboxes
+              p Loading services...
+
+          .form-row
+            .form-group
+              label(for="edit-date") Preferred Date
+              input#edit-date(type="date" name="appointment_date" required)
+
+            .form-group
+              label(for="edit-time") Preferred Time
+              select#edit-time(name="preferred_time" required)
+                option(value="") Select a time slot...
+                option(value="09:00") 09:00
+                option(value="09:30") 09:30
+                option(value="10:00") 10:00
+                option(value="10:30") 10:30
+                option(value="11:00") 11:00
+                option(value="11:30") 11:30
+                option(value="12:00") 12:00
+                option(value="14:00") 14:00
+                option(value="14:30") 14:30
+                option(value="15:00") 15:00
+                option(value="15:30") 15:30
+                option(value="16:00") 16:00
+                option(value="17:00") 17:00
+
+          .form-group
+            label Staff Preference
+            .radio-group
+              label.radio-label
+                input(type="radio" name="edit_staff_gender" value="any" checked)
+                span Any
+              label.radio-label
+                input(type="radio" name="edit_staff_gender" value="male")
+                span Male
+              label.radio-label
+                input(type="radio" name="edit_staff_gender" value="female")
+                span Female
+
+          p#edit-estimated-total.estimated-total
+
+          .modal-actions
+            button.btn-action(type="submit") Save Changes
+            button.btn-action.btn-action-danger(type="button" onclick="closeModal('edit-modal')") Discard
+
+mixin cancelModal()
+  .modal-overlay#cancel-modal
+    .modal
+      .modal-header
+        h3 Cancel Appointment
+        button.modal-close(onclick="closeModal('cancel-modal')") &times;
+      .modal-body
+        p Are you sure you want to cancel this appointment?
+        form#cancel-form
+          .form-group
+            label(for="cancel-reason") Cancellation Reason (required)
+            textarea#cancel-reason(name="cancellation_reason" rows="3" required placeholder="Please provide a reason for cancellation...")
+
+          .modal-actions
+            button.btn-action.btn-action-danger(type="submit") Confirm Cancellation
+            button.btn-action(type="button" onclick="closeModal('cancel-modal')") Go Back
+
+mixin confirmModal()
+  .modal-overlay#confirm-modal
+    .modal
+      .modal-header
+        h3 Confirm Appointment
+        button.modal-close(onclick="closeModal('confirm-modal')") &times;
+      .modal-body
+        #confirm-appt-details
+        form#confirm-form
+          .form-group
+            label(for="confirm-staff") Assign Staff (required)
+            select#confirm-staff(name="staff_id" required)
+              option(value="") Select a staff member...
+
+          .form-group
+            label(for="confirm-start-time") Start Time (required)
+            select#confirm-start-time(name="start_time" required)
+              option(value="") Set start time...
+              option(value="09:00") 09:00
+              option(value="09:30") 09:30
+              option(value="10:00") 10:00
+              option(value="10:30") 10:30
+              option(value="11:00") 11:00
+              option(value="11:30") 11:30
+              option(value="12:00") 12:00
+              option(value="14:00") 14:00
+              option(value="14:30") 14:30
+              option(value="15:00") 15:00
+              option(value="15:30") 15:30
+              option(value="16:00") 16:00
+              option(value="17:00") 17:00
+
+          .modal-actions
+            button.btn-action(type="submit") Confirm Appointment
+            button.btn-action.btn-action-danger(type="button" onclick="closeModal('confirm-modal')") Discard
+
+mixin completeModal()
+  .modal-overlay#complete-modal
+    .modal
+      .modal-header
+        h3 Complete Appointment
+        button.modal-close(onclick="closeModal('complete-modal')") &times;
+      .modal-body
+        #complete-appt-details
+        form#complete-form
+          .form-group
+            label(for="complete-price") Actual Price Charged (required)
+            input#complete-price(type="number" name="actual_price" step="0.01" min="0" required placeholder="0.00")
+
+          .form-group
+            label(for="complete-staff") Service Provided By (required)
+            select#complete-staff(name="completed_by" required)
+              option(value="") Select a staff member...
+
+          .form-group
+            label(for="complete-notes") Admin Notes (optional)
+            textarea#complete-notes(name="admin_notes" rows="3" placeholder="Any additional notes...")
+
+          .modal-actions
+            button.btn-action(type="submit") Mark as Completed
+            button.btn-action.btn-action-danger(type="button" onclick="closeModal('complete-modal')") Discard

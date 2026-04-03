@@ -3,9 +3,16 @@ const path = require('path');
 const { authenticateToken, requireType } = require('./middleware/authMiddleware');
 const { registerCustomer, registerAdmin, login } = require('./services/authService');
 const { getAllServices, getServicesByCategory, getServiceById } = require('./services/serviceService');
-const { createAppointment } = require('./services/appointmentService');
-const Appointment = require('./models/appointment');
-const AppointmentServiceMap = require('./models/appointmentServiceMap');
+const {
+    createAppointment,
+    editAppointment,
+    cancelAppointment,
+    getCustomerAppointments,
+    getAllAppointments,
+    confirmAppointment,
+    completeAppointment
+} = require('./services/appointmentService');
+const Staff = require('./models/staff');
 
 const app = express();
 
@@ -114,85 +121,56 @@ app.post('/api/customer/appointments', authenticateToken, requireType(['customer
 
 // Customer Cancel Appointment API
 app.put('/api/customer/appointments/:id/cancel', authenticateToken, requireType(['customer']), async (req, res) => {
-    try {
-        const appointmentId = req.params.id;
-        const { cancellation_reason } = req.body;
+    const result = await cancelAppointment(req.params.id, 'customer', req.body.cancellation_reason, req.user.id);
+    res.status(result.success ? 200 : 400).json(result);
+});
 
-        if (!cancellation_reason || cancellation_reason.trim() === '') {
-            return res.status(400).json({ success: false, message: 'Cancellation reason is required' });
-        }
-
-        const appointment = await Appointment.findById(appointmentId);
-
-        if (!appointment) {
-            return res.status(404).json({ success: false, message: 'Appointment not found' });
-        }
-
-        if (appointment.customer_id !== req.user.id) {
-            return res.status(403).json({ success: false, message: 'You can only cancel your own appointments' });
-        }
-
-        if (!['in_review', 'confirmed'].includes(appointment.status)) {
-            return res.status(400).json({ success: false, message: 'This appointment cannot be cancelled' });
-        }
-
-        const updated = await Appointment.updateStatus(appointmentId, 'cancelled', {
-            cancelled_by: req.user.id,
-            cancellation_reason: cancellation_reason.trim()
-        });
-
-        if (updated) {
-            res.json({ success: true, message: 'Appointment cancelled successfully' });
-        } else {
-            res.status(500).json({ success: false, message: 'Failed to cancel appointment' });
-        }
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to cancel appointment', error: error.message });
-    }
+// Customer Edit Appointment API (only if in_review)
+app.put('/api/customer/appointments/:id', authenticateToken, requireType(['customer']), async (req, res) => {
+    const result = await editAppointment(req.params.id, req.user.id, req.body);
+    res.status(result.success ? 200 : 400).json(result);
 });
 
 // Customer Appointments API — fetch own appointments with services
 app.get('/api/customer/appointments', authenticateToken, requireType(['customer']), async (req, res) => {
-    try {
-        const appointments = await Appointment.findByCustomerId(req.user.id);
-
-        const appointmentsWithServices = await Promise.all(
-            appointments.map(async (appt) => {
-                const services = await AppointmentServiceMap.findByAppointmentId(appt.id);
-                const estimatedTotal = await AppointmentServiceMap.getTotalPrice(appt.id);
-                return { ...appt, services, estimated_total: estimatedTotal };
-            })
-        );
-
-        res.json({ success: true, appointments: appointmentsWithServices });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch appointments', error: error.message });
-    }
+    const result = await getCustomerAppointments(req.user.id);
+    res.status(result.success ? 200 : 500).json(result);
 });
 
 // Admin API routes
 app.get('/api/admin/appointments', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await getAllAppointments();
+    res.status(result.success ? 200 : 500).json(result);
+});
+
+// Admin Staff API
+app.get('/api/admin/staff', authenticateToken, requireType(['admin']), async (req, res) => {
     try {
-        const db = require('./services/db');
-        const [appointments] = await db.pool.execute(
-            `SELECT a.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone
-             FROM appointments a
-             JOIN customers c ON a.customer_id = c.id
-             ORDER BY a.appointment_date DESC`
-        );
-
-        const appointmentsWithServices = await Promise.all(
-            appointments.map(async (appt) => {
-                const services = await AppointmentServiceMap.findByAppointmentId(appt.id);
-                const estimatedTotal = await AppointmentServiceMap.getTotalPrice(appt.id);
-                return { ...appt, services, estimated_total: estimatedTotal };
-            })
-        );
-
-        res.json({ success: true, appointments: appointmentsWithServices });
+        const staff = await Staff.getAll();
+        res.json({ success: true, staff });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch appointments', error: error.message });
+        res.status(500).json({ success: false, message: 'Failed to fetch staff', error: error.message });
     }
+});
+
+// Admin Confirm Appointment API (in_review → confirmed)
+app.put('/api/admin/appointments/:id/confirm', authenticateToken, requireType(['admin']), async (req, res) => {
+    const { staff_id, start_time } = req.body;
+    const result = await confirmAppointment(req.params.id, staff_id, start_time);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
+// Admin Cancel Appointment API (any status except completed)
+app.put('/api/admin/appointments/:id/cancel', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await cancelAppointment(req.params.id, 'admin', req.body.cancellation_reason);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
+// Admin Complete Appointment API (confirmed → completed)
+app.put('/api/admin/appointments/:id/complete', authenticateToken, requireType(['admin']), async (req, res) => {
+    const { actual_price, completed_by, admin_notes } = req.body;
+    const result = await completeAppointment(req.params.id, actual_price, completed_by, admin_notes);
+    res.status(result.success ? 200 : 400).json(result);
 });
 
 // Admin pages

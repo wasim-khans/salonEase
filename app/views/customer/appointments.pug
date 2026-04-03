@@ -1,5 +1,6 @@
 extends ../layout
 include ../partials/_customerSidebar
+include ../partials/_appointmentCard
 
 block content
   .app-layout
@@ -13,42 +14,9 @@ block content
         h1.page-title My Appointments
         p.section-label UPCOMING & PAST
 
-        table.appointments-table
-          thead
-            tr
-              th Service
-              th Date
-              th Time
-              th Status
-              th Action
-          tbody
-            tr
-              td.appt-service Haircut
-              td 12 Apr 2025
-              td 10:00
-              td
-                span.badge.badge-confirmed confirmed
-              td
-                a.btn-cancel(href="#") Cancel
-            tr
-              td.appt-service Manicure
-              td 20 Apr 2025
-              td 15:30
-              td
-                span.badge.badge-review under review
-              td
-                a.btn-cancel(href="#") Cancel
-            tr
-              td.appt-service Hair treatment
-              td 5 Mar 2025
-              td 11:00
-              td
-                span.badge.badge-completed completed
-              td
-            tr
-              td.appt-service Hair colouring
-              td 1 Mar 2025
-              td 09:00
-              td
-                span.badge.badge-cancelled cancelled
-              td
+        #appointments-container
+          p Loading appointments...
+
+    +appointmentCardTemplate()
+
+  script(src="/js/customer/appointments.js")

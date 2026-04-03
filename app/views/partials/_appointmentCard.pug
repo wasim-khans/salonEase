@@ -1,0 +1,21 @@
+mixin appointmentCardTemplate()
+  template#appointment-card-template
+    .appointment-card
+      .appt-card-header
+        span.appt-card-services
+        span.badge
+
+      .appt-card-body
+        .appt-card-detail
+          span.appt-card-label Date
+          span.appt-card-value(data-field="date")
+
+        .appt-card-detail
+          span.appt-card-label Time
+          span.appt-card-value(data-field="time")
+
+        .appt-card-detail
+          span.appt-card-label Estimated Cost
+          span.appt-card-value(data-field="cost")
+
+      .appt-card-footer

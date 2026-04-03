@@ -1,5 +1,6 @@
 extends ../layout
 include ../partials/_adminSidebar
+include ../partials/_appointmentCard
 
 block content
   .app-layout
@@ -13,7 +14,16 @@ block content
         h1.page-title Appointments Management
         p.page-subtitle View and manage all appointments
 
+        #status-filters.filter-bar
+          button.filter-btn.active(data-status="all") All
+          button.filter-btn(data-status="in_review") In Review
+          button.filter-btn(data-status="confirmed") Confirmed
+          button.filter-btn(data-status="completed") Completed
+          button.filter-btn(data-status="cancelled") Cancelled
+
         #appointments-container
           p Loading appointments...
+
+    +appointmentCardTemplate()
 
   script(src="/js/admin/appointments.js")

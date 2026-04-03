@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const { authenticateToken, requireType } = require('./middleware/authMiddleware');
 const { registerCustomer, registerAdmin, login } = require('./services/authService');
+const { getAllServices, getServicesByCategory, getServiceById } = require('./services/serviceService');
+const { createAppointment } = require('./services/appointmentService');
 
 const app = express();
 
@@ -70,6 +72,44 @@ app.post('/api/auth/login', async (req, res) => {
     res.status(result.success ? 200 : 401).json(result);
 });
 
+// Services API
+app.get('/api/services', async (req, res) => {
+    const result = await getAllServices();
+    res.status(result.success ? 200 : 500).json(result);
+});
+
+app.get('/api/services/category/:category', async (req, res) => {
+    const result = await getServicesByCategory(req.params.category);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
+app.get('/api/services/:id', async (req, res) => {
+    const result = await getServiceById(req.params.id);
+    res.status(result.success ? 200 : 404).json(result);
+});
+
+// Customer Booking API
+app.post('/api/customer/appointments', authenticateToken, requireType(['customer']), async (req, res) => {
+    const { appointment_date, preferred_time, preferred_staff_gender, services } = req.body;
+
+    if (!appointment_date || !preferred_time || !services || services.length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: 'appointment_date, preferred_time, and at least one service are required'
+        });
+    }
+
+    const result = await createAppointment({
+        customer_id: req.user.id,
+        appointment_date,
+        preferred_time,
+        preferred_staff_gender: preferred_staff_gender || 'any',
+        services
+    });
+
+    res.status(result.success ? 201 : 400).json(result);
+});
+
 // Admin API routes
 app.get('/api/admin/appointments', authenticateToken, requireType(['admin']), async (req, res) => {
     try {
@@ -94,10 +134,6 @@ app.get('/api/admin/appointments', authenticateToken, requireType(['admin']), as
 // Admin pages
 app.get('/admin/appointments', (req, res) => {
     res.render('admin/appointments', { title: 'Appointments - SalonEase' });
-});
-
-app.get('/customer/appointments', (req, res) => {
-    res.render('customer/appointments', { title: 'My Appointments - SalonEase' });
 });
 
 app.get('/customer/cancel', (req, res) => {

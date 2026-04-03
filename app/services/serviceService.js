@@ -1,14 +1,43 @@
 // SalonEase Service Service
 // Service CRUD business logic
 
-// ServiceService methods to be implemented
-// Examples:
-// - createService
-// - getAllServices
-// - updateService
-// - deleteService
-// - getServicesByCategory
+const Service = require('../models/service');
+
+const getAllServices = async () => {
+    try {
+        const services = await Service.getAll();
+        return { success: true, services };
+    } catch (error) {
+        return { success: false, message: 'Failed to fetch services', error: error.message };
+    }
+};
+
+const getServicesByCategory = async (category) => {
+    try {
+        if (!['male', 'female', 'both'].includes(category)) {
+            return { success: false, message: 'Invalid category. Must be male, female, or both' };
+        }
+        const services = await Service.getByCategory(category);
+        return { success: true, services };
+    } catch (error) {
+        return { success: false, message: 'Failed to fetch services by category', error: error.message };
+    }
+};
+
+const getServiceById = async (serviceId) => {
+    try {
+        const service = await Service.findById(serviceId);
+        if (!service) {
+            return { success: false, message: 'Service not found' };
+        }
+        return { success: true, service };
+    } catch (error) {
+        return { success: false, message: 'Failed to fetch service', error: error.message };
+    }
+};
 
 module.exports = {
-    // Placeholder for service service methods
+    getAllServices,
+    getServicesByCategory,
+    getServiceById
 };

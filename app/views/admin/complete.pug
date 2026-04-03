@@ -1,7 +1,16 @@
 extends ../layout
+include ../partials/_adminSidebar
 
 block content
-  h1 Complete Appointment
-  p Mark appointments as completed
-  
+  .app-layout
+    +adminSidebar('appointments')
+
+    .main-content
+      .page-header
+        span.breadcrumb Complete Appointment
+
+      .page-body
+        h1.page-title Complete Appointment
+        p.page-subtitle Mark appointments as completed
+
 block scripts

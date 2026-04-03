@@ -1,0 +1,7 @@
+mixin adminSidebar(active)
+  nav.sidebar
+    a.sidebar-item(href="/admin/appointments" class=(active === 'appointments' ? 'active' : '')) Appointments
+    a.sidebar-item(href="/admin/services" class=(active === 'services' ? 'active' : '')) Services
+    a.sidebar-item(href="/admin/create-staff" class=(active === 'create-staff' ? 'active' : '')) Create Staff
+    a.sidebar-item(href="/admin/statistics" class=(active === 'statistics' ? 'active' : '')) Statistics
+    a.sidebar-item.logout(href="/") Log out

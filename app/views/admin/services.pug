@@ -1,11 +1,9 @@
 extends ../layout
+include ../partials/_adminSidebar
 
 block content
   .app-layout
-    nav.sidebar
-      a.sidebar-item.active(href="/customer/services") Services
-      a.sidebar-item(href="/customer/appointments") My Appointments
-      a.sidebar-item(href="/customer/book") Book
+    +adminSidebar('services')
 
     .main-content
       .page-header

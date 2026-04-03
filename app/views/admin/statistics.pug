@@ -1,7 +1,16 @@
 extends ../layout
+include ../partials/_adminSidebar
 
 block content
-  h1 Statistics
-  p View salon statistics and reports
-  
+  .app-layout
+    +adminSidebar('statistics')
+
+    .main-content
+      .page-header
+        span.breadcrumb Statistics
+
+      .page-body
+        h1.page-title Statistics
+        p.page-subtitle View salon statistics and reports
+
 block scripts

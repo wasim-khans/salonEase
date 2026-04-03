@@ -1,10 +1,19 @@
 extends ../layout
+include ../partials/_adminSidebar
 
 block content
-  h1 Appointments Management
-  p View and manage all appointments
-  
-  #appointments-container
-    p Loading appointments...
+  .app-layout
+    +adminSidebar('appointments')
+
+    .main-content
+      .page-header
+        span.breadcrumb Appointments
+
+      .page-body
+        h1.page-title Appointments Management
+        p.page-subtitle View and manage all appointments
+
+        #appointments-container
+          p Loading appointments...
 
   script(src="/js/admin/appointments.js")

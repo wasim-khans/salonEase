@@ -56,16 +56,26 @@ const editAppointment = async (appointmentId, customerId, updateData) => {
             return { success: false, message: 'At least one service is required' };
         }
 
-        await db.pool.execute(
-            `UPDATE appointments SET appointment_date = ?, preferred_time = ?, preferred_staff_gender = ? WHERE id = ?`,
-            [appointment_date, preferred_time, preferred_staff_gender || 'any', appointmentId]
-        );
-
-        await AppointmentServiceMap.removeAllByAppointmentId(appointmentId);
-
         const connection = await db.pool.getConnection();
         try {
+            await connection.beginTransaction();
+
+            await connection.execute(
+                `UPDATE appointments SET appointment_date = ?, preferred_time = ?, preferred_staff_gender = ? WHERE id = ?`,
+                [appointment_date, preferred_time, preferred_staff_gender || 'any', appointmentId]
+            );
+
+            await connection.execute(
+                `DELETE FROM appointment_services WHERE appointment_id = ?`,
+                [appointmentId]
+            );
+
             await AppointmentServiceMap.addServices(connection, appointmentId, services);
+
+            await connection.commit();
+        } catch (txError) {
+            await connection.rollback();
+            throw txError;
         } finally {
             connection.release();
         }

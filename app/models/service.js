@@ -1,4 +1,5 @@
 const db = require('../services/db');
+const { v4: uuidv4 } = require('uuid');
 
 const Service = {
     async getAll() {
@@ -40,13 +41,15 @@ const Service = {
     async create(serviceData) {
         const { name, category, base_price, duration } = serviceData;
         
-        const [result] = await db.pool.execute(
-            `INSERT INTO services (name, category, base_price, duration) 
-            VALUES (?, ?, ?, ?)`,
-            [name, category, base_price, duration]
+        const id = uuidv4();
+        
+        await db.pool.execute(
+            `INSERT INTO services (id, name, category, base_price, duration) 
+            VALUES (?, ?, ?, ?, ?)`,
+            [id, name, category, base_price, duration]
         );
         
-        return result.insertId;
+        return id;
     },
 
     async update(serviceId, serviceData) {

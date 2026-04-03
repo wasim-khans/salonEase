@@ -1,4 +1,5 @@
 const db = require('../services/db');
+const { v4: uuidv4 } = require('uuid');
 
 const Staff = {
     async findByEmail(email) {
@@ -43,13 +44,15 @@ const Staff = {
     async create(staffData) {
         const { name, email, phone, password, gender } = staffData;
         
-        const [result] = await db.pool.execute(
-            `INSERT INTO staff (name, email, phone, password, gender) 
-            VALUES (?, ?, ?, ?, ?)`,
-            [name, email, phone, password, gender]
+        const id = uuidv4();
+        
+        await db.pool.execute(
+            `INSERT INTO staff (id, name, email, phone, password, gender) 
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [id, name, email, phone, password, gender]
         );
         
-        return result.insertId;
+        return id;
     },
 
     async update(staffId, staffData) {

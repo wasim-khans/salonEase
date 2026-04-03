@@ -96,7 +96,7 @@ function displayAppointments(appointments) {
         // Admin action — manage link
         const footer = card.querySelector('.appt-card-footer');
         const manageBtn = document.createElement('a');
-        manageBtn.className = 'btn-book';
+        manageBtn.className = 'btn-action';
         manageBtn.href = `/admin/appointments/${appt.id}`;
         manageBtn.textContent = 'Manage';
         footer.appendChild(manageBtn);

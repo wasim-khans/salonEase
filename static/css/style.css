@@ -497,6 +497,35 @@ body {
   border-top: 1px solid #f0f0f0;
 }
 
+.appt-card-footer:empty {
+  display: none;
+}
+
+/* ── Appointment action buttons ── */
+.btn-action {
+  font-size: 0.8rem;
+  padding: 5px 14px;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  color: #3498db;
+  background: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-action:hover {
+  background: #f0f8ff;
+}
+
+.btn-action-danger {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.btn-action-danger:hover {
+  background: #fef2f2;
+}
+
 /* ── Filter bar ── */
 .filter-bar {
   display: flex;

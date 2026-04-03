@@ -71,7 +71,7 @@ function createAppointmentCard(appt) {
 
     if (appt.status === 'in_review') {
         const editBtn = document.createElement('a');
-        editBtn.className = 'btn-book';
+        editBtn.className = 'btn-action';
         editBtn.href = `/customer/book?edit=${appt.id}`;
         editBtn.textContent = 'Edit';
         footer.appendChild(editBtn);
@@ -79,7 +79,7 @@ function createAppointmentCard(appt) {
 
     if (appt.status === 'in_review' || appt.status === 'confirmed') {
         const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'btn-cancel';
+        cancelBtn.className = 'btn-action btn-action-danger';
         cancelBtn.textContent = 'Cancel';
         cancelBtn.addEventListener('click', () => cancelAppointment(appt.id));
         footer.appendChild(cancelBtn);

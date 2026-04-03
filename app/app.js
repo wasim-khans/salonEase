@@ -12,7 +12,7 @@ const {
     confirmAppointment,
     completeAppointment
 } = require('./services/appointmentService');
-const Staff = require('./models/staff');
+const { getAllStaff } = require('./services/staffService');
 
 const app = express();
 
@@ -77,7 +77,6 @@ app.post('/api/auth/login', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
     const result = await login(email, password);
-    console.log('Login result:', result);
     res.status(result.success ? 200 : 401).json(result);
 });
 
@@ -145,12 +144,8 @@ app.get('/api/admin/appointments', authenticateToken, requireType(['admin']), as
 
 // Admin Staff API
 app.get('/api/admin/staff', authenticateToken, requireType(['admin']), async (req, res) => {
-    try {
-        const staff = await Staff.getAll();
-        res.json({ success: true, staff });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch staff', error: error.message });
-    }
+    const result = await getAllStaff();
+    res.status(result.success ? 200 : 500).json(result);
 });
 
 // Admin Confirm Appointment API (in_review → confirmed)
@@ -176,10 +171,6 @@ app.put('/api/admin/appointments/:id/complete', authenticateToken, requireType([
 // Admin pages
 app.get('/admin/appointments', (req, res) => {
     res.render('admin/appointments', { title: 'Appointments - SalonEase' });
-});
-
-app.get('/customer/cancel', (req, res) => {
-    res.render('customer/cancel', { title: 'Cancel Appointment - SalonEase' });
 });
 
 module.exports = app;

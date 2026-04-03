@@ -1,6 +1,7 @@
 extends ../layout
 include ../partials/_customerSidebar
 include ../partials/_appointmentCard
+include ../partials/_modals
 
 block content
   .app-layout
@@ -18,5 +19,8 @@ block content
           p Loading appointments...
 
     +appointmentCardTemplate()
+
+  +editModal()
+  +cancelModal()
 
   script(src="/js/customer/appointments.js")

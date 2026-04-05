@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
         closeIcon.addEventListener('click', closeCreateServiceModal);
     }
     
+    // Create Service form submit handler
+    const createForm = document.querySelector('.modal-body form');
+    if (createForm) {
+        createForm.addEventListener('submit', handleCreateService);
+    }
+    
     // Fetch GET /api/services
     fetch('/api/services', {
         method: 'GET',
@@ -63,6 +69,71 @@ function closeCreateServiceModal() {
         modal.style.display = 'none';
         modal.classList.remove('show');
     }
+}
+
+function handleCreateService(e) {
+    e.preventDefault();
+    
+    // Read form values
+    const formData = new FormData(e.target);
+    const serviceData = {
+        name: formData.get('name'),
+        category: formData.get('category'),
+        base_price: parseFloat(formData.get('base_price')),
+        duration: parseInt(formData.get('duration'))
+    };
+    
+    // Get JWT token
+    const token = localStorage.getItem('jwtToken');
+    
+    // Send POST request to /api/services
+    fetch('/api/services', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(serviceData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Create service response:', data);
+        
+        if (data.success) {
+            // Close modal
+            closeCreateServiceModal();
+            
+            // Clear form
+            e.target.reset();
+            
+            // Reload services list
+            loadServices();
+        }
+    })
+    .catch(error => {
+        console.error('Error creating service:', error);
+    });
+}
+
+function loadServices() {
+    const token = localStorage.getItem('jwtToken');
+    
+    fetch('/api/services', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.services) {
+            renderServicesTable(data.services);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching services:', error);
+    });
 }
 
 function renderServicesTable(services) {

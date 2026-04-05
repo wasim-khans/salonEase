@@ -24,6 +24,39 @@ block content
               th Actions
           tbody#servicesTable
 
+      // Create Service Modal
+      .modal.fade#createServiceModal(tabindex="-1" role="dialog")
+        .modal-dialog(role="document")
+          .modal-content
+            .modal-header
+              h5.modal-title Create New Service
+              button.close(type="button" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") ×
+            .modal-body
+              form
+                .form-group
+                  label(for="serviceName") Service Name
+                  input.form-control#serviceName(type="text" name="name" required)
+                
+                .form-group
+                  label(for="serviceCategory") Category
+                  select.form-control#serviceCategory(name="category" required)
+                    option(value="male") Male
+                    option(value="female") Female
+                    option(value="both") Both
+                
+                .form-group
+                  label(for="servicePrice") Base Price (£)
+                  input.form-control#servicePrice(type="number" step="0.01" min="0" name="base_price" required)
+                
+                .form-group
+                  label(for="serviceDuration") Duration (minutes)
+                  input.form-control#serviceDuration(type="number" min="15" step="5" name="duration" required)
+            
+            .modal-footer
+              button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+              button.btn.btn-primary(type="submit") Save Service
+
         p.section-label ALL SERVICES
 
         .services-grid

@@ -225,10 +225,43 @@ function renderServicesTable(services) {
             <td>${service.duration} min</td>
             <td>
                 <button class="btn btn-sm btn-primary" onclick="openEditServiceModal(${JSON.stringify(service).replace(/"/g, '&quot;')})">Edit</button>
-                <button class="btn btn-sm btn-danger">Delete</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteService('${service.id}', '${escapeHtml(service.name)}')">Delete</button>
             </td>
         </tr>
     `).join('');
+}
+
+function deleteService(serviceId, serviceName) {
+    // Show confirmation prompt
+    const confirmed = confirm(`Are you sure you want to delete "${serviceName}"? This action cannot be undone.`);
+    
+    if (!confirmed) {
+        return; // User cancelled the deletion
+    }
+    
+    // Get JWT token
+    const token = localStorage.getItem('jwtToken');
+    
+    // Send DELETE request to /api/services/:id
+    fetch(`/api/services/${serviceId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Delete service response:', data);
+        
+        if (data.success) {
+            // Reload services list
+            loadServices();
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting service:', error);
+    });
 }
 
 function escapeHtml(text) {

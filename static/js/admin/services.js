@@ -126,33 +126,64 @@ function handleCreateService(e) {
     // Get JWT token
     const token = localStorage.getItem('jwtToken');
     
-    // Send POST request to /api/services
-    fetch('/api/services', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(serviceData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Create service response:', data);
-        
-        if (data.success) {
-            // Close modal
-            closeCreateServiceModal();
+    // Check if we're in edit mode or create mode
+    if (currentEditServiceId) {
+        // Edit mode - send PUT request
+        fetch(`/api/services/${currentEditServiceId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(serviceData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Update service response:', data);
             
-            // Clear form
-            e.target.reset();
+            if (data.success) {
+                // Close modal
+                closeCreateServiceModal();
+                
+                // Clear form
+                e.target.reset();
+                
+                // Reload services list
+                loadServices();
+            }
+        })
+        .catch(error => {
+            console.error('Error updating service:', error);
+        });
+    } else {
+        // Create mode - send POST request
+        fetch('/api/services', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(serviceData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Create service response:', data);
             
-            // Reload services list
-            loadServices();
-        }
-    })
-    .catch(error => {
-        console.error('Error creating service:', error);
-    });
+            if (data.success) {
+                // Close modal
+                closeCreateServiceModal();
+                
+                // Clear form
+                e.target.reset();
+                
+                // Reload services list
+                loadServices();
+            }
+        })
+        .catch(error => {
+            console.error('Error creating service:', error);
+        });
+    }
 }
 
 function loadServices() {

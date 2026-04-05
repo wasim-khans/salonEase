@@ -55,11 +55,51 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Global variable to store current editing service id
+let currentEditServiceId = null;
+
 function openCreateServiceModal() {
+    currentEditServiceId = null; // Reset for create mode
     const modal = document.getElementById('createServiceModal');
     if (modal) {
         modal.style.display = 'block';
         modal.classList.add('show');
+        
+        // Update modal title for create mode
+        const modalTitle = modal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Create New Service';
+        }
+        
+        // Clear form for create mode
+        const form = modal.querySelector('form');
+        if (form) {
+            form.reset();
+        }
+    }
+}
+
+function openEditServiceModal(service) {
+    currentEditServiceId = service.id; // Store service id for later use
+    const modal = document.getElementById('createServiceModal');
+    if (modal) {
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        
+        // Update modal title for edit mode
+        const modalTitle = modal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Edit Service';
+        }
+        
+        // Prefill form inputs with service data
+        const form = modal.querySelector('form');
+        if (form) {
+            form.querySelector('#serviceName').value = service.name;
+            form.querySelector('#serviceCategory').value = service.category;
+            form.querySelector('#servicePrice').value = service.base_price;
+            form.querySelector('#serviceDuration').value = service.duration;
+        }
     }
 }
 
@@ -153,7 +193,7 @@ function renderServicesTable(services) {
             <td>£${parseFloat(service.base_price).toFixed(2)}</td>
             <td>${service.duration} min</td>
             <td>
-                <button class="btn btn-sm btn-primary">Edit</button>
+                <button class="btn btn-sm btn-primary" onclick="openEditServiceModal(${JSON.stringify(service).replace(/"/g, '&quot;')})">Edit</button>
                 <button class="btn btn-sm btn-danger">Delete</button>
             </td>
         </tr>

@@ -8,6 +8,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
+    // Add Service button click handler
+    const addServiceBtn = document.querySelector('.btn-primary');
+    if (addServiceBtn) {
+        addServiceBtn.addEventListener('click', openCreateServiceModal);
+    }
+    
+    // Cancel button click handler
+    const cancelBtn = document.querySelector('.modal-footer .btn-secondary');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeCreateServiceModal);
+    }
+    
+    // Close icon click handler
+    const closeIcon = document.querySelector('.modal-header .close');
+    if (closeIcon) {
+        closeIcon.addEventListener('click', closeCreateServiceModal);
+    }
+    
     // Fetch GET /api/services
     fetch('/api/services', {
         method: 'GET',
@@ -30,6 +48,22 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching services:', error);
     });
 });
+
+function openCreateServiceModal() {
+    const modal = document.getElementById('createServiceModal');
+    if (modal) {
+        modal.style.display = 'block';
+        modal.classList.add('show');
+    }
+}
+
+function closeCreateServiceModal() {
+    const modal = document.getElementById('createServiceModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    }
+}
 
 function renderServicesTable(services) {
     const tableBody = document.getElementById('servicesTable');

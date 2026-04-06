@@ -113,20 +113,25 @@ function getBadgeClass(status) {
 }
 
 // ── Edit Modal ──
+let editModalChangeListener = null;
 
 async function openEditModal(appt) {
     currentEditId = appt.id;
     const container = document.getElementById('edit-services-checkboxes');
-
+    
     try {
         const response = await fetch('/api/services');
         const data = await response.json();
-
+        
         if (data.success && data.services.length > 0) {
             container.innerHTML = '';
-
             const selectedIds = appt.services.map(s => s.service_id);
-
+            
+            // Remove existing listener if it exists
+            if (editModalChangeListener) {
+                container.removeEventListener('change', editModalChangeListener);
+            }
+            
             data.services.forEach(service => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-label';
@@ -137,8 +142,10 @@ async function openEditModal(appt) {
                 `;
                 container.appendChild(label);
             });
-
-            container.addEventListener('change', updateEditTotal);
+            
+            // Add new listener and store reference
+            editModalChangeListener = updateEditTotal;
+            container.addEventListener('change', editModalChangeListener);
             updateEditTotal();
         } else {
             container.innerHTML = '<p>No services available.</p>';
@@ -146,7 +153,7 @@ async function openEditModal(appt) {
     } catch (error) {
         container.innerHTML = '<p>Failed to load services.</p>';
     }
-
+    
     // Pre-fill date
     const rawDate = appt.appointment_date;
     const dateStr = new Date(rawDate).toISOString().split('T')[0];

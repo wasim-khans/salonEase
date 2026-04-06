@@ -1,6 +1,29 @@
-mixin customerSidebar(active)
-  nav.sidebar
-    a.sidebar-item(href="/customer/services" class=(active === 'services' ? 'active' : '')) Services
-    a.sidebar-item(href="/customer/appointments" class=(active === 'appointments' ? 'active' : '')) My Appointments
-    a.sidebar-item(href="/customer/book" class=(active === 'book' ? 'active' : '')) Book
-    a.sidebar-item.logout(href="/") Log out
+mixin customerSidebar(activeItem)
+  .sidebar
+    .sidebar-header
+      .logo
+        img(src="/images/salon-logo.png", alt="SalonEase")
+      h2 SalonEase
+    .sidebar-menu
+      ul
+        li(class=activeItem === 'dashboard' ? 'active' : '')
+          a(href="/customer/dashboard")
+            i.fas.fa-tachometer-alt
+            | Dashboard
+        li(class=activeItem === 'appointments' ? 'active' : '')
+          a(href="/customer/appointments")
+            i.fas.fa-calendar-alt
+            | Appointments
+        li(class=activeItem === 'services' ? 'active' : '')
+          a(href="/customer/services")
+            i.fas.fa-cut
+            | Services
+        li(class=activeItem === 'book' ? 'active' : '')
+          a(href="/customer/book")
+            i.fas.fa-plus
+            | Book Appointment
+        li.divider
+        li.logout
+          a(href="#logout", onclick="logout(); return false;")
+            i.fas.fa-sign-out-alt
+            | Logout

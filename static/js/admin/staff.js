@@ -55,11 +55,52 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Global variable to store current editing staff id
+let currentEditStaffId = null;
+
 function openCreateStaffModal() {
+    currentEditStaffId = null; // Reset for create mode
     const modal = document.getElementById('createStaffModal');
     if (modal) {
         modal.style.display = 'block';
         modal.classList.add('show');
+        
+        // Update modal title for create mode
+        const modalTitle = modal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Create New Staff';
+        }
+        
+        // Clear form for create mode
+        const form = modal.querySelector('form');
+        if (form) {
+            form.reset();
+        }
+    }
+}
+
+function openEditStaffModal(staff) {
+    currentEditStaffId = staff.id; // Store staff id for later use
+    const modal = document.getElementById('createStaffModal');
+    if (modal) {
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        
+        // Update modal title for edit mode
+        const modalTitle = modal.querySelector('.modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Edit Staff';
+        }
+        
+        // Prefill form inputs with staff data
+        const form = modal.querySelector('form');
+        if (form) {
+            form.querySelector('#staffName').value = staff.name;
+            form.querySelector('#staffEmail').value = staff.email;
+            form.querySelector('#staffPhone').value = staff.phone;
+            form.querySelector('#staffPassword').value = ''; // Don't prefill password
+            form.querySelector('#staffGender').value = staff.gender;
+        }
     }
 }
 
@@ -154,7 +195,7 @@ function renderStaffTable(staff) {
             <td>${escapeHtml(member.phone)}</td>
             <td>${escapeHtml(member.gender)}</td>
             <td>
-                <button class="btn btn-sm btn-primary">Edit</button>
+                <button class="btn btn-sm btn-primary" onclick="openEditStaffModal(${JSON.stringify(member).replace(/"/g, '&quot;')})">Edit</button>
                 <button class="btn btn-sm btn-danger">Delete</button>
             </td>
         </tr>

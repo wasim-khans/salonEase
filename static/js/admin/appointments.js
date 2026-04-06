@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!token || !user || user.type !== 'admin') {
-        alert('Access denied. Admin login required.');
+        showError('Access denied. Admin login required.');
         window.location.href = '/auth/login';
         return;
     }
@@ -231,11 +231,11 @@ function setupConfirmForm() {
                 closeModal('confirm-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to confirm appointment.');
+                showError(data.message || 'Failed to confirm appointment.');
             }
         } catch (error) {
             console.error('Confirm error:', error);
-            alert('An error occurred while confirming.');
+            showError('An error occurred while confirming.');
         }
     });
 }
@@ -257,7 +257,7 @@ function setupCancelForm() {
 
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
-            alert('Cancellation reason is required.');
+            showError('Cancellation reason is required.');
             return;
         }
 
@@ -279,11 +279,11 @@ function setupCancelForm() {
                 closeModal('cancel-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to cancel appointment.');
+                showError(data.message || 'Failed to cancel appointment.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('An error occurred while cancelling.');
+            showError('An error occurred while cancelling.');
         }
     });
 }
@@ -329,12 +329,12 @@ function setupCompleteForm() {
         const admin_notes = document.getElementById('complete-notes').value.trim();
 
         if (!actual_price || actual_price <= 0) {
-            alert('Please enter the actual price charged.');
+            showError('Please enter the actual price charged.');
             return;
         }
 
         if (!completed_by) {
-            alert('Please select the staff member who provided the service.');
+            showError('Please select the staff member who provided the service.');
             return;
         }
 
@@ -356,11 +356,11 @@ function setupCompleteForm() {
                 closeModal('complete-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to complete appointment.');
+                showError(data.message || 'Failed to complete appointment.');
             }
         } catch (error) {
             console.error('Complete error:', error);
-            alert('An error occurred while completing.');
+            showError('An error occurred while completing.');
         }
     });
 }

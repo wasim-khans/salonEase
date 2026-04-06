@@ -1,0 +1,14 @@
+extends ../layout
+include ../partials/_adminSidebar
+
+block content
+  .app-layout
+    +adminSidebar('staff')
+
+    .main-content
+      .page-header
+        span.breadcrumb Staff Management
+
+      .page-body
+        h1.page-title Admin Staff
+        p.page-subtitle Manage all salon staff members

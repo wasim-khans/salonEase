@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
         closeIcon.addEventListener('click', closeCreateStaffModal);
     }
     
+    // Create Staff form submit handler
+    const createForm = document.querySelector('.modal-body form');
+    if (createForm) {
+        createForm.addEventListener('submit', handleCreateStaff);
+    }
+    
     // Fetch GET /api/admin/staff
     fetch('/api/admin/staff', {
         method: 'GET',
@@ -63,6 +69,72 @@ function closeCreateStaffModal() {
         modal.style.display = 'none';
         modal.classList.remove('show');
     }
+}
+
+function handleCreateStaff(e) {
+    e.preventDefault();
+    
+    // Read form values
+    const formData = new FormData(e.target);
+    const staffData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        password: formData.get('password'),
+        gender: formData.get('gender')
+    };
+    
+    // Get JWT token
+    const token = localStorage.getItem('jwtToken');
+    
+    // Send POST request to /api/admin/staff
+    fetch('/api/admin/staff', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(staffData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Create staff response:', data);
+        
+        if (data.success) {
+            // Close modal
+            closeCreateStaffModal();
+            
+            // Clear form
+            e.target.reset();
+            
+            // Reload staff list
+            loadStaff();
+        }
+    })
+    .catch(error => {
+        console.error('Error creating staff:', error);
+    });
+}
+
+function loadStaff() {
+    const token = localStorage.getItem('jwtToken');
+    
+    fetch('/api/admin/staff', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.staff) {
+            renderStaffTable(data.staff);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching staff:', error);
+    });
 }
 
 function renderStaffTable(staff) {

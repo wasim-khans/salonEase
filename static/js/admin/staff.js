@@ -8,6 +8,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
+    // Add Staff button click handler
+    const addStaffBtn = document.querySelector('.btn-primary');
+    if (addStaffBtn) {
+        addStaffBtn.addEventListener('click', openCreateStaffModal);
+    }
+    
+    // Cancel button click handler
+    const cancelBtn = document.querySelector('.modal-footer .btn-secondary');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeCreateStaffModal);
+    }
+    
+    // Close icon click handler
+    const closeIcon = document.querySelector('.modal-header .close');
+    if (closeIcon) {
+        closeIcon.addEventListener('click', closeCreateStaffModal);
+    }
+    
     // Fetch GET /api/admin/staff
     fetch('/api/admin/staff', {
         method: 'GET',
@@ -30,6 +48,22 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching staff:', error);
     });
 });
+
+function openCreateStaffModal() {
+    const modal = document.getElementById('createStaffModal');
+    if (modal) {
+        modal.style.display = 'block';
+        modal.classList.add('show');
+    }
+}
+
+function closeCreateStaffModal() {
+    const modal = document.getElementById('createStaffModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    }
+}
 
 function renderStaffTable(staff) {
     const tableBody = document.getElementById('staffTable');

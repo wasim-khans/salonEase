@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!token || !user || user.type !== 'customer') {
-        alert('Please log in to view your appointments.');
+        showError('Please log in to view your appointments.');
         window.location.href = '/auth/login';
         return;
     }
@@ -184,7 +184,7 @@ function setupEditForm() {
         const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
 
         if (checkedServices.length === 0) {
-            alert('Please select at least one service.');
+            showError('Please select at least one service.');
             return;
         }
 
@@ -216,11 +216,11 @@ function setupEditForm() {
                 closeModal('edit-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to update appointment.');
+                showError(data.message || 'Failed to update appointment.');
             }
         } catch (error) {
             console.error('Edit error:', error);
-            alert('An error occurred while updating.');
+            showError('An error occurred while updating.');
         }
     });
 }
@@ -242,7 +242,7 @@ function setupCancelForm() {
 
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
-            alert('Cancellation reason is required.');
+            showError('Cancellation reason is required.');
             return;
         }
 
@@ -264,11 +264,11 @@ function setupCancelForm() {
                 closeModal('cancel-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to cancel appointment.');
+                showError(data.message || 'Failed to cancel appointment.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('An error occurred while cancelling.');
+            showError('An error occurred while cancelling.');
         }
     });
 }

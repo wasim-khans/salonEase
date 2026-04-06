@@ -204,12 +204,12 @@ function setupConfirmForm() {
         const start_time = document.getElementById('confirm-start-time').value;
 
         if (!staff_id) {
-            alert('Please assign a staff member.');
+            showError('Please assign a staff member.');
             return;
         }
 
         if (!start_time) {
-            alert('Please set a start time.');
+            showError('Please set a start time.');
             return;
         }
 

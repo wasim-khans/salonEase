@@ -8,7 +8,18 @@ block content
     .main-content
       .page-header
         span.breadcrumb Staff Management
+        button.btn.btn-primary Add Staff
 
       .page-body
         h1.page-title Admin Staff
         p.page-subtitle Manage all salon staff members
+
+        table.staff-table
+          thead
+            tr
+              th Name
+              th Email
+              th Phone
+              th Gender
+              th Actions
+          tbody#staffTable

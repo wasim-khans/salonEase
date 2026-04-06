@@ -227,10 +227,43 @@ function renderStaffTable(staff) {
             <td>${escapeHtml(member.gender)}</td>
             <td>
                 <button class="btn btn-sm btn-primary" onclick="openEditStaffModal(${JSON.stringify(member).replace(/"/g, '&quot;')})">Edit</button>
-                <button class="btn btn-sm btn-danger">Delete</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteStaff('${member.id}', '${escapeHtml(member.name)}')">Delete</button>
             </td>
         </tr>
     `).join('');
+}
+
+function deleteStaff(staffId, staffName) {
+    // Show confirmation prompt
+    const confirmed = confirm(`Are you sure you want to delete "${staffName}"? This action cannot be undone.`);
+    
+    if (!confirmed) {
+        return; // User cancelled the deletion
+    }
+    
+    // Get JWT token
+    const token = localStorage.getItem('jwtToken');
+    
+    // Send DELETE request to /api/admin/staff/:id
+    fetch(`/api/admin/staff/${staffId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Delete staff response:', data);
+        
+        if (data.success) {
+            // Reload staff list
+            loadStaff();
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting staff:', error);
+    });
 }
 
 function escapeHtml(text) {

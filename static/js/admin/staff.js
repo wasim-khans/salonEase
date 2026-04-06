@@ -128,33 +128,64 @@ function handleCreateStaff(e) {
     // Get JWT token
     const token = localStorage.getItem('jwtToken');
     
-    // Send POST request to /api/admin/staff
-    fetch('/api/admin/staff', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(staffData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Create staff response:', data);
-        
-        if (data.success) {
-            // Close modal
-            closeCreateStaffModal();
+    // Check if we're in edit mode or create mode
+    if (currentEditStaffId) {
+        // Edit mode - send PUT request
+        fetch(`/api/admin/staff/${currentEditStaffId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(staffData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Update staff response:', data);
             
-            // Clear form
-            e.target.reset();
+            if (data.success) {
+                // Close modal
+                closeCreateStaffModal();
+                
+                // Clear form
+                e.target.reset();
+                
+                // Reload staff list
+                loadStaff();
+            }
+        })
+        .catch(error => {
+            console.error('Error updating staff:', error);
+        });
+    } else {
+        // Create mode - send POST request
+        fetch('/api/admin/staff', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(staffData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Create staff response:', data);
             
-            // Reload staff list
-            loadStaff();
-        }
-    })
-    .catch(error => {
-        console.error('Error creating staff:', error);
-    });
+            if (data.success) {
+                // Close modal
+                closeCreateStaffModal();
+                
+                // Clear form
+                e.target.reset();
+                
+                // Reload staff list
+                loadStaff();
+            }
+        })
+        .catch(error => {
+            console.error('Error creating staff:', error);
+        });
+    }
 }
 
 function loadStaff() {

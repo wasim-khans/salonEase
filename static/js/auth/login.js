@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Login page loaded');
     const loginForm = document.querySelector('form');
     
     loginForm.addEventListener('submit', async (e) => {
@@ -21,24 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Login response:', data);
             
             if (data.success) {
-                localStorage.clear();
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('user');
                 localStorage.setItem('jwtToken', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
-                await new Promise(resolve => setTimeout(resolve, 2000)); // this is added to make sure the request life cycle completes properly to shows the reponse in the network tab
+                
                 if (data.user.type === 'customer') {
                     window.location.href = '/customer/services';
                 } else if (data.user.type === 'admin') {
                     window.location.href = '/admin/appointments';
-                } 
-                // else if (data.user.type === 'staff') {
-                //     window.location.href = '/staff/appointments';
-                // }
+                }
             } else {
-                alert(data.message || 'Login failed');
+                showError(data.message || 'Login failed.');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('An error occurred during login');
+            showError('An error occurred during login.');
         }
     });
 });

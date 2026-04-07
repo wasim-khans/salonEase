@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!token || !user || user.type !== 'customer') {
-        alert('Please log in to view your appointments.');
+        showError('Please log in to view your appointments.');
         window.location.href = '/auth/login';
         return;
     }
@@ -113,20 +113,25 @@ function getBadgeClass(status) {
 }
 
 // ── Edit Modal ──
+let editModalChangeListener = null;
 
 async function openEditModal(appt) {
     currentEditId = appt.id;
     const container = document.getElementById('edit-services-checkboxes');
-
+    
     try {
         const response = await fetch('/api/services');
         const data = await response.json();
-
+        
         if (data.success && data.services.length > 0) {
             container.innerHTML = '';
-
             const selectedIds = appt.services.map(s => s.service_id);
-
+            
+            // Remove existing listener if it exists
+            if (editModalChangeListener) {
+                container.removeEventListener('change', editModalChangeListener);
+            }
+            
             data.services.forEach(service => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-label';
@@ -137,8 +142,10 @@ async function openEditModal(appt) {
                 `;
                 container.appendChild(label);
             });
-
-            container.addEventListener('change', updateEditTotal);
+            
+            // Add new listener and store reference
+            editModalChangeListener = updateEditTotal;
+            container.addEventListener('change', editModalChangeListener);
             updateEditTotal();
         } else {
             container.innerHTML = '<p>No services available.</p>';
@@ -146,7 +153,7 @@ async function openEditModal(appt) {
     } catch (error) {
         container.innerHTML = '<p>Failed to load services.</p>';
     }
-
+    
     // Pre-fill date
     const rawDate = appt.appointment_date;
     const dateStr = new Date(rawDate).toISOString().split('T')[0];
@@ -184,7 +191,7 @@ function setupEditForm() {
         const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
 
         if (checkedServices.length === 0) {
-            alert('Please select at least one service.');
+            showError('Please select at least one service.');
             return;
         }
 
@@ -216,11 +223,11 @@ function setupEditForm() {
                 closeModal('edit-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to update appointment.');
+                showError(data.message || 'Failed to update appointment.');
             }
         } catch (error) {
             console.error('Edit error:', error);
-            alert('An error occurred while updating.');
+            showError('An error occurred while updating.');
         }
     });
 }
@@ -242,7 +249,7 @@ function setupCancelForm() {
 
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
-            alert('Cancellation reason is required.');
+            showError('Cancellation reason is required.');
             return;
         }
 
@@ -264,11 +271,11 @@ function setupCancelForm() {
                 closeModal('cancel-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to cancel appointment.');
+                showError(data.message || 'Failed to cancel appointment.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('An error occurred while cancelling.');
+            showError('An error occurred while cancelling.');
         }
     });
 }

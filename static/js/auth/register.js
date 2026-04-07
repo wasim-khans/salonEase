@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Register page loaded');
     const registerForm = document.querySelector('form');
     
     registerForm.addEventListener('submit', async (e) => {
@@ -24,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Registration response:', data);
             
             if (data.success) {
-                localStorage.clear();
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('user');
                 localStorage.setItem('jwtToken', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
@@ -34,11 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = '/admin/appointments';
                 }
             } else {
-                alert(data.message || 'Registration failed');
+                showError(data.message || 'Registration failed.');
             }
         } catch (error) {
             console.error('Registration error:', error);
-            alert('An error occurred during registration');
+            showError('An error occurred during registration.');
         }
     });
 });

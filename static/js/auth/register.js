@@ -34,11 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = '/admin/appointments';
                 }
             } else {
-                alert(data.message || 'Registration failed');
+                showError(data.message || 'Registration failed.');
             }
         } catch (error) {
             console.error('Registration error:', error);
-            alert('An error occurred during registration');
+            showError('An error occurred during registration.');
         }
     });
 });

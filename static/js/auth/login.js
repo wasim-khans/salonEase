@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = '/admin/appointments';
                 }
             } else {
-                alert(data.message || 'Login failed');
+                showError(data.message || 'Login failed.');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('An error occurred during login');
+            showError('An error occurred during login.');
         }
     });
 });

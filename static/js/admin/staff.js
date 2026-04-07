@@ -1,4 +1,4 @@
-// SalonEase Admin Services Management
+// SalonEase Admin Staff Management
 document.addEventListener('DOMContentLoaded', function() {
     // Read JWT token from localStorage
     const token = localStorage.getItem('jwtToken');
@@ -8,33 +8,33 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // Add Service button click handler
-    const addServiceBtn = document.querySelector('.btn-primary');
-    if (addServiceBtn) {
-        addServiceBtn.addEventListener('click', openCreateServiceModal);
+    // Add Staff button click handler
+    const addStaffBtn = document.querySelector('.btn-primary');
+    if (addStaffBtn) {
+        addStaffBtn.addEventListener('click', openCreateStaffModal);
     }
     
     // Cancel button click handler
     const cancelBtn = document.querySelector('.modal-footer .btn-secondary');
     if (cancelBtn) {
-        cancelBtn.addEventListener('click', closeCreateServiceModal);
+        cancelBtn.addEventListener('click', closeCreateStaffModal);
     }
     
     // Close icon click handler
     const closeIcon = document.querySelector('.modal-header .close');
     if (closeIcon) {
-        closeIcon.addEventListener('click', closeCreateServiceModal);
+        closeIcon.addEventListener('click', closeCreateStaffModal);
     }
     
-    // Create Service form submit handler
+    // Create Staff form submit handler
     const createForm = document.querySelector('.modal-body form');
     if (createForm) {
-        createForm.addEventListener('submit', handleCreateService);
+        createForm.addEventListener('submit', handleCreateStaff);
     }
     
-    // Fetch GET /api/services
-    showLoadingState('servicesTable');
-    fetch('/api/services', {
+    // Fetch GET /api/admin/staff
+    showLoadingState('staffTable');
+    fetch('/api/admin/staff', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -44,25 +44,25 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
         // Log API response to console
-        console.log('Services API response:', data);
+        console.log('Staff API response:', data);
         
-        // Render services into table body
-        if (data.success && data.services) {
-            renderServicesTable(data.services);
+        // Render staff into table body
+        if (data.success && data.staff) {
+            renderStaffTable(data.staff);
         }
     })
     .catch(error => {
-        console.error('Error fetching services:', error);
-        hideLoadingState('servicesTable');
+        console.error('Error fetching staff:', error);
+        hideLoadingState('staffTable');
     });
 });
 
-// Global variable to store current editing service id
-let currentEditServiceId = null;
+// Global variable to store current editing staff id
+let currentEditStaffId = null;
 
-function openCreateServiceModal() {
-    currentEditServiceId = null; // Reset for create mode
-    const modal = document.getElementById('createServiceModal');
+function openCreateStaffModal() {
+    currentEditStaffId = null; // Reset for create mode
+    const modal = document.getElementById('createStaffModal');
     if (modal) {
         modal.style.display = 'block';
         modal.classList.add('show');
@@ -70,7 +70,7 @@ function openCreateServiceModal() {
         // Update modal title for create mode
         const modalTitle = modal.querySelector('.modal-title');
         if (modalTitle) {
-            modalTitle.textContent = 'Create New Service';
+            modalTitle.textContent = 'Create New Staff';
         }
         
         // Clear form for create mode
@@ -81,9 +81,9 @@ function openCreateServiceModal() {
     }
 }
 
-function openEditServiceModal(service) {
-    currentEditServiceId = service.id; // Store service id for later use
-    const modal = document.getElementById('createServiceModal');
+function openEditStaffModal(staff) {
+    currentEditStaffId = staff.id; // Store staff id for later use
+    const modal = document.getElementById('createStaffModal');
     if (modal) {
         modal.style.display = 'block';
         modal.classList.add('show');
@@ -91,107 +91,109 @@ function openEditServiceModal(service) {
         // Update modal title for edit mode
         const modalTitle = modal.querySelector('.modal-title');
         if (modalTitle) {
-            modalTitle.textContent = 'Edit Service';
+            modalTitle.textContent = 'Edit Staff';
         }
         
-        // Prefill form inputs with service data
+        // Prefill form inputs with staff data
         const form = modal.querySelector('form');
         if (form) {
-            form.querySelector('#serviceName').value = service.name;
-            form.querySelector('#serviceCategory').value = service.category;
-            form.querySelector('#servicePrice').value = service.base_price;
-            form.querySelector('#serviceDuration').value = service.duration;
+            form.querySelector('#staffName').value = staff.name;
+            form.querySelector('#staffEmail').value = staff.email;
+            form.querySelector('#staffPhone').value = staff.phone;
+            form.querySelector('#staffPassword').value = ''; // Don't prefill password
+            form.querySelector('#staffGender').value = staff.gender;
         }
     }
 }
 
-function closeCreateServiceModal() {
-    const modal = document.getElementById('createServiceModal');
+function closeCreateStaffModal() {
+    const modal = document.getElementById('createStaffModal');
     if (modal) {
         modal.style.display = 'none';
         modal.classList.remove('show');
     }
 }
 
-function handleCreateService(e) {
+function handleCreateStaff(e) {
     e.preventDefault();
     
     // Read form values
     const formData = new FormData(e.target);
-    const serviceData = {
+    const staffData = {
         name: formData.get('name'),
-        category: formData.get('category'),
-        base_price: parseFloat(formData.get('base_price')),
-        duration: parseInt(formData.get('duration'))
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        password: formData.get('password'),
+        gender: formData.get('gender')
     };
     
     // Get JWT token
     const token = localStorage.getItem('jwtToken');
     
     // Check if we're in edit mode or create mode
-    if (currentEditServiceId) {
+    if (currentEditStaffId) {
         // Edit mode - send PUT request
-        fetch(`/api/services/${currentEditServiceId}`, {
+        fetch(`/api/admin/staff/${currentEditStaffId}`, {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(serviceData)
+            body: JSON.stringify(staffData)
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Update service response:', data);
+            console.log('Update staff response:', data);
             
             if (data.success) {
                 // Close modal
-                closeCreateServiceModal();
+                closeCreateStaffModal();
                 
                 // Clear form
                 e.target.reset();
                 
-                // Reload services list
-                loadServices();
+                // Reload staff list
+                loadStaff();
             }
         })
         .catch(error => {
-            console.error('Error updating service:', error);
+            console.error('Error updating staff:', error);
         });
     } else {
         // Create mode - send POST request
-        fetch('/api/services', {
+        fetch('/api/admin/staff', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(serviceData)
+            body: JSON.stringify(staffData)
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Create service response:', data);
+            console.log('Create staff response:', data);
             
             if (data.success) {
                 // Close modal
-                closeCreateServiceModal();
+                closeCreateStaffModal();
                 
                 // Clear form
                 e.target.reset();
                 
-                // Reload services list
-                loadServices();
+                // Reload staff list
+                loadStaff();
             }
         })
         .catch(error => {
-            console.error('Error creating service:', error);
+            console.error('Error creating staff:', error);
         });
     }
 }
 
-function loadServices() {
+function loadStaff() {
     const token = localStorage.getItem('jwtToken');
     
-    fetch('/api/services', {
+    fetch('/api/admin/staff', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -200,55 +202,55 @@ function loadServices() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success && data.services) {
-            renderServicesTable(data.services);
+        if (data.success && data.staff) {
+            renderStaffTable(data.staff);
         }
     })
     .catch(error => {
-        console.error('Error fetching services:', error);
+        console.error('Error fetching staff:', error);
     });
 }
 
-function renderServicesTable(services) {
-    const tableBody = document.getElementById('servicesTable');
+function renderStaffTable(staff) {
+    const tableBody = document.getElementById('staffTable');
     
     if (!tableBody) return;
     
-    if (!services || services.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No services found</td></tr>';
-        hideLoadingState('servicesTable');
+    if (!staff || staff.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No staff found</td></tr>';
+        hideLoadingState('staffTable');
         return;
     }
     
-    tableBody.innerHTML = services.map(service => `
+    tableBody.innerHTML = staff.map(member => `
         <tr>
-            <td>${escapeHtml(service.name)}</td>
-            <td>${escapeHtml(service.category)}</td>
-            <td>£${parseFloat(service.base_price).toFixed(2)}</td>
-            <td>${service.duration} min</td>
+            <td>${escapeHtml(member.name)}</td>
+            <td>${escapeHtml(member.email)}</td>
+            <td>${escapeHtml(member.phone)}</td>
+            <td>${escapeHtml(member.gender)}</td>
             <td>
-                <button class="btn btn-sm btn-primary" onclick="openEditServiceModal(${JSON.stringify(service).replace(/"/g, '&quot;')})">Edit</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteService('${service.id}', '${escapeHtml(service.name)}')">Delete</button>
+                <button class="btn btn-sm btn-primary" onclick="openEditStaffModal(${JSON.stringify(member).replace(/"/g, '&quot;')})">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteStaff('${member.id}', '${escapeHtml(member.name)}')">Delete</button>
             </td>
         </tr>
     `).join('');
     
-    hideLoadingState('servicesTable');
+    hideLoadingState('staffTable');
 }
 
-function deleteService(serviceId, serviceName) {
+function deleteStaff(staffId, staffName) {
     // Show confirmation prompt
-    const confirmed = confirm(`Are you sure you want to delete "${serviceName}"? This action cannot be undone.`);
+    const confirmed = confirm(`Are you sure you want to delete "${staffName}"? This action cannot be undone.`);
     
     if (!confirmed) {
-        return; // User cancelled the deletion
+        return; // User cancelled deletion
     }
     
     // Get JWT token
     const token = localStorage.getItem('jwtToken');
     
-    // Send DELETE request to /api/services/:id
-    fetch(`/api/services/${serviceId}`, {
+    // Send DELETE request to /api/admin/staff/:id
+    fetch(`/api/admin/staff/${staffId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -257,15 +259,15 @@ function deleteService(serviceId, serviceName) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Delete service response:', data);
+        console.log('Delete staff response:', data);
         
         if (data.success) {
-            // Reload services list
-            loadServices();
+            // Reload staff list
+            loadStaff();
         }
     })
     .catch(error => {
-        console.error('Error deleting service:', error);
+        console.error('Error deleting staff:', error);
     });
 }
 
@@ -281,12 +283,12 @@ function showLoadingState(tableId) {
     
     tableBody.innerHTML = `
         <tr>
-            <td colspan="4" style="text-align: center; padding: 20px;">
+            <td colspan="5" style="text-align: center; padding: 20px;">
                 <div style="display: inline-block; padding: 8px 16px; background: #f8f9fa; border-radius: 4px; color: #6c757d;">
                     <div style="display: inline-block; width: 20px; height: 20px; border: 2px solid #ffffff; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;">
                         <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 6px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
                     </div>
-                    Loading services...
+                    Loading staff...
                 </div>
             </td>
         </tr>

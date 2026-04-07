@@ -1,0 +1,63 @@
+extends ../layout
+include ../partials/_adminSidebar
+
+block content
+  .app-layout
+    +adminSidebar('staff')
+
+    .main-content
+      .page-header
+        span.breadcrumb Staff Management
+        button.btn.btn-primary Add Staff
+
+      .page-body
+        h1.page-title Admin Staff
+        p.page-subtitle Manage all salon staff members
+
+        table.staff-table
+          thead
+            tr
+              th Name
+              th Email
+              th Phone
+              th Gender
+              th Actions
+          tbody#staffTable
+
+      // Create Staff Modal
+      .modal.fade#createStaffModal(tabindex="-1" role="dialog")
+        .modal-dialog(role="document")
+          .modal-content
+            .modal-header
+              h5.modal-title Create New Staff
+              button.close(type="button" data-dismiss="modal" aria-label="Close")
+                span(aria-hidden="true") ×
+            .modal-body
+              form
+                .form-group
+                  label(for="staffName") Name
+                  input.form-control#staffName(type="text" name="name" required)
+                
+                .form-group
+                  label(for="staffEmail") Email
+                  input.form-control#staffEmail(type="email" name="email" required)
+                
+                .form-group
+                  label(for="staffPhone") Phone
+                  input.form-control#staffPhone(type="text" name="phone" required)
+                
+                .form-group
+                  label(for="staffPassword") Password
+                  input.form-control#staffPassword(type="password" name="password" required)
+                
+                .form-group
+                  label(for="staffGender") Gender
+                  select.form-control#staffGender(name="gender" required)
+                    option(value="male") Male
+                    option(value="female") Female
+                    option(value="other") Other
+                    option(value="prefer_not_to_say") Prefer not to say
+            
+            .modal-footer
+              button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+              button.btn.btn-primary(type="submit") Save Staff

@@ -17,17 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAppointments() {
     const container = document.getElementById('appointments-container');
-    const token = localStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch('/api/admin/appointments', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
+        const data = await apiGet('/api/admin/appointments');
 
         if (data.success) {
             allAppointments = data.appointments;
@@ -92,14 +84,15 @@ function displayAppointments(appointments) {
         card.querySelector('.appt-card-services').textContent = `${appt.customer_name || 'Unknown'} — ${serviceNames}`;
 
         const badge = card.querySelector('.badge');
-        badge.textContent = appt.status.replace('_', ' ');
-        badge.classList.add(getBadgeClass(appt.status));
+        badge.textContent = (appt.status || 'unknown').replace('_', ' ');
+        const badgeClass = getBadgeClass(appt.status);
+        if (badgeClass) badge.classList.add(badgeClass);
 
         card.querySelector('[data-field="date"]').textContent = date;
         card.querySelector('[data-field="time"]').textContent = appt.preferred_time || 'TBC';
         card.querySelector('[data-field="cost"]').textContent = `£${parseFloat(appt.estimated_total || 0).toFixed(2)}`;
 
-        card.querySelector('.appointment-card').classList.add(`status-${appt.status}`);
+        if (appt.status) card.querySelector('.appointment-card').classList.add(`status-${appt.status}`);
 
         // Action buttons per status (from UI State Rules table)
         const footer = card.querySelector('.appt-card-footer');
@@ -157,12 +150,13 @@ async function openConfirmModal(appt) {
     const details = document.getElementById('confirm-appt-details');
     const serviceNames = appt.services ? appt.services.map(s => s.service_name).join(', ') : 'N/A';
     details.innerHTML = `
-        <p><strong>Customer:</strong> ${appt.customer_name || 'Unknown'}</p>
-        <p><strong>Services:</strong> ${serviceNames}</p>
+        <p><strong>Customer:</strong> ${escapeHtml(appt.customer_name || 'Unknown')}</p>
+        <p><strong>Services:</strong> ${escapeHtml(serviceNames)}</p>
         <p><strong>Date:</strong> ${new Date(appt.appointment_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-        <p><strong>Preferred Time:</strong> ${appt.preferred_time || 'TBC'}</p>
-        <p><strong>Staff Preference:</strong> ${appt.preferred_staff_gender || 'any'}</p>
+        <p><strong>Preferred Time:</strong> ${escapeHtml(appt.preferred_time || 'TBC')}</p>
+        <p><strong>Staff Preference:</strong> ${escapeHtml(appt.preferred_staff_gender || 'any')}</p>
         <p><strong>Estimated Cost:</strong> £${parseFloat(appt.estimated_total || 0).toFixed(2)}</p>
+        <p><strong>CustomerPhone:</strong> ${escapeHtml(appt.customer_phone || 'None')}</p>
     `;
 
     // Pre-select the preferred time in start_time dropdown
@@ -201,6 +195,7 @@ function setupConfirmForm() {
 
             if (data.success) {
                 closeModal('confirm-modal');
+                showSuccess('Appointment confirmed successfully.');
                 loadAppointments();
             } else {
                 showError(data.message || 'Failed to confirm appointment.');
@@ -238,6 +233,7 @@ function setupCancelForm() {
 
             if (data.success) {
                 closeModal('cancel-modal');
+                showSuccess('Appointment cancelled successfully.');
                 loadAppointments();
             } else {
                 showError(data.message || 'Failed to cancel appointment.');
@@ -258,8 +254,8 @@ async function openCompleteModal(appt) {
     const details = document.getElementById('complete-appt-details');
     const serviceNames = appt.services ? appt.services.map(s => s.service_name).join(', ') : 'N/A';
     details.innerHTML = `
-        <p><strong>Customer:</strong> ${appt.customer_name || 'Unknown'}</p>
-        <p><strong>Services:</strong> ${serviceNames}</p>
+        <p><strong>Customer:</strong> ${escapeHtml(appt.customer_name || 'Unknown')}</p>
+        <p><strong>Services:</strong> ${escapeHtml(serviceNames)}</p>
         <p><strong>Estimated Cost:</strong> £${parseFloat(appt.estimated_total || 0).toFixed(2)}</p>
     `;
 
@@ -319,17 +315,9 @@ function setupCompleteForm() {
 
 async function loadStaffDropdown(selectId, preferredGender) {
     const select = document.getElementById(selectId);
-    const token = localStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch('/api/admin/staff', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
+        const data = await apiGet('/api/admin/staff');
 
         if (data.success && data.staff.length > 0) {
             select.innerHTML = '<option value="">Select a staff member...</option>';

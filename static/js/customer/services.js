@@ -6,8 +6,7 @@ async function loadServices() {
     const grid = document.getElementById('services-grid');
 
     try {
-        const response = await fetch('/api/services');
-        const data = await response.json();
+        const data = await apiGet('/api/services');
 
         if (data.success && data.services.length > 0) {
             grid.innerHTML = '';

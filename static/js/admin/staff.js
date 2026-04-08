@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Load staff table ──
 
 async function loadStaff() {
-    showTableLoading('staff-table-body', 6, 'staff');
+    showTableLoading('staff-table-body', 5, 'staff');
 
     try {
         const data = await apiGet('/api/admin/staff');
@@ -35,11 +35,11 @@ async function loadStaff() {
                 tbody.appendChild(tr);
             });
         } else {
-            showTableEmpty('staff-table-body', 6, 'staff members');
+            showTableEmpty('staff-table-body', 5, 'staff members');
         }
     } catch (error) {
         console.error('Error loading staff:', error);
-        showTableEmpty('staff-table-body', 6, 'staff (error loading)');
+        showTableEmpty('staff-table-body', 5, 'staff (error loading)');
     }
 }
 

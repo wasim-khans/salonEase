@@ -15,17 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAppointments() {
     const container = document.getElementById('appointments-container');
-    const token = localStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch('/api/customer/appointments', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
+        const data = await apiGet('/api/customer/appointments');
 
         if (data.success && data.appointments.length > 0) {
             container.innerHTML = '';
@@ -104,8 +96,7 @@ async function openEditModal(appt) {
     const container = document.getElementById('edit-services-checkboxes');
 
     try {
-        const response = await fetch('/api/services');
-        const data = await response.json();
+        const data = await apiGet('/api/services');
 
         if (data.success && data.services.length > 0) {
             container.innerHTML = '';
@@ -122,7 +113,7 @@ async function openEditModal(appt) {
                 const isChecked = selectedIds.includes(service.id) ? 'checked' : '';
                 label.innerHTML = `
                     <input type="checkbox" name="edit_services" value="${service.id}" data-price="${service.base_price}" ${isChecked}>
-                    <span>${service.name} — £${parseFloat(service.base_price).toFixed(2)}</span>
+                    <span>${escapeHtml(service.name)} — £${parseFloat(service.base_price).toFixed(2)}</span>
                 `;
                 container.appendChild(label);
             });
@@ -170,7 +161,6 @@ function setupEditForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('jwtToken');
         const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
 
         if (checkedServices.length === 0) {

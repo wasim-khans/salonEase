@@ -9,8 +9,7 @@ async function loadServicesCheckboxes() {
     const container = document.getElementById('services-checkboxes');
 
     try {
-        const response = await fetch('/api/services');
-        const data = await response.json();
+        const data = await apiGet('/api/services');
 
         if (data.success && data.services.length > 0) {
             container.innerHTML = '';
@@ -19,7 +18,7 @@ async function loadServicesCheckboxes() {
                 label.className = 'checkbox-label';
                 label.innerHTML = `
                     <input type="checkbox" name="services" value="${service.id}" data-price="${service.base_price}">
-                    <span>${service.name} — £${parseFloat(service.base_price).toFixed(2)}</span>
+                    <span>${escapeHtml(service.name)} — £${parseFloat(service.base_price).toFixed(2)}</span>
                 `;
                 container.appendChild(label);
             });
@@ -56,7 +55,6 @@ function setupBookingForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('jwtToken');
         const checkedServices = document.querySelectorAll('input[name="services"]:checked');
         const appointmentDate = document.getElementById('date').value;
         const preferredTime = document.getElementById('time').value;
@@ -83,21 +81,12 @@ function setupBookingForm() {
         }));
 
         try {
-            const response = await fetch('/api/customer/appointments', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    appointment_date: appointmentDate,
-                    preferred_time: preferredTime,
-                    preferred_staff_gender: preferredStaffGender,
-                    services
-                })
+            const data = await apiPost('/api/customer/appointments', {
+                appointment_date: appointmentDate,
+                preferred_time: preferredTime,
+                preferred_staff_gender: preferredStaffGender,
+                services
             });
-
-            const data = await response.json();
 
             if (data.success) {
                 showSuccess('Booking submitted successfully! It is now under review.');

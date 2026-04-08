@@ -26,8 +26,8 @@ async function loadServices() {
 function createServiceCard(service) {
     return `
         <div class="service-card">
-            <h3 class="service-name">${service.name}</h3>
-            <p class="service-desc">${service.category}</p>
+            <h3 class="service-name">${escapeHtml(service.name)}</h3>
+            <p class="service-desc">${escapeHtml(service.category)}</p>
             <p class="service-price">from £${parseFloat(service.base_price).toFixed(2)}</p>
             <a class="btn-book" href="/customer/book?service=${service.id}">Book →</a>
         </div>

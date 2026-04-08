@@ -93,7 +93,6 @@ body {
 
 /* ── Buttons ── */
 .btn-primary {
-  width: 100%;
   background: #3498db;
   color: white;
   padding: 0.75rem 1.5rem;
@@ -414,7 +413,9 @@ body {
   font-size: 0.9rem;
 }
 
-.btn-primary { flex: 1; }
+.btn-full-width {
+  width: 100%;
+}
 
 /* ── Modal buttons override ── */
 .modal-actions .btn-primary {
@@ -705,6 +706,36 @@ body {
 }
 
 .modal-body input[type="number"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.modal-body input[type="text"],
+.modal-body input[type="email"],
+.modal-body input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.modal-body input[type="text"]:focus,
+.modal-body input[type="email"]:focus,
+.modal-body input[type="password"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.modal-body select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.modal-body select:focus {
   outline: none;
   border-color: #3498db;
 }

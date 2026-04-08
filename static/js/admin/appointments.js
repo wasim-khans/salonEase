@@ -4,14 +4,7 @@ let currentCancelId = null;
 let currentCompleteId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    if (!token || !user || user.type !== 'admin') {
-        alert('Access denied. Admin login required.');
-        window.location.href = '/auth/login';
-        return;
-    }
+    if (!requireAuth('admin')) return;
 
     loadAppointments();
     setupFilters();
@@ -19,16 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCancelForm();
     setupCompleteForm();
 });
-
-// ── Modal helpers ──
-
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
 
 // ── Load appointments ──
 
@@ -204,38 +187,27 @@ function setupConfirmForm() {
         const start_time = document.getElementById('confirm-start-time').value;
 
         if (!staff_id) {
-            alert('Please assign a staff member.');
+            showError('Please assign a staff member.');
             return;
         }
 
         if (!start_time) {
-            alert('Please set a start time.');
+            showError('Please set a start time.');
             return;
         }
 
-        const token = localStorage.getItem('jwtToken');
-
         try {
-            const response = await fetch(`/api/admin/appointments/${currentConfirmId}/confirm`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ staff_id, start_time })
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/admin/appointments/${currentConfirmId}/confirm`, { staff_id, start_time });
 
             if (data.success) {
                 closeModal('confirm-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to confirm appointment.');
+                showError(data.message || 'Failed to confirm appointment.');
             }
         } catch (error) {
             console.error('Confirm error:', error);
-            alert('An error occurred while confirming.');
+            showError('An error occurred while confirming.');
         }
     });
 }
@@ -257,33 +229,22 @@ function setupCancelForm() {
 
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
-            alert('Cancellation reason is required.');
+            showError('Cancellation reason is required.');
             return;
         }
 
-        const token = localStorage.getItem('jwtToken');
-
         try {
-            const response = await fetch(`/api/admin/appointments/${currentCancelId}/cancel`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ cancellation_reason: reason })
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/admin/appointments/${currentCancelId}/cancel`, { cancellation_reason: reason });
 
             if (data.success) {
                 closeModal('cancel-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to cancel appointment.');
+                showError(data.message || 'Failed to cancel appointment.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('An error occurred while cancelling.');
+            showError('An error occurred while cancelling.');
         }
     });
 }
@@ -329,38 +290,27 @@ function setupCompleteForm() {
         const admin_notes = document.getElementById('complete-notes').value.trim();
 
         if (!actual_price || actual_price <= 0) {
-            alert('Please enter the actual price charged.');
+            showError('Please enter the actual price charged.');
             return;
         }
 
         if (!completed_by) {
-            alert('Please select the staff member who provided the service.');
+            showError('Please select the staff member who provided the service.');
             return;
         }
 
-        const token = localStorage.getItem('jwtToken');
-
         try {
-            const response = await fetch(`/api/admin/appointments/${currentCompleteId}/complete`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ actual_price, completed_by, admin_notes: admin_notes || null })
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/admin/appointments/${currentCompleteId}/complete`, { actual_price, completed_by, admin_notes: admin_notes || null });
 
             if (data.success) {
                 closeModal('complete-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to complete appointment.');
+                showError(data.message || 'Failed to complete appointment.');
             }
         } catch (error) {
             console.error('Complete error:', error);
-            alert('An error occurred while completing.');
+            showError('An error occurred while completing.');
         }
     });
 }

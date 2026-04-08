@@ -36,8 +36,61 @@ const getServiceById = async (serviceId) => {
     }
 };
 
+const createService = async (data) => {
+    try {
+        const { name, category, base_price, duration } = data;
+        if (!name || !category || !base_price || !duration) {
+            return { success: false, message: 'All fields are required (name, category, base_price, duration)' };
+        }
+        if (!['male', 'female', 'both'].includes(category)) {
+            return { success: false, message: 'Invalid category. Must be male, female, or both' };
+        }
+
+        const id = await Service.create({ name, category, base_price, duration });
+        return { success: true, message: 'Service created', id };
+    } catch (error) {
+        return { success: false, message: 'Failed to create service', error: error.message };
+    }
+};
+
+const updateService = async (id, data) => {
+    try {
+        const service = await Service.findById(id);
+        if (!service) {
+            return { success: false, message: 'Service not found' };
+        }
+
+        if (data.category && !['male', 'female', 'both'].includes(data.category)) {
+            return { success: false, message: 'Invalid category. Must be male, female, or both' };
+        }
+
+        const updated = await Service.update(id, data);
+        if (!updated) {
+            return { success: false, message: 'No changes were made' };
+        }
+        return { success: true, message: 'Service updated' };
+    } catch (error) {
+        return { success: false, message: 'Failed to update service', error: error.message };
+    }
+};
+
+const deleteService = async (id) => {
+    try {
+        const deleted = await Service.delete(id);
+        if (!deleted) {
+            return { success: false, message: 'Service not found' };
+        }
+        return { success: true, message: 'Service deleted' };
+    } catch (error) {
+        return { success: false, message: 'Failed to delete service', error: error.message };
+    }
+};
+
 module.exports = {
     getAllServices,
     getServicesByCategory,
-    getServiceById
+    getServiceById,
+    createService,
+    updateService,
+    deleteService
 };

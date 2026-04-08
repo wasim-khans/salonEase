@@ -1,12 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    if (!token || !user || user.type !== 'customer') {
-        alert('Please log in to book an appointment.');
-        window.location.href = '/auth/login';
-        return;
-    }
+    if (!requireAuth('customer')) return;
 
     loadServicesCheckboxes();
     setupBookingForm();
@@ -70,17 +63,17 @@ function setupBookingForm() {
         const preferredStaffGender = document.querySelector('input[name="preferred_staff_gender"]:checked')?.value || 'any';
 
         if (checkedServices.length === 0) {
-            alert('Please select at least one service.');
+            showError('Please select at least one service.');
             return;
         }
 
         if (!appointmentDate) {
-            alert('Please select a date.');
+            showError('Please select a date.');
             return;
         }
 
         if (!preferredTime) {
-            alert('Please select a time slot.');
+            showError('Please select a time slot.');
             return;
         }
 
@@ -107,14 +100,14 @@ function setupBookingForm() {
             const data = await response.json();
 
             if (data.success) {
-                alert('Booking submitted successfully! It is now under review.');
-                window.location.href = '/customer/appointments';
+                showSuccess('Booking submitted successfully! It is now under review.');
+                setTimeout(() => { window.location.href = '/customer/appointments'; }, 1000);
             } else {
-                alert(data.message || 'Failed to create booking.');
+                showError(data.message || 'Failed to create booking.');
             }
         } catch (error) {
             console.error('Booking error:', error);
-            alert('An error occurred while creating the booking.');
+            showError('An error occurred while creating the booking.');
         }
     });
 }

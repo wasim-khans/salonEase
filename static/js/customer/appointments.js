@@ -1,30 +1,15 @@
 let currentEditId = null;
 let currentCancelId = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    const user = JSON.parse(localStorage.getItem('user'));
+let editModalChangeListener = null;
 
-    if (!token || !user || user.type !== 'customer') {
-        alert('Please log in to view your appointments.');
-        window.location.href = '/auth/login';
-        return;
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    if (!requireAuth('customer')) return;
 
     loadAppointments();
     setupEditForm();
     setupCancelForm();
 });
-
-// ── Modal helpers ──
-
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
 
 // ── Load appointments ──
 
@@ -127,6 +112,10 @@ async function openEditModal(appt) {
 
             const selectedIds = appt.services.map(s => s.service_id);
 
+            if (editModalChangeListener) {
+                container.removeEventListener('change', editModalChangeListener);
+            }
+
             data.services.forEach(service => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-label';
@@ -138,7 +127,8 @@ async function openEditModal(appt) {
                 container.appendChild(label);
             });
 
-            container.addEventListener('change', updateEditTotal);
+            editModalChangeListener = updateEditTotal;
+            container.addEventListener('change', editModalChangeListener);
             updateEditTotal();
         } else {
             container.innerHTML = '<p>No services available.</p>';
@@ -184,7 +174,7 @@ function setupEditForm() {
         const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
 
         if (checkedServices.length === 0) {
-            alert('Please select at least one service.');
+            showError('Please select at least one service.');
             return;
         }
 
@@ -201,26 +191,17 @@ function setupEditForm() {
         };
 
         try {
-            const response = await fetch(`/api/customer/appointments/${currentEditId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/customer/appointments/${currentEditId}`, body);
 
             if (data.success) {
                 closeModal('edit-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to update appointment.');
+                showError(data.message || 'Failed to update appointment.');
             }
         } catch (error) {
             console.error('Edit error:', error);
-            alert('An error occurred while updating.');
+            showError('An error occurred while updating.');
         }
     });
 }
@@ -242,33 +223,22 @@ function setupCancelForm() {
 
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
-            alert('Cancellation reason is required.');
+            showError('Cancellation reason is required.');
             return;
         }
 
-        const token = localStorage.getItem('jwtToken');
-
         try {
-            const response = await fetch(`/api/customer/appointments/${currentCancelId}/cancel`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ cancellation_reason: reason })
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/customer/appointments/${currentCancelId}/cancel`, { cancellation_reason: reason });
 
             if (data.success) {
                 closeModal('cancel-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to cancel appointment.');
+                showError(data.message || 'Failed to cancel appointment.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('An error occurred while cancelling.');
+            showError('An error occurred while cancelling.');
         }
     });
 }

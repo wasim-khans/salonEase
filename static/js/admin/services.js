@@ -118,3 +118,26 @@ function setupServiceForm() {
         }
     });
 }
+
+// Delete
+function openDeleteServiceModal(id) {
+    currentDeleteServiceId = id;
+    openModal('delete-service-modal');
+}
+
+async function confirmDeleteService() {
+    if (!currentDeleteServiceId) return;
+    try {
+        const data = await apiDelete(`/api/admin/services/${currentDeleteServiceId}`);
+        if (data.success) {
+            showSuccess('Service deleted.');
+            closeModal('delete-service-modal');
+            loadServices();
+        } else {
+            showError(data.message || 'Failed to delete service.');
+        }
+    } catch (error) {
+        console.error('Service delete error:', error);
+        showError('An error occurred while deleting.');
+    }
+}

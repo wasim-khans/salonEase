@@ -50,3 +50,18 @@ function openAddServiceModal() {
     document.getElementById('service-form').reset();
     openModal('service-modal');
 }
+
+// Edit modal
+function openEditServiceModal(id) {
+    currentEditServiceId = id;
+    document.getElementById('service-modal-title').textContent = 'Edit Service';
+    const row = document.querySelector(`tr[data-id="${id}"]`);
+    if (row) {
+        document.getElementById('service-name').value = row.dataset.name;
+        document.getElementById('service-category').value = row.dataset.category;
+        document.getElementById('service-price').value = parseFloat(row.dataset.price).toFixed(2);
+        document.getElementById('service-duration').value = row.dataset.duration;
+    }
+
+    openModal('service-modal');
+}

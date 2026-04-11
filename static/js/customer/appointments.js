@@ -1,46 +1,23 @@
 let currentEditId = null;
 let currentCancelId = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    const user = JSON.parse(localStorage.getItem('user'));
+let editModalChangeListener = null;
 
-    if (!token || !user || user.type !== 'customer') {
-        alert('Please log in to view your appointments.');
-        window.location.href = '/auth/login';
-        return;
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    if (!requireAuth('customer')) return;
 
     loadAppointments();
     setupEditForm();
     setupCancelForm();
 });
 
-// ── Modal helpers ──
-
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
-
 // ── Load appointments ──
 
 async function loadAppointments() {
     const container = document.getElementById('appointments-container');
-    const token = localStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch('/api/customer/appointments', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
+        const data = await apiGet('/api/customer/appointments');
 
         if (data.success && data.appointments.length > 0) {
             container.innerHTML = '';
@@ -119,13 +96,16 @@ async function openEditModal(appt) {
     const container = document.getElementById('edit-services-checkboxes');
 
     try {
-        const response = await fetch('/api/services');
-        const data = await response.json();
+        const data = await apiGet('/api/services');
 
         if (data.success && data.services.length > 0) {
             container.innerHTML = '';
 
             const selectedIds = appt.services.map(s => s.service_id);
+
+            if (editModalChangeListener) {
+                container.removeEventListener('change', editModalChangeListener);
+            }
 
             data.services.forEach(service => {
                 const label = document.createElement('label');
@@ -133,12 +113,13 @@ async function openEditModal(appt) {
                 const isChecked = selectedIds.includes(service.id) ? 'checked' : '';
                 label.innerHTML = `
                     <input type="checkbox" name="edit_services" value="${service.id}" data-price="${service.base_price}" ${isChecked}>
-                    <span>${service.name} — £${parseFloat(service.base_price).toFixed(2)}</span>
+                    <span>${escapeHtml(service.name)} — £${parseFloat(service.base_price).toFixed(2)}</span>
                 `;
                 container.appendChild(label);
             });
 
-            container.addEventListener('change', updateEditTotal);
+            editModalChangeListener = updateEditTotal;
+            container.addEventListener('change', editModalChangeListener);
             updateEditTotal();
         } else {
             container.innerHTML = '<p>No services available.</p>';
@@ -180,11 +161,10 @@ function setupEditForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('jwtToken');
         const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
 
         if (checkedServices.length === 0) {
-            alert('Please select at least one service.');
+            showError('Please select at least one service.');
             return;
         }
 
@@ -201,26 +181,17 @@ function setupEditForm() {
         };
 
         try {
-            const response = await fetch(`/api/customer/appointments/${currentEditId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/customer/appointments/${currentEditId}`, body);
 
             if (data.success) {
                 closeModal('edit-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to update appointment.');
+                showError(data.message || 'Failed to update appointment.');
             }
         } catch (error) {
             console.error('Edit error:', error);
-            alert('An error occurred while updating.');
+            showError('An error occurred while updating.');
         }
     });
 }
@@ -242,33 +213,22 @@ function setupCancelForm() {
 
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
-            alert('Cancellation reason is required.');
+            showError('Cancellation reason is required.');
             return;
         }
 
-        const token = localStorage.getItem('jwtToken');
-
         try {
-            const response = await fetch(`/api/customer/appointments/${currentCancelId}/cancel`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ cancellation_reason: reason })
-            });
-
-            const data = await response.json();
+            const data = await apiPut(`/api/customer/appointments/${currentCancelId}/cancel`, { cancellation_reason: reason });
 
             if (data.success) {
                 closeModal('cancel-modal');
                 loadAppointments();
             } else {
-                alert(data.message || 'Failed to cancel appointment.');
+                showError(data.message || 'Failed to cancel appointment.');
             }
         } catch (error) {
             console.error('Cancel error:', error);
-            alert('An error occurred while cancelling.');
+            showError('An error occurred while cancelling.');
         }
     });
 }

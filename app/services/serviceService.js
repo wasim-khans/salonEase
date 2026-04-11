@@ -53,6 +53,23 @@ const createService = async (data) => {
     }
 };
 
+const updateService = async (id, data) => {
+    try {
+        const service = await Service.findById(id);
+        if (!service) {
+            return { success: false, message: 'Service not found' };
+        }
+
+        const updated = await Service.update(id, data);
+        if (!updated) {
+            return { success: false, message: 'No changes were made' };
+        }
+        return { success: true, message: 'Service updated' };
+    } catch (error) {
+        return { success: false, message: 'Failed to update service', error: error.message };
+    }
+};
+
 module.exports = {
     getAllServices,
     getServicesByCategory,

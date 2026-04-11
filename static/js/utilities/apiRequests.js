@@ -23,3 +23,24 @@ function requireAuth(expectedType) {
     }
     return true;
 }
+
+// Fetch wrapper
+
+async function apiRequest(url, options = {}) {
+    const token = getToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, {
+        ...options,
+        headers: { ...headers, ...options.headers }
+    });
+
+    return response.json();
+}
+
+function apiGet(url) {
+    return apiRequest(url, { method: 'GET' });
+}

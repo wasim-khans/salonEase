@@ -42,6 +42,9 @@ const createService = async (data) => {
         if (!name || !category || !base_price || !duration) {
             return { success: false, message: 'All fields are required (name, category, base_price, duration)' };
         }
+        if (!['male', 'female', 'both'].includes(category)) {
+            return { success: false, message: 'Invalid category. Must be male, female, or both' };
+        }
         
         const id = await Service.create({ name, category, base_price, duration });
         return { success: true, message: 'Service created', id };

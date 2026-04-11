@@ -12,7 +12,7 @@ const {
     confirmAppointment,
     completeAppointment
 } = require('./services/appointmentService');
-const { getAllStaff } = require('./services/staffService');
+const { getAllStaff, createStaff, updateStaff, deleteStaff } = require('./services/staffService');
 
 const app = express();
 

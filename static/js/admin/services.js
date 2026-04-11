@@ -42,3 +42,11 @@ async function loadServices() {
         showTableEmpty('services-table-body', 5, 'services (error loading)');
     }
 }
+
+// Add modal
+function openAddServiceModal() {
+    currentEditServiceId = null;
+    document.getElementById('service-modal-title').textContent = 'Add Service';
+    document.getElementById('service-form').reset();
+    openModal('service-modal');
+}

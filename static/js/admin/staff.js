@@ -119,3 +119,29 @@ function setupStaffForm() {
         }
     });
 }
+
+// Delete modal
+
+function openDeleteStaffModal(id) {
+    currentDeleteStaffId = id;
+    openModal('delete-staff-modal');
+}
+
+async function confirmDeleteStaff() {
+    if (!currentDeleteStaffId) return;
+
+    try {
+        const data = await apiDelete(`/api/admin/staff/${currentDeleteStaffId}`);
+
+        if (data.success) {
+            showSuccess('Staff member deleted.');
+            closeModal('delete-staff-modal');
+            loadStaff();
+        } else {
+            showError(data.message || 'Failed to delete staff member.');
+        }
+    } catch (error) {
+        console.error('Staff delete error:', error);
+        showError('An error occurred while deleting.');
+    }
+}

@@ -89,5 +89,8 @@ const deleteService = async (id) => {
 module.exports = {
     getAllServices,
     getServicesByCategory,
-    getServiceById
+    getServiceById,
+    createService,
+    updateService,
+    deleteService
 };

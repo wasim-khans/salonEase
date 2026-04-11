@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const { authenticateToken, requireType } = require('./middleware/authMiddleware');
 const { registerCustomer, registerAdmin, login } = require('./services/authService');
-const { getAllServices, getServicesByCategory, getServiceById } = require('./services/serviceService');
+const { getAllServices, getServicesByCategory, getServiceById, createService, updateService, deleteService } = require('./services/serviceService');
 const {
     createAppointment,
     editAppointment,

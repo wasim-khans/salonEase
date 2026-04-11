@@ -188,4 +188,12 @@ app.get('/admin/appointments', (req, res) => {
     res.render('admin/appointments', { title: 'Appointments - SalonEase' });
 });
 
+app.get('/admin/staff', (req, res) => {
+    res.render('admin/staff', { title: 'Staff - SalonEase' });
+});
+
+app.get('/admin/services', (req, res) => {
+    res.render('admin/services', { title: 'Services - SalonEase' });
+});
+
 module.exports = app;

@@ -19,6 +19,11 @@ const createStaff = async (data) => {
             return { success: false, message: 'All fields are required (name, email, phone, password, gender)' };
         }
 
+        const existing = await Staff.findByEmailOrPhone(email, phone);
+        if (existing) {
+            return { success: false, message: 'A staff member with that email or phone already exists' };
+        }
+
         const id = await Staff.create({ name, email, phone, password, gender });
         return { success: true, message: 'Staff member created', id };
     } catch (error) {

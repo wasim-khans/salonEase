@@ -153,6 +153,11 @@ app.post('/api/admin/staff', authenticateToken, requireType(['admin']), async (r
     res.status(result.success ? 201 : 400).json(result);
 });
 
+app.put('/api/admin/staff/:id', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await updateStaff(req.params.id, req.body);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
 // Admin Confirm Appointment API (in_review → confirmed)
 app.put('/api/admin/appointments/:id/confirm', authenticateToken, requireType(['admin']), async (req, res) => {
     const { staff_id, start_time } = req.body;

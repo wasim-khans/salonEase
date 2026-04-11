@@ -26,3 +26,32 @@ block content
           tbody#staff-table-body
             tr
               td(colspan="5" style="text-align:center; color:#999;") Loading staff...
+
+  //- Add / Edit Staff Modal
+  .modal-overlay#staff-modal
+    .modal
+      .modal-header
+        h3#staff-modal-title Add Staff Member
+        button.modal-close(onclick="closeModal('staff-modal')") &times;
+      .modal-body
+        form#staff-form
+          .form-group
+            label(for="staff-name") Name
+            input#staff-name(type="text" required)
+          .form-group
+            label(for="staff-email") Email
+            input#staff-email(type="email" required)
+          .form-group
+            label(for="staff-phone") Phone
+            input#staff-phone(type="text" required)
+          .form-group
+            label(for="staff-password") Password
+            input#staff-password(type="password")
+          .form-group
+            label(for="staff-gender") Gender
+            select#staff-gender
+              option(value="female") Female
+              option(value="male") Male
+          .modal-actions
+            button.btn-outline(type="button" onclick="closeModal('staff-modal')") Cancel
+            button.btn-primary(type="submit") Save

@@ -44,3 +44,11 @@ async function apiRequest(url, options = {}) {
 function apiGet(url) {
     return apiRequest(url, { method: 'GET' });
 }
+
+function apiPost(url, body) {
+    return apiRequest(url, { method: 'POST', body: JSON.stringify(body) });
+}
+
+function apiPut(url, body) {
+    return apiRequest(url, { method: 'PUT', body: JSON.stringify(body) });
+}

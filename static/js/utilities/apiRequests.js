@@ -77,3 +77,29 @@ function closeModal(id) {
     const el = document.getElementById(id);
     if (el) el.classList.remove('active');
 }
+
+// Table loading state
+
+function showTableLoading(tableBodyId, colspan, label) {
+    const tbody = document.getElementById(tableBodyId);
+    if (!tbody) return;
+    tbody.innerHTML = `
+        <tr class="loading-row">
+            <td colspan="${colspan}" style="text-align:center; padding:20px; color:#999;">
+                Loading ${label || 'data'}...
+            </td>
+        </tr>
+    `;
+}
+
+function showTableEmpty(tableBodyId, colspan, label) {
+    const tbody = document.getElementById(tableBodyId);
+    if (!tbody) return;
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="${colspan}" style="text-align:center; color:#999;">
+                No ${label || 'records'} found
+            </td>
+        </tr>
+    `;
+}

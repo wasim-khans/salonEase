@@ -159,6 +159,11 @@ app.put('/api/admin/services/:id', authenticateToken, requireType(['admin']), as
     res.status(result.success ? 200 : 400).json(result);
 });
 
+app.delete('/api/admin/services/:id', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await deleteService(req.params.id);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
 // Admin Confirm Appointment API (in_review → confirmed)
 app.put('/api/admin/appointments/:id/confirm', authenticateToken, requireType(['admin']), async (req, res) => {
     const { staff_id, start_time } = req.body;

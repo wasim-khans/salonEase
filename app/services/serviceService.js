@@ -60,6 +60,10 @@ const updateService = async (id, data) => {
             return { success: false, message: 'Service not found' };
         }
 
+        if (data.category && !['male', 'female', 'both'].includes(data.category)) {
+            return { success: false, message: 'Invalid category. Must be male, female, or both' };
+        }
+
         const updated = await Service.update(id, data);
         if (!updated) {
             return { success: false, message: 'No changes were made' };

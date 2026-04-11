@@ -36,6 +36,20 @@ const getServiceById = async (serviceId) => {
     }
 };
 
+const createService = async (data) => {
+    try {
+        const { name, category, base_price, duration } = data;
+        if (!name || !category || !base_price || !duration) {
+            return { success: false, message: 'All fields are required (name, category, base_price, duration)' };
+        }
+        
+        const id = await Service.create({ name, category, base_price, duration });
+        return { success: true, message: 'Service created', id };
+    } catch (error) {
+        return { success: false, message: 'Failed to create service', error: error.message };
+    }
+};
+
 module.exports = {
     getAllServices,
     getServicesByCategory,

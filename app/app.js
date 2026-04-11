@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const { authenticateToken, requireType } = require('./middleware/authMiddleware');
 const { registerCustomer, registerAdmin, login } = require('./services/authService');
-const { getAllServices, getServicesByCategory, getServiceById } = require('./services/serviceService');
+const { getAllServices, getServicesByCategory, getServiceById, createService, updateService, deleteService } = require('./services/serviceService');
 const {
     createAppointment,
     editAppointment,
@@ -148,6 +148,7 @@ app.get('/api/admin/staff', authenticateToken, requireType(['admin']), async (re
     res.status(result.success ? 200 : 500).json(result);
 });
 
+// Admin Staff CRUD API
 app.post('/api/admin/staff', authenticateToken, requireType(['admin']), async (req, res) => {
     const result = await createStaff(req.body);
     res.status(result.success ? 201 : 400).json(result);
@@ -160,6 +161,22 @@ app.put('/api/admin/staff/:id', authenticateToken, requireType(['admin']), async
 
 app.delete('/api/admin/staff/:id', authenticateToken, requireType(['admin']), async (req, res) => {
     const result = await deleteStaff(req.params.id);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
+// Admin Services CRUD API
+app.post('/api/admin/services', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await createService(req.body);
+    res.status(result.success ? 201 : 400).json(result);
+});
+
+app.put('/api/admin/services/:id', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await updateService(req.params.id, req.body);
+    res.status(result.success ? 200 : 400).json(result);
+});
+
+app.delete('/api/admin/services/:id', authenticateToken, requireType(['admin']), async (req, res) => {
+    const result = await deleteService(req.params.id);
     res.status(result.success ? 200 : 400).json(result);
 });
 

@@ -7,48 +7,64 @@ block content
 
     .main-content
       .page-header
-        span.breadcrumb Our Services
+        span.breadcrumb Service Management
 
       .page-body
         h1.page-title Services
-        p.page-subtitle Browse all available services
-        p.section-label ALL SERVICES
+        p.page-subtitle Manage your salon services
 
-        .services-grid
-          .service-card
-            h3.service-name Haircut
-            p.service-desc Quick trim to full restyle
-            p.service-price from £15.00
-            a.btn-book(href="/customer/book") Book →
+        button.btn-primary(onclick="openAddServiceModal()") + Add Service
 
-          .service-card
-            h3.service-name Hair colouring
-            p.service-desc Tints, highlights, balayage
-            p.service-price from £45.00
-            a.btn-book(href="/customer/book") Book →
+        table.appointments-table
+          thead
+            tr
+              th Name
+              th Category
+              th Price
+              th Duration
+              th Actions
+          tbody#services-table-body
+            tr
+              td(colspan="5" style="text-align:center; color:#999;") Loading services...
 
-          .service-card
-            h3.service-name Hair treatment
-            p.service-desc Deep conditioning & repair
-            p.service-price from £30.00
-            a.btn-book(href="/customer/book") Book →
+  //- Add / Edit Service Modal
+  .modal-overlay#service-modal
+    .modal
+      .modal-header
+        h3#service-modal-title Add Service
+        button.modal-close(onclick="closeModal('service-modal')") &times;
+      .modal-body
+        form#service-form
+          .form-group
+            label(for="service-name") Name
+            input#service-name(type="text" required)
+          .form-group
+            label(for="service-category") Category
+            select#service-category
+              option(value="both") Both
+              option(value="male") Male
+              option(value="female") Female
+          .form-group
+            label(for="service-price") Base Price (£)
+            input#service-price(type="number" step="0.01" min="0" required)
+          .form-group
+            label(for="service-duration") Duration (minutes)
+            input#service-duration(type="number" min="1" required)
+          .modal-actions
+            button.btn-outline(type="button" onclick="closeModal('service-modal')") Cancel
+            button.btn-primary(type="submit") Save
 
-          .service-card
-            h3.service-name Manicure
-            p.service-desc Classic & gel options
-            p.service-price from £20.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Pedicure
-            p.service-desc Relaxing foot treatment
-            p.service-price from £25.00
-            a.btn-book(href="/customer/book") Book →
-
-          .service-card
-            h3.service-name Waxing
-            p.service-desc Full body waxing available
-            p.service-price from £18.00
-            a.btn-book(href="/customer/book") Book →
+  //- Delete Confirmation Modal
+  .modal-overlay#delete-service-modal
+    .modal
+      .modal-header
+        h3 Delete Service
+        button.modal-close(onclick="closeModal('delete-service-modal')") &times;
+      .modal-body
+        p Are you sure you want to delete this service? This action cannot be undone.
+        .modal-actions
+          button.btn-outline(type="button" onclick="closeModal('delete-service-modal')") Cancel
+          button.btn-primary.btn-action-danger(type="button" onclick="confirmDeleteService()" style="border-color:#e74c3c; color:#e74c3c;") Delete
 
 block scripts
+  script(src="/js/admin/services.js")

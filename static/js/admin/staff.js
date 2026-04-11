@@ -67,3 +67,55 @@ function openEditStaffModal(id, name, email, phone, gender) {
     document.getElementById('staff-password').required = false;
     openModal('staff-modal');
 }
+
+// Form handling
+
+function setupStaffForm() {
+    const form = document.getElementById('staff-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const body = {
+            name: document.getElementById('staff-name').value.trim(),
+            email: document.getElementById('staff-email').value.trim(),
+            phone: document.getElementById('staff-phone').value.trim(),
+            gender: document.getElementById('staff-gender').value
+        };
+
+        const password = document.getElementById('staff-password').value;
+        if (password) {
+            body.password = password;
+        }
+
+        if (!body.name || !body.email || !body.phone) {
+            showError('Name, email, and phone are required.');
+            return;
+        }
+
+        try {
+            let data;
+            if (currentEditStaffId) {
+                data = await apiPut(`/api/admin/staff/${currentEditStaffId}`, body);
+            } else {
+                if (!password) {
+                    showError('Password is required for new staff.');
+                    return;
+                }
+                data = await apiPost('/api/admin/staff', body);
+            }
+
+            if (data.success) {
+                showSuccess(currentEditStaffId ? 'Staff member updated.' : 'Staff member created.');
+                closeModal('staff-modal');
+                loadStaff();
+            } else {
+                showError(data.message || 'Failed to save staff member.');
+            }
+        } catch (error) {
+            console.error('Staff save error:', error);
+            showError('An error occurred while saving.');
+        }
+    });
+}

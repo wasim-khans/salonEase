@@ -52,3 +52,7 @@ function apiPost(url, body) {
 function apiPut(url, body) {
     return apiRequest(url, { method: 'PUT', body: JSON.stringify(body) });
 }
+
+function apiDelete(url) {
+    return apiRequest(url, { method: 'DELETE' });
+}

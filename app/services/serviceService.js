@@ -74,6 +74,18 @@ const updateService = async (id, data) => {
     }
 };
 
+const deleteService = async (id) => {
+    try {
+        const deleted = await Service.delete(id);
+        if (!deleted) {
+            return { success: false, message: 'Service not found' };
+        }
+        return { success: true, message: 'Service deleted' };
+    } catch (error) {
+        return { success: false, message: 'Failed to delete service', error: error.message };
+    }
+};
+
 module.exports = {
     getAllServices,
     getServicesByCategory,

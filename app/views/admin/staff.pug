@@ -1,0 +1,28 @@
+extends ../layout
+include ../partials/_adminSidebar
+
+block content
+  .app-layout
+    +adminSidebar('staff')
+
+    .main-content
+      .page-header
+        span.breadcrumb Staff Management
+
+      .page-body
+        h1.page-title Staff
+        p.page-subtitle Manage your salon staff members
+
+        button.btn-primary(onclick="openAddStaffModal()") + Add Staff
+
+        table.appointments-table
+          thead
+            tr
+              th Name
+              th Email
+              th Phone
+              th Gender
+              th Actions
+          tbody#staff-table-body
+            tr
+              td(colspan="5" style="text-align:center; color:#999;") Loading staff...

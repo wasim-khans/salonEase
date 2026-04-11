@@ -61,5 +61,8 @@ const deleteStaff = async (id) => {
 };
 
 module.exports = {
-    getAllStaff
+    getAllStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff
 };

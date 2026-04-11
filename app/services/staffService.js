@@ -48,6 +48,18 @@ const updateStaff = async (id, data) => {
     }
 };
 
+const deleteStaff = async (id) => {
+    try {
+        const deleted = await Staff.delete(id);
+        if (!deleted) {
+            return { success: false, message: 'Staff member not found' };
+        }
+        return { success: true, message: 'Staff member deleted' };
+    } catch (error) {
+        return { success: false, message: 'Failed to delete staff member', error: error.message };
+    }
+};
+
 module.exports = {
     getAllStaff
 };

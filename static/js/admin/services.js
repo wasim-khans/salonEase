@@ -4,6 +4,7 @@ let currentDeleteServiceId = null;
 document.addEventListener('DOMContentLoaded', () => {
     if (!requireAuth('admin')) return;
     loadServices();
+    setupServiceForm();
 });
 
 // Load services table
@@ -64,4 +65,56 @@ function openEditServiceModal(id) {
     }
 
     openModal('service-modal');
+}
+
+// Form submit (create or update)
+function setupServiceForm() {
+    const form = document.getElementById('service-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const body = {
+            name: document.getElementById('service-name').value.trim(),
+            category: document.getElementById('service-category').value,
+            base_price: parseFloat(document.getElementById('service-price').value),
+            duration: parseInt(document.getElementById('service-duration').value, 10)
+        };
+
+        if (!body.name) {
+            showError('Service name is required.');
+            return;
+        }
+
+        if (!body.base_price || body.base_price <= 0) {
+            showError('Please enter a valid price.');
+            return;
+        }
+
+        if (!body.duration || body.duration <= 0) {
+            showError('Please enter a valid duration.');
+            return;
+        }
+
+        try {
+            let data;
+            if (currentEditServiceId) {
+                data = await apiPut(`/api/admin/services/${currentEditServiceId}`, body);
+            } else {
+                data = await apiPost('/api/admin/services', body);
+            }
+
+            if (data.success) {
+                showSuccess(currentEditServiceId ? 'Service updated.' : 'Service created.');
+                closeModal('service-modal');
+                loadServices();
+            } else {
+                showError(data.message || 'Failed to save service.');
+            }
+        } catch (error) {
+            console.error('Service save error:', error);
+            showError('An error occurred while saving.');
+        }
+    });
 }

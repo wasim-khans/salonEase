@@ -546,60 +546,6 @@ body {
 .badge-completed  { background: #ede7f6; color: #4527a0; }
 .badge-cancelled  { background: #fce4ec; color: #b71c1c; }
 
-.btn-cancel {
-  font-size: 0.8rem;
-  color: #333;
-  border: 1px solid #ddd;
-  padding: 4px 12px;
-  border-radius: 4px;
-  text-decoration: none;
-  background: #fff;
-}
-
-/* ── Cancel modal ── */
-.cancel-overlay {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 64px);
-  background: rgba(0,0,0,0.15);
-}
-
-.cancel-modal {
-  background: #fff;
-  padding: 40px;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 4px;
-}
-
-.modal-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.modal-subtitle {
-  font-size: 0.85rem;
-  color: #999;
-  margin-bottom: 20px;
-}
-
-.modal-appt-info {
-  background: #f5f5f5;
-  padding: 14px 16px;
-  margin-bottom: 24px;
-  border-radius: 4px;
-}
-
-.modal-appt-name { font-weight: bold; font-size: 0.95rem; }
-.modal-appt-date { font-size: 0.85rem; color: #999; margin-top: 4px; }
-
-.modal-actions {
-  display: flex;
-  gap: 12px;
-}
-
 .btn-outline {
   flex: 1;
   padding: 0.75rem;
@@ -618,20 +564,12 @@ body {
 .modal-actions .btn-primary {
   flex: 1;
   width: auto;
-  background: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   padding: 0.75rem;
   font-size: 0.9rem;
   margin: 0;
   cursor: pointer;
 }
 
-<<<<<<< Updated upstream
-.modal-actions .btn-primary:hover {
-  background: #f5f5f5;
-=======
 .modal-actions .btn-primary:hover { background: #2980b9; }
 
 /* ── Confirm cancel modal ── */
@@ -642,7 +580,6 @@ body {
   font-weight: bold;
   color: #1a1a1a;
   margin-bottom: 6px;
->>>>>>> Stashed changes
 }
 
 .modal-confirm-subtitle {
@@ -1028,6 +965,36 @@ body {
 }
 
 .modal-body input[type="number"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.modal-body input[type="text"],
+.modal-body input[type="email"],
+.modal-body input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.modal-body input[type="text"]:focus,
+.modal-body input[type="email"]:focus,
+.modal-body input[type="password"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.modal-body select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.modal-body select:focus {
   outline: none;
   border-color: #3498db;
 }

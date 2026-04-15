@@ -2,12 +2,10 @@
 class ToastManager {
     constructor() {
         this.container = null;
-        this.init();
     }
 
-    init() {
-        // Create toast container if it doesn't exist
-        if (!this.container) {
+    ensureContainer() {
+        if (!this.container && document.body) {
             this.container = document.createElement('div');
             this.container.className = 'toast-container';
             this.container.style.cssText = `
@@ -21,11 +19,24 @@ class ToastManager {
         }
     }
 
+    getColorForType(type) {
+        const colors = {
+            success: '#28a745',
+            error: '#dc3545',
+            warning: '#f39c12',
+            info: '#3498db'
+        };
+        return colors[type] || colors.info;
+    }
+
     showToast(message, type = 'success') {
+        this.ensureContainer();
+        if (!this.container) return;
+
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.style.cssText = `
-            background: ${type === 'success' ? '#28a745' : '#dc3545'};
+            background: ${this.getColorForType(type)};
             color: white;
             padding: 12px 20px;
             border-radius: 6px;
@@ -34,6 +45,7 @@ class ToastManager {
             opacity: 0;
             transform: translateX(100%);
             transition: all 0.3s ease-in-out;
+            pointer-events: auto;
             min-width: 250px;
             max-width: 400px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -49,32 +61,30 @@ class ToastManager {
 
         this.container.appendChild(toast);
 
-        // Trigger animation
         setTimeout(() => {
             toast.style.opacity = '1';
             toast.style.transform = 'translateX(0)';
         }, 100);
 
-        // Auto-dismiss after 3 seconds
         setTimeout(() => {
             this.dismissToast(toast);
         }, 3000);
     }
 
     getIcon(type) {
-        if (type === 'success') {
-            return '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M16.707 5.293a1 1 0 010-1.414 1.414l-5-5a1 1 0 010-1.414 1.414L10 11.586l-5 5a1 1 0 010-1.414 1.414L8.586 11l5-5z"/></svg>';
-        } else if (type === 'error') {
-            return '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 18a8 8 0 100-16 8 8 0 0116 8zm0-14a6 6 0 100-12 6 6 0 0112 6zm0-10a4 4 0 100-8 4 4 0 018 4z"/></svg>';
-        }
-        return '';
+        const icons = {
+            success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+            error: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+            warning: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+            info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+        };
+        return icons[type] || icons.info;
     }
 
     dismissToast(toast) {
         if (toast && toast.parentNode) {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(100%)';
-            
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -112,9 +122,4 @@ function showWarning(message) {
 
 function showInfo(message) {
     showToast(message, 'info');
-}
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { showToast, showSuccess, showError, showWarning, showInfo };
 }

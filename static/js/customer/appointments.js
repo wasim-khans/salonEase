@@ -1,18 +1,5 @@
 let currentEditId = null;
 let currentCancelId = null;
-<<<<<<< Updated upstream
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    if (!token || !user || user.type !== 'customer') {
-        showError('Please log in to view your appointments.');
-        window.location.href = '/auth/login';
-        return;
-    }
-
-=======
 let currentCancelAppt = null;
 let editModalChangeListener = null;
 
@@ -45,53 +32,18 @@ const MOCK_APPOINTMENTS = [
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!requireAuth('customer')) return;
->>>>>>> Stashed changes
     loadAppointments();
     setupEditForm();
     setupCancelForm();
 });
 
-<<<<<<< Updated upstream
-// ── Modal helpers ──
-
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
-
 // ── Load appointments ──
 
-async function loadAppointments() {
-    const container = document.getElementById('appointments-container');
-    const token = localStorage.getItem('jwtToken');
-
-    try {
-        const response = await fetch('/api/customer/appointments', {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (data.success && data.appointments.length > 0) {
-            container.innerHTML = '';
-            data.appointments.forEach(appt => {
-                container.appendChild(createAppointmentCard(appt));
-            });
-        } else if (data.success) {
-            container.innerHTML = '<p>You have no appointments yet. <a href="/customer/book">Book one now</a>.</p>';
-=======
 async function loadAppointments() {
     try {
         const data = await apiGet('/api/customer/appointments');
         if (data.success) {
             renderAppointments(data.appointments);
->>>>>>> Stashed changes
         } else {
             renderAppointments(MOCK_APPOINTMENTS);
         }
@@ -178,61 +130,23 @@ function getBadgeClass(status) {
 }
 
 // ── Edit Modal ──
-let editModalChangeListener = null;
 
 async function openEditModal(appt) {
     currentEditId = appt.id;
     const container = document.getElementById('edit-services-checkboxes');
-    
+
     try {
-<<<<<<< Updated upstream
-        const response = await fetch('/api/services');
-        const data = await response.json();
-        
-        if (data.success && data.services.length > 0) {
-            container.innerHTML = '';
-            const selectedIds = appt.services.map(s => s.service_id);
-            
-            // Remove existing listener if it exists
-            if (editModalChangeListener) {
-                container.removeEventListener('change', editModalChangeListener);
-            }
-            
-            data.services.forEach(service => {
-                const label = document.createElement('label');
-                label.className = 'checkbox-label';
-                const isChecked = selectedIds.includes(service.id) ? 'checked' : '';
-                label.innerHTML = `
-                    <input type="checkbox" name="edit_services" value="${service.id}" data-price="${service.base_price}" ${isChecked}>
-                    <span>${service.name} — £${parseFloat(service.base_price).toFixed(2)}</span>
-                `;
-                container.appendChild(label);
-            });
-            
-            // Add new listener and store reference
-            editModalChangeListener = updateEditTotal;
-            container.addEventListener('change', editModalChangeListener);
-            updateEditTotal();
-=======
         const data = await apiGet('/api/services');
         if (data.success && data.services.length > 0) {
             renderEditCheckboxes(container, data.services, appt);
->>>>>>> Stashed changes
         } else {
             renderEditCheckboxes(container, MOCK_SERVICES_EDIT, appt);
         }
     } catch (_) {
         renderEditCheckboxes(container, MOCK_SERVICES_EDIT, appt);
     }
-<<<<<<< Updated upstream
-    
-    // Pre-fill date
-    const rawDate = appt.appointment_date;
-    const dateStr = new Date(rawDate).toISOString().split('T')[0];
-=======
 
     const dateStr = new Date(appt.appointment_date).toISOString().split('T')[0];
->>>>>>> Stashed changes
     document.getElementById('edit-date').value = dateStr;
     document.getElementById('edit-time').value = appt.preferred_time ? appt.preferred_time.substring(0, 5) : '';
     const genderRadio = document.querySelector(`input[name="edit_staff_gender"][value="${appt.preferred_staff_gender || 'any'}"]`);
@@ -276,24 +190,8 @@ function setupEditForm() {
     if (!form) return;
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-<<<<<<< Updated upstream
-
-        const token = localStorage.getItem('jwtToken');
-        const checkedServices = document.querySelectorAll('input[name="edit_services"]:checked');
-
-        if (checkedServices.length === 0) {
-            showError('Please select at least one service.');
-            return;
-        }
-
-        const services = Array.from(checkedServices).map(cb => ({
-            service_id: cb.value,
-            price: parseFloat(cb.dataset.price)
-        }));
-=======
         const checked = document.querySelectorAll('input[name="edit_services"]:checked');
         if (checked.length === 0) { showError('Please select at least one service.'); return; }
->>>>>>> Stashed changes
 
         const body = {
             appointment_date: document.getElementById('edit-date').value,
@@ -303,34 +201,10 @@ function setupEditForm() {
         };
 
         try {
-<<<<<<< Updated upstream
-            const response = await fetch(`/api/customer/appointments/${currentEditId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(body)
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                closeModal('edit-modal');
-                loadAppointments();
-            } else {
-                showError(data.message || 'Failed to update appointment.');
-            }
-        } catch (error) {
-            console.error('Edit error:', error);
-            showError('An error occurred while updating.');
-        }
-=======
             const data = await apiPut(`/api/customer/appointments/${currentEditId}`, body);
             if (data.success) { closeModal('edit-modal'); loadAppointments(); }
             else showError(data.message || 'Failed to update appointment.');
         } catch (_) { showError('An error occurred while updating.'); }
->>>>>>> Stashed changes
     });
 }
 
@@ -372,44 +246,15 @@ function setupCancelForm() {
     if (!form) return;
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-<<<<<<< Updated upstream
-
         const reason = document.getElementById('cancel-reason').value.trim();
         if (!reason) {
             showError('Cancellation reason is required.');
             return;
         }
-
-        const token = localStorage.getItem('jwtToken');
-
         try {
-            const response = await fetch(`/api/customer/appointments/${currentCancelId}/cancel`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ cancellation_reason: reason })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                closeModal('cancel-modal');
-                loadAppointments();
-            } else {
-                showError(data.message || 'Failed to cancel appointment.');
-            }
-        } catch (error) {
-            console.error('Cancel error:', error);
-            showError('An error occurred while cancelling.');
-        }
-=======
-        try {
-            const data = await apiPut(`/api/customer/appointments/${currentCancelId}/cancel`, { cancellation_reason: 'Cancelled by customer' });
+            const data = await apiPut(`/api/customer/appointments/${currentCancelId}/cancel`, { cancellation_reason: reason });
             if (data.success) { closeModal('cancel-modal'); showCancelledView(); }
             else showError(data.message || 'Failed to cancel appointment.');
         } catch (_) { showError('An error occurred while cancelling.'); }
->>>>>>> Stashed changes
     });
 }

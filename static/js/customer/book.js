@@ -1,14 +1,3 @@
-<<<<<<< Updated upstream
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('jwtToken');
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    if (!token || !user || user.type !== 'customer') {
-        showError('Please log in to book an appointment.');
-        window.location.href = '/auth/login';
-        return;
-    }
-=======
 const MOCK_SERVICES = [
     { id: '1', name: 'Haircut',              category: 'hair',  base_price: 25, duration_minutes: 45  },
     { id: '2', name: 'Beard Trim',           category: 'hair',  base_price: 15, duration_minutes: 20  },
@@ -25,7 +14,6 @@ let selectedServices = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!requireAuth('customer')) return;
->>>>>>> Stashed changes
 
     await loadInitialService();
     setupBookingForm();
@@ -39,31 +27,9 @@ async function loadInitialService() {
     let service = null;
 
     try {
-<<<<<<< Updated upstream
-        const response = await fetch('/api/services');
-        const data = await response.json();
-
-        if (data.success && data.services.length > 0) {
-            container.innerHTML = '';
-            data.services.forEach(service => {
-                const label = document.createElement('label');
-                label.className = 'checkbox-label';
-                label.innerHTML = `
-                    <input type="checkbox" name="services" value="${service.id}" data-price="${service.base_price}">
-                    <span>${service.name} — £${parseFloat(service.base_price).toFixed(2)}</span>
-                `;
-                container.appendChild(label);
-            });
-
-            // Update estimated total when checkboxes change
-            container.addEventListener('change', updateEstimatedTotal);
-        } else {
-            container.innerHTML = '<p>No services available.</p>';
-=======
         const data = await apiGet('/api/services');
         if (data.success) {
             service = data.services.find(s => String(s.id) === String(serviceId));
->>>>>>> Stashed changes
         }
     } catch (_) {}
 
@@ -104,24 +70,14 @@ function setupBookingForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-<<<<<<< Updated upstream
-        const token = localStorage.getItem('jwtToken');
-        const checkedServices = document.querySelectorAll('input[name="services"]:checked');
-        const appointmentDate = document.getElementById('date').value;
-        const preferredTime = document.getElementById('time').value;
-        const preferredStaffGender = document.querySelector('input[name="preferred_staff_gender"]:checked')?.value || 'any';
-
-        if (checkedServices.length === 0) {
-=======
-        if (selectedServices.length === 0) {
->>>>>>> Stashed changes
-            showError('Please select at least one service.');
-            return;
-        }
-
         const appointmentDate = document.getElementById('date').value;
         const preferredTime   = document.getElementById('time').value;
         const preferredStaffGender = document.querySelector('input[name="preferred_staff_gender"]:checked')?.value || 'any';
+
+        if (selectedServices.length === 0) {
+            showError('Please select at least one service.');
+            return;
+        }
 
         if (!appointmentDate) { showError('Please select a date.'); return; }
         if (!preferredTime)   { showError('Please select a time slot.'); return; }
@@ -132,29 +88,21 @@ function setupBookingForm() {
         }));
 
         try {
-            const response = await fetch('/api/customer/appointments', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    appointment_date: appointmentDate,
-                    preferred_time: preferredTime,
-                    preferred_staff_gender: preferredStaffGender,
-                    services
-                })
+            const data = await apiPost('/api/customer/appointments', {
+                appointment_date: appointmentDate,
+                preferred_time: preferredTime,
+                preferred_staff_gender: preferredStaffGender,
+                services
             });
-
-            const data = await response.json();
 
             if (data.success) {
                 showSuccess('Booking submitted successfully! It is now under review.');
-                window.location.href = '/customer/appointments';
+                setTimeout(() => { window.location.href = '/customer/appointments'; }, 1000);
             } else {
                 showError(data.message || 'Failed to create booking.');
             }
         } catch (error) {
+            console.error('Booking error:', error);
             showError('An error occurred while creating the booking.');
         }
     });

@@ -28,8 +28,7 @@ async function loadServices() {
     const grid = document.getElementById('services-grid');
 
     try {
-        const response = await fetch('/api/services');
-        const data = await response.json();
+        const data = await apiGet('/api/services');
 
         if (data.success && data.services.length > 0) {
             renderServices(grid, data.services);
@@ -59,12 +58,6 @@ function createServiceCard(service) {
 
     return `
         <div class="service-card">
-<<<<<<< Updated upstream
-            <h3 class="service-name">${service.name}</h3>
-            <p class="service-desc">${service.category}</p>
-            <p class="service-price">from £${parseFloat(service.base_price).toFixed(2)}</p>
-            <a class="btn-book" href="/customer/book?service=${service.id}">Book →</a>
-=======
             ${imgHtml}
             <div class="service-card-body">
                 <h3 class="service-name">${escapeHtml(service.name)}</h3>
@@ -74,7 +67,6 @@ function createServiceCard(service) {
                     <a class="btn-book" href="/customer/book?service=${service.id}">Book →</a>
                 </div>
             </div>
->>>>>>> Stashed changes
         </div>
     `;
 }

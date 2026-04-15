@@ -13,36 +13,38 @@ block content
         h1.page-title New Booking
 
         form#bookingForm
-          .form-group
-            label Select Services
-            #services-checkboxes
-              p Loading services...
 
-          .form-row
-            .form-group
-              label(for="date") Preferred date
-              input#date(type="date" name="appointment_date" required)
+          .booking-section
+            p.booking-section-label Services
+            #selected-services
+            a.add-service-link(href="/customer/services") + Add another service
 
-            .form-group
-              label(for="time") Preferred time
-              select#time(name="preferred_time" required)
-                option(value="") Select a time slot...
-                option(value="09:00") 09:00
-                option(value="09:30") 09:30
-                option(value="10:00") 10:00
-                option(value="10:30") 10:30
-                option(value="11:00") 11:00
-                option(value="11:30") 11:30
-                option(value="12:00") 12:00
-                option(value="14:00") 14:00
-                option(value="14:30") 14:30
-                option(value="15:00") 15:00
-                option(value="15:30") 15:30
-                option(value="16:00") 16:00
-                option(value="17:00") 17:00
+          .booking-section
+            p.booking-section-label Date & Time
+            .form-row
+              .form-group
+                label(for="date") Preferred date
+                input#date(type="date" name="appointment_date" required)
+              .form-group
+                label(for="time") Preferred time
+                select#time(name="preferred_time" required)
+                  option(value="") Select a time slot...
+                  option(value="09:00") 09:00
+                  option(value="09:30") 09:30
+                  option(value="10:00") 10:00
+                  option(value="10:30") 10:30
+                  option(value="11:00") 11:00
+                  option(value="11:30") 11:30
+                  option(value="12:00") 12:00
+                  option(value="14:00") 14:00
+                  option(value="14:30") 14:30
+                  option(value="15:00") 15:00
+                  option(value="15:30") 15:30
+                  option(value="16:00") 16:00
+                  option(value="17:00") 17:00
 
-          .form-group
-            label Staff preference
+          .booking-section
+            p.booking-section-label Staff Preference
             .radio-group
               label.radio-label
                 input(type="radio" name="preferred_staff_gender" value="any" checked)
@@ -58,4 +60,9 @@ block content
 
           button.btn-full-width.btn-primary(type="submit") Confirm booking
 
+<<<<<<< Updated upstream
   script(src="/js/customer/book.js")
+=======
+block scripts
+  script(src="/js/customer/book.js")
+>>>>>>> Stashed changes

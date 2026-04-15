@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Global variable to store current editing staff id
 let currentEditStaffId = null;
 
+<<<<<<< Updated upstream
 function openCreateStaffModal() {
     currentEditStaffId = null; // Reset for create mode
     const modal = document.getElementById('createStaffModal');
@@ -77,6 +78,34 @@ function openCreateStaffModal() {
         const form = modal.querySelector('form');
         if (form) {
             form.reset();
+=======
+async function loadStaff() {
+    showTableLoading('staff-table-body', 5, 'staff');
+
+    try {
+        const data = await apiGet('/api/admin/staff');
+
+        if (data.success && data.staff.length > 0) {
+            const tbody = document.getElementById('staff-table-body');
+            tbody.innerHTML = '';
+
+            data.staff.forEach(member => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${escapeHtml(member.name)}</td>
+                    <td>${escapeHtml(member.email)}</td>
+                    <td>${escapeHtml(member.phone)}</td>
+                    <td>${escapeHtml(member.gender)}</td>
+                    <td>
+                        <button class="btn-outline" onclick="openEditStaffModal('${member.id}', '${escapeHtml(member.name)}', '${escapeHtml(member.email)}', '${escapeHtml(member.phone)}', '${escapeHtml(member.gender)}')">Edit</button>
+                        <button class="btn-outline btn-action-danger" onclick="openDeleteStaffModal('${member.id}')" style="border-color:#e74c3c; color:#e74c3c;">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            showTableEmpty('staff-table-body', 5, 'staff');
+>>>>>>> Stashed changes
         }
     }
 }

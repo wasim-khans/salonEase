@@ -3,4 +3,8 @@ mixin customerSidebar(active)
     a.sidebar-item(href="/customer/services" class=(active === 'services' ? 'active' : '')) Services
     a.sidebar-item(href="/customer/appointments" class=(active === 'appointments' ? 'active' : '')) My Appointments
     a.sidebar-item(href="/customer/book" class=(active === 'book' ? 'active' : '')) Book
+<<<<<<< Updated upstream
     a.sidebar-item.logout(href="/") Log out
+=======
+    button.btn-logout(onclick="logout(); return false;") Log out
+>>>>>>> Stashed changes

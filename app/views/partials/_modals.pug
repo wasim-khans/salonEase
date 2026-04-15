@@ -55,20 +55,17 @@ mixin editModal()
 
 mixin cancelModal()
   .modal-overlay#cancel-modal
-    .modal
-      .modal-header
-        h3 Cancel Appointment
-        button.modal-close(onclick="closeModal('cancel-modal')") &times;
+    .modal.modal-confirm
       .modal-body
-        p Are you sure you want to cancel this appointment?
+        h3.modal-confirm-title Cancel this appointment?
+        p.modal-confirm-subtitle This action cannot be undone.
+        .modal-appt-info
+          strong#cancel-appt-name
+          span#cancel-appt-datetime
         form#cancel-form
-          .form-group
-            label(for="cancel-reason") Cancellation Reason (required)
-            textarea#cancel-reason(name="cancellation_reason" rows="3" required placeholder="Please provide a reason for cancellation...")
-
           .modal-actions
-            button.btn-action.btn-action-danger(type="submit") Confirm Cancellation
-            button.btn-action(type="button" onclick="closeModal('cancel-modal')") Go Back
+            button.btn-confirm-cancel(type="submit") Yes, cancel it
+            button.btn-confirm-back(type="button" onclick="closeModal('cancel-modal')") No, go back
 
 mixin confirmModal()
   .modal-overlay#confirm-modal

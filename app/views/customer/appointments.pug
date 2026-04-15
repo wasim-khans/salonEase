@@ -1,6 +1,5 @@
 extends ../layout
 include ../partials/_customerSidebar
-include ../partials/_appointmentCard
 include ../partials/_modals
 
 block content
@@ -9,18 +8,37 @@ block content
 
     .main-content
       .page-header
-        span.breadcrumb My Appointments
+        span My Appointments
 
       .page-body
-        h1.page-title My Appointments
-        p.section-label UPCOMING & PAST
+        #appointments-view
+          h1.page-title My Appointments
 
-        #appointments-container
-          p Loading appointments...
+          p.section-label Upcoming
+          #upcoming-container
+            p.loading-text Loading...
 
-    +appointmentCardTemplate()
+          p.section-label Past
+          #past-container
+
+        #cancelled-view(style="display:none")
+          .cancelled-state
+            .cancelled-icon ✕
+            h2.cancelled-title Booking Cancelled
+            p.cancelled-subtitle Your appointment has been cancelled
+            .modal-appt-info
+              strong#cancelled-appt-name
+              span#cancelled-appt-datetime
+            .cancelled-actions
+              a.btn-cancelled-secondary(href="/customer/appointments") View Bookings
+              a.btn-cancelled-primary(href="/customer/services") Book a Service
 
   +editModal()
   +cancelModal()
 
+<<<<<<< Updated upstream
   script(src="/js/customer/appointments.js")
+=======
+block scripts
+  script(src="/js/customer/appointments.js")
+>>>>>>> Stashed changes

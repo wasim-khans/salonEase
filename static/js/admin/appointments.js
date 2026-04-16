@@ -80,6 +80,10 @@ function sortByDateDesc(list) {
 
 // ── Display appointment cards ──
 
+function apptRef(id) {
+    return id ? '#' + id.slice(-6).toUpperCase() : '';
+}
+
 function displayAppointments(appointments) {
     appointments = sortByDateDesc(appointments);
     const container = document.getElementById('appointments-container');
@@ -100,6 +104,7 @@ function displayAppointments(appointments) {
             day: 'numeric', month: 'short', year: 'numeric'
         });
 
+        card.querySelector('.appt-card-ref').textContent = apptRef(appt.id);
         card.querySelector('.appt-card-services').textContent = `${appt.customer_name || 'Unknown'} — ${serviceNames}`;
 
         const badge = card.querySelector('.badge');
@@ -113,38 +118,9 @@ function displayAppointments(appointments) {
 
         if (appt.status) card.querySelector('.appointment-card').classList.add(`status-${appt.status}`);
 
-        // Action buttons per status (from UI State Rules table)
+        // Action buttons per status
         const footer = card.querySelector('.appt-card-footer');
-
-        // in_review → Confirm, Cancel
-        if (appt.status === 'in_review') {
-            const confirmBtn = document.createElement('button');
-            confirmBtn.className = 'btn-action';
-            confirmBtn.textContent = 'Confirm';
-            confirmBtn.addEventListener('click', () => openConfirmModal(appt));
-            footer.appendChild(confirmBtn);
-
-            const cancelBtn = document.createElement('button');
-            cancelBtn.className = 'btn-action btn-action-danger';
-            cancelBtn.textContent = 'Cancel';
-            cancelBtn.addEventListener('click', () => openCancelModal(appt.id));
-            footer.appendChild(cancelBtn);
-        }
-
-        // confirmed → Complete, Cancel
-        if (appt.status === 'confirmed') {
-            const completeBtn = document.createElement('button');
-            completeBtn.className = 'btn-action';
-            completeBtn.textContent = 'Complete';
-            completeBtn.addEventListener('click', () => openCompleteModal(appt));
-            footer.appendChild(completeBtn);
-
-            const cancelBtn = document.createElement('button');
-            cancelBtn.className = 'btn-action btn-action-danger';
-            cancelBtn.textContent = 'Cancel';
-            cancelBtn.addEventListener('click', () => openCancelModal(appt.id));
-            footer.appendChild(cancelBtn);
-        }
+        appendActionButtons(footer, appt);
 
         const cardEl = card.querySelector('.appointment-card');
         cardEl.style.cursor = 'pointer';
@@ -157,25 +133,92 @@ function displayAppointments(appointments) {
     });
 }
 
+function appendActionButtons(container, appt) {
+    if (appt.status === 'in_review') {
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'btn-action';
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.addEventListener('click', () => { closeModal('detail-modal'); openConfirmModal(appt); });
+        container.appendChild(confirmBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn-action btn-action-danger';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => { closeModal('detail-modal'); openCancelModal(appt.id); });
+        container.appendChild(cancelBtn);
+    }
+
+    if (appt.status === 'confirmed') {
+        const completeBtn = document.createElement('button');
+        completeBtn.className = 'btn-action';
+        completeBtn.textContent = 'Complete';
+        completeBtn.addEventListener('click', () => { closeModal('detail-modal'); openCompleteModal(appt); });
+        container.appendChild(completeBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn-action btn-action-danger';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => { closeModal('detail-modal'); openCancelModal(appt.id); });
+        container.appendChild(cancelBtn);
+    }
+}
+
 function openDetailModal(appt) {
+    const ref = apptRef(appt.id);
     const serviceNames = appt.services ? appt.services.map(s => s.service_name).join(', ') : 'N/A';
     const date = new Date(appt.appointment_date).toLocaleDateString('en-GB', {
         day: 'numeric', month: 'short', year: 'numeric'
     });
+    const statusLabel = (appt.status || 'unknown').replace('_', ' ');
+    const badgeClass = getBadgeClass(appt.status);
+
+    document.getElementById('detail-modal-title').textContent = `Appointment ${ref}`;
+
     const info = document.getElementById('detail-appt-info');
     info.innerHTML = `
-        <p><strong>Customer:</strong> ${escapeHtml(appt.customer_name || 'Unknown')}</p>
-        <p><strong>Phone:</strong> ${escapeHtml(appt.customer_phone || 'N/A')}</p>
-        <p><strong>Email:</strong> ${escapeHtml(appt.customer_email || 'N/A')}</p>
-        <p><strong>Services:</strong> ${escapeHtml(serviceNames)}</p>
-        <p><strong>Date:</strong> ${date}</p>
-        <p><strong>Preferred Time:</strong> ${escapeHtml(appt.preferred_time || 'TBC')}</p>
-        <p><strong>Staff Preference:</strong> ${escapeHtml(appt.preferred_staff_gender || 'any')}</p>
-        <p><strong>Status:</strong> ${escapeHtml((appt.status || 'unknown').replace('_', ' '))}</p>
-        <p><strong>Estimated Cost:</strong> £${parseFloat(appt.estimated_total || 0).toFixed(2)}</p>
-        ${appt.cancellation_reason ? `<p><strong>Cancellation Reason:</strong> ${escapeHtml(appt.cancellation_reason)}</p>` : ''}
-        ${appt.admin_notes ? `<p><strong>Admin Notes:</strong> ${escapeHtml(appt.admin_notes)}</p>` : ''}
+        <div class="detail-status-row">
+            <span class="badge ${badgeClass}">${escapeHtml(statusLabel)}</span>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-section">
+                <h4>Customer</h4>
+                <div class="detail-row"><span class="detail-label">Name</span><span>${escapeHtml(appt.customer_name || 'Unknown')}</span></div>
+                <div class="detail-row"><span class="detail-label">Phone</span><span>${escapeHtml(appt.customer_phone || 'N/A')}</span></div>
+                <div class="detail-row"><span class="detail-label">Email</span><span>${escapeHtml(appt.customer_email || 'N/A')}</span></div>
+            </div>
+            <div class="detail-section">
+                <h4>Appointment</h4>
+                <div class="detail-row"><span class="detail-label">Services</span><span>${escapeHtml(serviceNames)}</span></div>
+                <div class="detail-row"><span class="detail-label">Date</span><span>${date}</span></div>
+                <div class="detail-row"><span class="detail-label">Preferred Time</span><span>${escapeHtml(appt.preferred_time || 'TBC')}</span></div>
+                <div class="detail-row"><span class="detail-label">Staff Preference</span><span>${escapeHtml(appt.preferred_staff_gender || 'any')}</span></div>
+                <div class="detail-row"><span class="detail-label">Estimated Cost</span><span>£${parseFloat(appt.estimated_total || 0).toFixed(2)}</span></div>
+            </div>
+        </div>
+        ${appt.status === 'cancelled' ? `
+        <div class="detail-section detail-cancelled">
+            <h4>Cancellation Info</h4>
+            <div class="detail-row"><span class="detail-label">Cancelled By</span><span>${escapeHtml(appt.cancelled_by || 'N/A')}</span></div>
+            <div class="detail-row"><span class="detail-label">Reason</span><span>${escapeHtml(appt.cancellation_reason || 'No reason provided')}</span></div>
+        </div>` : ''}
+        ${appt.admin_notes ? `
+        <div class="detail-section">
+            <h4>Admin Notes</h4>
+            <p style="margin:0;color:#555;">${escapeHtml(appt.admin_notes)}</p>
+        </div>` : ''}
     `;
+
+    const actions = document.getElementById('detail-appt-actions');
+    actions.innerHTML = '';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'btn-outline';
+    closeBtn.textContent = 'Close';
+    closeBtn.addEventListener('click', () => closeModal('detail-modal'));
+    actions.appendChild(closeBtn);
+
+    appendActionButtons(actions, appt);
+
     openModal('detail-modal');
 }
 

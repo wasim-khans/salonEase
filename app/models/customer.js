@@ -1,41 +1,45 @@
 const db = require('../services/db');
 
-const Customer = {
+class Customer {
+    constructor() {
+        this.pool = db.pool;
+    }
+
     async findByEmail(email) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT * FROM customers WHERE email = ?`,
             [email]
         );
         return rows[0];
-    },
+    }
 
     async findByEmailOrPhone(email, phone) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT id FROM customers WHERE email = ? OR phone = ?`,
             [email, phone]
         );
         return rows[0];
-    },
+    }
 
     async findById(customerId) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT id, name, email, phone, gender, created_at FROM customers WHERE id = ?`,
             [customerId]
         );
         return rows[0];
-    },
+    }
 
     async create(customerData) {
         const { name, email, phone, password, gender } = customerData;
         
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `INSERT INTO customers (name, email, phone, password, gender) 
             VALUES (?, ?, ?, ?, ?)`,
             [name, email, phone, password, gender]
         );
         
         return result.insertId;
-    },
+    }
 
     async update(customerId, customerData) {
         const fields = [];
@@ -72,21 +76,21 @@ const Customer = {
 
         values.push(customerId);
 
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `UPDATE customers SET ${fields.join(', ')} WHERE id = ?`,
             values
         );
 
         return result.affectedRows > 0;
-    },
+    }
 
     async delete(customerId) {
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `DELETE FROM customers WHERE id = ?`,
             [customerId]
         );
         return result.affectedRows > 0;
     }
-};
+}
 
-module.exports = Customer;
+module.exports = new Customer();

@@ -9,17 +9,6 @@ const SERVICE_IMAGES = {
     'facial treatment':     'https://plus.unsplash.com/premium_photo-1683122082225-26022a0deb5d?w=900&auto=format&fit=crop&q=60',
 };
 
-const MOCK_SERVICES = [
-    { id: 1, name: 'Haircut',              category: 'hair',  base_price: 25, duration_minutes: 45  },
-    { id: 2, name: 'Beard Trim',           category: 'hair',  base_price: 15, duration_minutes: 20  },
-    { id: 3, name: 'Hair Coloring',        category: 'hair',  base_price: 75, duration_minutes: 120 },
-    { id: 4, name: 'Hair Styling',         category: 'hair',  base_price: 35, duration_minutes: 60  },
-    { id: 5, name: 'Hair Wash & Blow Dry', category: 'hair',  base_price: 20, duration_minutes: 40  },
-    { id: 6, name: 'Manicure',             category: 'nails', base_price: 20, duration_minutes: 45  },
-    { id: 7, name: 'Pedicure',             category: 'nails', base_price: 25, duration_minutes: 60  },
-    { id: 8, name: 'Facial Treatment',     category: 'skin',  base_price: 60, duration_minutes: 90  },
-];
-
 document.addEventListener('DOMContentLoaded', () => {
     loadServices();
 });
@@ -33,10 +22,13 @@ async function loadServices() {
         if (data.success && data.services.length > 0) {
             renderServices(grid, data.services);
         } else {
-            renderServices(grid, MOCK_SERVICES);
+            showError('Failed to load services.');
+            grid.innerHTML = '<p class="empty-state">No services available.</p>';
         }
     } catch (error) {
-        renderServices(grid, MOCK_SERVICES);
+        console.error('Error loading services:', error);
+        showError('Failed to load services.');
+        grid.innerHTML = '<p class="empty-state">No services available.</p>';
     }
 }
 

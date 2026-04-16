@@ -23,6 +23,7 @@ async function loadAppointments() {
 
         if (data.success) {
             allAppointments = data.appointments;
+            updateFilterCounts();
             const activeFilter = document.querySelector('.filter-btn.active');
             const status = activeFilter ? activeFilter.dataset.status : 'all';
             if (status === 'all') {
@@ -57,6 +58,19 @@ function setupFilters() {
                 displayAppointments(allAppointments.filter(a => a.status === status));
             }
         }
+    });
+}
+
+function updateFilterCounts() {
+    const counts = { all: allAppointments.length };
+    allAppointments.forEach(a => {
+        counts[a.status] = (counts[a.status] || 0) + 1;
+    });
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        const status = btn.dataset.status;
+        const label = btn.textContent.replace(/\s*\(\d+\)$/, '');
+        const count = counts[status] || 0;
+        btn.textContent = `${label} (${count})`;
     });
 }
 

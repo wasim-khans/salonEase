@@ -875,6 +875,12 @@ body {
   color: #333;
 }
 
+.appt-card-phone {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 400;
+}
+
 .appt-card-body {
   display: flex;
   gap: 2rem;

@@ -106,6 +106,7 @@ function displayAppointments(appointments) {
 
         card.querySelector('.appt-card-ref').textContent = apptRef(appt.id);
         card.querySelector('.appt-card-customer').textContent = appt.customer_name || 'Unknown';
+        card.querySelector('.appt-card-phone').textContent = appt.customer_phone || '';
         card.querySelector('[data-field="services"]').textContent = serviceNames;
 
         const badge = card.querySelector('.badge');

@@ -116,7 +116,7 @@ class SmartSeeder {
     });
     
     this.tableDefinitions.set('staff', {
-      columns: ['id', 'name', 'email', 'phone', 'password', 'gender', 'created_at']
+      columns: ['id', 'name', 'email', 'phone', 'gender', 'is_active', 'created_at']
     });
     
     this.tableDefinitions.set('services', {
@@ -124,7 +124,7 @@ class SmartSeeder {
     });
     
     this.tableDefinitions.set('appointments', {
-      columns: ['id', 'customer_id', 'appointment_date', 'preferred_time', 'preferred_staff_gender', 'status', 'staff_id', 'cancelled_by', 'cancellation_reason', 'actual_price', 'admin_notes', 'confirmed_at', 'completed_by', 'created_at', 'updated_at']
+      columns: ['id', 'customer_id', 'appointment_date', 'preferred_time', 'start_time', 'preferred_staff_gender', 'status', 'staff_id', 'cancelled_by', 'cancellation_reason', 'actual_price', 'admin_notes', 'confirmed_at', 'completed_by', 'created_at', 'updated_at']
     });
     
     this.tableDefinitions.set('appointment_services', {
@@ -183,8 +183,6 @@ class SmartSeeder {
   async generateStaff(count) {
     const staff = [];
     const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
-    const passwordHash = await bcrypt.hash('test123', 10);
-    
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
       const lastName = generators.randomChoice(generators.lastNames);
@@ -194,8 +192,8 @@ class SmartSeeder {
         name: `${firstName} ${lastName}`,
         email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@salonease.com`,
         phone: generators.randomPhone(),
-        password: passwordHash,
         gender: generators.randomChoice(genders),
+        is_active: 1,
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
       });
     }
@@ -235,6 +233,7 @@ class SmartSeeder {
         customer_id: customer.id,
         appointment_date: new Date(Date.now() - generators.randomInt(1, 30) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         preferred_time: `${generators.randomInt(9, 18)}:${generators.randomChoice(['00', '30'])}:00`,
+        start_time: (status === 'confirmed' || status === 'completed') ? `${generators.randomInt(9, 18)}:${generators.randomChoice(['00', '30'])}:00` : null,
         preferred_staff_gender: generators.randomChoice(staffGenders),
         status: status,
         staff_id: (status !== 'in_review' && status !== 'cancelled' && status !== 'no_show') ? staffMember.id : null,

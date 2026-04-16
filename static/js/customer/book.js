@@ -4,9 +4,22 @@ let selectedServices = [];
 document.addEventListener('DOMContentLoaded', async () => {
     if (!requireAuth('customer')) return;
 
+    restoreSelectedServices();
     await loadInitialService();
+    renderServiceChips();
     setupBookingForm();
 });
+
+function restoreSelectedServices() {
+    try {
+        const saved = sessionStorage.getItem('bookingServices');
+        if (saved) selectedServices = JSON.parse(saved);
+    } catch (_) {}
+}
+
+function saveSelectedServices() {
+    sessionStorage.setItem('bookingServices', JSON.stringify(selectedServices));
+}
 
 async function loadInitialService() {
     const params = new URLSearchParams(window.location.search);
@@ -25,10 +38,10 @@ async function loadInitialService() {
         showError('Failed to load service details.');
     }
 
-    if (service) {
+    if (service && !selectedServices.some(s => String(s.id) === String(service.id))) {
         selectedServices.push(service);
-        renderServiceChips();
     }
+    saveSelectedServices();
 }
 
 function renderServiceChips() {
@@ -40,10 +53,17 @@ function renderServiceChips() {
                 <span>${s.duration_minutes ? s.duration_minutes + ' min' : ''}</span>
             </div>
             <span class="service-chip-price">£${parseFloat(s.base_price).toFixed(2)}</span>
+            <button type="button" class="service-chip-remove" onclick="removeService('${s.id}')">&times;</button>
         </div>
     `).join('');
 
     updateEstimatedTotal();
+}
+
+function removeService(id) {
+    selectedServices = selectedServices.filter(s => String(s.id) !== String(id));
+    saveSelectedServices();
+    renderServiceChips();
 }
 
 function updateEstimatedTotal() {
@@ -85,6 +105,7 @@ function setupBookingForm() {
 
             if (data.success) {
                 showSuccess('Booking submitted successfully! It is now under review.');
+                sessionStorage.removeItem('bookingServices');
                 setTimeout(() => { window.location.href = '/customer/appointments'; }, 1000);
             } else {
                 showError(data.message || 'Failed to create booking.');

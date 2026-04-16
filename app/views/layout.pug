@@ -11,6 +11,18 @@ html
   body
     header.topbar
       .topbar-inner
-        a.brand(href="/") SalonEase
+        a.brand#brand-link(href="/") SalonEase
     block content
     block scripts
+    script.
+      (function() {
+        var user = localStorage.getItem('user');
+        if (user) {
+          try {
+            var parsed = JSON.parse(user);
+            var link = document.getElementById('brand-link');
+            if (link && parsed.type === 'admin') link.href = '/admin/appointments';
+            else if (link && parsed.type === 'customer') link.href = '/customer/appointments';
+          } catch(e) {}
+        }
+      })();

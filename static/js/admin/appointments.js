@@ -60,9 +60,14 @@ function setupFilters() {
     });
 }
 
+function sortByDateDesc(list) {
+    return list.sort((a, b) => new Date(b.appointment_date) - new Date(a.appointment_date));
+}
+
 // ── Display appointment cards ──
 
 function displayAppointments(appointments) {
+    appointments = sortByDateDesc(appointments);
     const container = document.getElementById('appointments-container');
 
     if (!appointments || appointments.length === 0) {

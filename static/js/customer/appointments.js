@@ -28,9 +28,13 @@ async function loadAppointments() {
     }
 }
 
+function sortByDateDesc(list) {
+    return list.sort((a, b) => new Date(b.appointment_date) - new Date(a.appointment_date));
+}
+
 function renderAppointments(appointments) {
-    const upcoming = appointments.filter(a => a.status === 'in_review' || a.status === 'confirmed');
-    const past     = appointments.filter(a => a.status === 'completed' || a.status === 'cancelled');
+    const upcoming = sortByDateDesc(appointments.filter(a => a.status === 'in_review' || a.status === 'confirmed'));
+    const past     = sortByDateDesc(appointments.filter(a => a.status === 'completed' || a.status === 'cancelled'));
 
     document.getElementById('upcoming-container').innerHTML =
         upcoming.length ? buildTable(upcoming, true) : '<p class="empty-state">No upcoming appointments.</p>';

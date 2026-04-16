@@ -4,10 +4,14 @@ mixin appointmentCardTemplate()
       .appt-card-header
         .appt-card-header-left
           span.appt-card-ref
-          span.appt-card-services
+          span.appt-card-customer
         span.badge
 
       .appt-card-body
+        .appt-card-detail
+          span.appt-card-label Services
+          span.appt-card-value(data-field="services")
+
         .appt-card-detail
           span.appt-card-label Date
           span.appt-card-value(data-field="date")

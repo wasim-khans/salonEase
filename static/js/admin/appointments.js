@@ -105,7 +105,8 @@ function displayAppointments(appointments) {
         });
 
         card.querySelector('.appt-card-ref').textContent = apptRef(appt.id);
-        card.querySelector('.appt-card-services').textContent = `${appt.customer_name || 'Unknown'} — ${serviceNames}`;
+        card.querySelector('.appt-card-customer').textContent = appt.customer_name || 'Unknown';
+        card.querySelector('[data-field="services"]').textContent = serviceNames;
 
         const badge = card.querySelector('.badge');
         badge.textContent = (appt.status || 'unknown').replace('_', ' ');

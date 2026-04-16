@@ -868,7 +868,8 @@ body {
   margin-bottom: 12px;
 }
 
-.appt-card-services {
+.appt-card-services,
+.appt-card-customer {
   font-weight: bold;
   font-size: 0.95rem;
   color: #333;

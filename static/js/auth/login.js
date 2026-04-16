@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('user', JSON.stringify(data.user));
 
                 if (data.user.type === 'customer') {
-                    window.location.href = '/customer/services';
+                    window.location.href = '/customer/appointments';
                 } else if (data.user.type === 'admin') {
                     window.location.href = '/admin/appointments';
                 }

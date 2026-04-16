@@ -42,14 +42,14 @@ const Staff = {
     },
 
     async create(staffData) {
-        const { name, email, phone, password, gender } = staffData;
+        const { name, email, phone, gender } = staffData;
         
         const id = uuidv4();
         
         await db.pool.execute(
-            `INSERT INTO staff (id, name, email, phone, password, gender) 
-            VALUES (?, ?, ?, ?, ?, ?)`,
-            [id, name, email, phone, password, gender]
+            `INSERT INTO staff (id, name, email, phone, gender) 
+            VALUES (?, ?, ?, ?, ?)`,
+            [id, name, email, phone, gender]
         );
         
         return id;
@@ -72,11 +72,6 @@ const Staff = {
         if (staffData.phone !== undefined) {
             fields.push('phone = ?');
             values.push(staffData.phone);
-        }
-
-        if (staffData.password !== undefined) {
-            fields.push('password = ?');
-            values.push(staffData.password);
         }
 
         if (staffData.gender !== undefined) {

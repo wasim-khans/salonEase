@@ -53,7 +53,6 @@ function openAddStaffModal() {
     currentEditStaffId = null;
     document.getElementById('staff-modal-title').textContent = 'Add Staff Member';
     document.getElementById('staff-form').reset();
-    document.getElementById('staff-password').required = true;
     openModal('staff-modal');
 }
 
@@ -66,8 +65,6 @@ function openEditStaffModal(id, name, email, phone, gender) {
     document.getElementById('staff-email').value = email;
     document.getElementById('staff-phone').value = phone;
     document.getElementById('staff-gender').value = gender;
-    document.getElementById('staff-password').value = '';
-    document.getElementById('staff-password').required = false;
     openModal('staff-modal');
 }
 
@@ -87,11 +84,6 @@ function setupStaffForm() {
             gender: document.getElementById('staff-gender').value
         };
 
-        const password = document.getElementById('staff-password').value;
-        if (password) {
-            body.password = password;
-        }
-
         if (!body.name || !body.email || !body.phone) {
             showError('Name, email, and phone are required.');
             return;
@@ -102,10 +94,6 @@ function setupStaffForm() {
             if (currentEditStaffId) {
                 data = await apiPut(`/api/admin/staff/${currentEditStaffId}`, body);
             } else {
-                if (!password) {
-                    showError('Password is required for new staff.');
-                    return;
-                }
                 data = await apiPost('/api/admin/staff', body);
             }
 

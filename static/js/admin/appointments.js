@@ -146,8 +146,37 @@ function displayAppointments(appointments) {
             footer.appendChild(cancelBtn);
         }
 
+        const cardEl = card.querySelector('.appointment-card');
+        cardEl.style.cursor = 'pointer';
+        cardEl.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            openDetailModal(appt);
+        });
+
         container.appendChild(card);
     });
+}
+
+function openDetailModal(appt) {
+    const serviceNames = appt.services ? appt.services.map(s => s.service_name).join(', ') : 'N/A';
+    const date = new Date(appt.appointment_date).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+    });
+    const info = document.getElementById('detail-appt-info');
+    info.innerHTML = `
+        <p><strong>Customer:</strong> ${escapeHtml(appt.customer_name || 'Unknown')}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(appt.customer_phone || 'N/A')}</p>
+        <p><strong>Email:</strong> ${escapeHtml(appt.customer_email || 'N/A')}</p>
+        <p><strong>Services:</strong> ${escapeHtml(serviceNames)}</p>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Preferred Time:</strong> ${escapeHtml(appt.preferred_time || 'TBC')}</p>
+        <p><strong>Staff Preference:</strong> ${escapeHtml(appt.preferred_staff_gender || 'any')}</p>
+        <p><strong>Status:</strong> ${escapeHtml((appt.status || 'unknown').replace('_', ' '))}</p>
+        <p><strong>Estimated Cost:</strong> £${parseFloat(appt.estimated_total || 0).toFixed(2)}</p>
+        ${appt.cancellation_reason ? `<p><strong>Cancellation Reason:</strong> ${escapeHtml(appt.cancellation_reason)}</p>` : ''}
+        ${appt.admin_notes ? `<p><strong>Admin Notes:</strong> ${escapeHtml(appt.admin_notes)}</p>` : ''}
+    `;
+    openModal('detail-modal');
 }
 
 function getBadgeClass(status) {

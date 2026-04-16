@@ -29,6 +29,17 @@ block content
 
     +appointmentCardTemplate()
 
+  //- Appointment Detail Modal
+  .modal-overlay#detail-modal
+    .modal
+      .modal-header
+        h3 Appointment Details
+        button.modal-close(onclick="closeModal('detail-modal')") &times;
+      .modal-body
+        #detail-appt-info
+        .modal-actions
+          button.btn-outline(type="button" onclick="closeModal('detail-modal')") Close
+
   +confirmModal()
   +cancelModal()
   +completeModal()

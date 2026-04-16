@@ -439,11 +439,148 @@ body {
 .status-completed  { border-left: 4px solid #8e44ad; }
 .status-cancelled  { border-left: 4px solid #e74c3c; }
 
-/* ── Responsive ── */
+/* ══════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   Mobile:  ≤ 480px
+   Tablet:  481px – 768px
+   Desktop: 769px – 1200px  (default)
+   Wide:    > 1200px
+   ══════════════════════════════════════════════════ */
+
+/* ── Wide screens (>1200px) ── */
+@media (min-width: 1201px) {
+  .app-layout { max-width: 1400px; }
+  .services-grid { grid-template-columns: repeat(4, 1fr); }
+  .landing-title { font-size: 3.5rem; }
+}
+
+/* ── Tablet (481px – 768px) ── */
 @media (max-width: 768px) {
-  .app-layout { flex-direction: column; padding: 0 1rem; }
-  .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
-  .services-grid { grid-template-columns: 1fr; }
+  .app-layout {
+    flex-direction: column;
+    padding: 0 1rem;
+    margin: 1rem auto;
+    gap: 1rem;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.75rem;
+    gap: 4px;
+    align-self: auto;
+  }
+
+  .sidebar-profile { display: none; }
+  .sidebar-divider { display: none; }
+  .sidebar-spacer { display: none; }
+
+  .sidebar-item {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+
+  .main-content { padding: 1.25rem; }
+  .page-header { padding: 14px 20px; }
+  .page-body { padding: 20px; }
+  .page-title { font-size: 1.2rem; }
+
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .detail-grid { grid-template-columns: 1fr; }
+  #detail-modal .modal { width: 95vw; }
+
+  .filter-bar { flex-wrap: wrap; }
+
+  .appt-card-body { flex-wrap: wrap; gap: 1rem; }
+
+  .landing-title { font-size: 2rem; }
+  .landing-subtitle { font-size: 0.9rem; }
+  .landing-actions { flex-direction: column; gap: 10px; }
+  .btn-landing, .btn-landing-outline { width: 100%; text-align: center; }
+
+  .auth-split-image { flex: 0 0 30%; min-height: 180px; }
+  .auth-split-form { padding: 2rem 1.5rem; }
+
+  .form-row { flex-direction: column; gap: 0; }
+
+  .topbar-inner { padding: 0 1rem; }
+
+  .booking-section { padding: 1rem; }
+}
+
+/* ── Mobile (≤480px) ── */
+@media (max-width: 480px) {
+  .app-layout {
+    padding: 0 0.5rem;
+    margin: 0.5rem auto;
+    gap: 0.75rem;
+  }
+
+  .sidebar {
+    border-radius: 8px;
+    padding: 0.5rem;
+  }
+
+  .sidebar-item {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+
+  .main-content {
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .page-header { padding: 12px 16px; font-size: 10px; }
+  .page-body { padding: 16px; }
+  .page-title { font-size: 1.1rem; }
+  .page-subtitle { font-size: 0.8rem; }
+
+  .services-grid { grid-template-columns: 1fr; gap: 12px; }
+
+  .appointment-card { padding: 1rem; }
+  .appt-card-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .appt-card-body { flex-direction: column; gap: 0.75rem; }
+  .appt-card-footer { flex-wrap: wrap; }
+
+  .filter-bar { gap: 4px; }
+  .filter-btn { padding: 5px 10px; font-size: 0.78rem; }
+
+  .detail-grid { grid-template-columns: 1fr; }
+  #detail-modal .modal { width: 98vw; }
+  .detail-label { min-width: 90px; }
+
+  .modal { width: 98vw !important; }
+  .modal-body { padding: 1rem; }
+
+  .landing-hero { min-height: 80vh; }
+  .landing-title { font-size: 1.6rem; }
+  .landing-subtitle { font-size: 0.85rem; }
+  .landing-content { padding: 1.5rem; }
+
+  .auth-split { flex-direction: column; }
+  .auth-split-image { min-height: 160px; flex: 0 0 auto; padding: 1.5rem; }
+  .auth-split-image-text h2 { font-size: 1.4rem; }
+  .auth-split-form { padding: 1.5rem 1rem; }
+
+  .topbar-inner { padding: 0 0.75rem; }
+  .topbar .brand { font-size: 1rem; }
+
+  .service-chip { padding: 0.6rem 0.75rem; }
+  .checkbox-label { padding: 6px 10px; font-size: 0.85rem; }
+
+  .modal-actions { flex-wrap: wrap; }
+  .btn-outline, .btn-action { font-size: 0.8rem; }
+
+  .cancelled-actions { flex-direction: column; width: 100%; }
+  .btn-cancelled-secondary, .btn-cancelled-primary { width: 100%; text-align: center; }
+
+  .appointments-table { font-size: 0.8rem; }
+  .appointments-table th, .appointments-table td { padding: 8px 6px; }
+
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 }
 
 .page-header {

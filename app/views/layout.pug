@@ -25,6 +25,7 @@ html
             else if (link && parsed.type === 'customer') link.href = '/customer/appointments';
             var label = document.getElementById('sidebar-user-name');
             if (label && parsed.name) label.textContent = parsed.name;
+
           } catch(e) {}
         }
       })();

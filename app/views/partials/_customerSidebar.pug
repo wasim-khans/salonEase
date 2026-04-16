@@ -1,7 +1,11 @@
 mixin customerSidebar(active)
   nav.sidebar
-    span.sidebar-label#sidebar-user-name Customer
+    .sidebar-profile
+      span.sidebar-name#sidebar-user-name Customer
+    .sidebar-divider
     a.sidebar-item(href="/customer/appointments" class=(active === 'appointments' ? 'active' : '')) My Appointments
     a.sidebar-item(href="/customer/services" class=(active === 'services' ? 'active' : '')) Services
     a.sidebar-item(href="/customer/book" class=(active === 'book' ? 'active' : '')) Book Appointment
+    .sidebar-spacer
+    .sidebar-divider
     a.sidebar-item.sidebar-logout(href="#" onclick="logout(); return false;") Logout

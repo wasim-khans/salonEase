@@ -1,7 +1,11 @@
 mixin adminSidebar(active)
   nav.sidebar
-    span.sidebar-label#sidebar-user-name Admin
+    .sidebar-profile
+      span.sidebar-name#sidebar-user-name Admin
+    .sidebar-divider
     a.sidebar-item(href="/admin/appointments" class=(active === 'appointments' ? 'active' : '')) Appointments
     a.sidebar-item(href="/admin/services" class=(active === 'services' ? 'active' : '')) Services
     a.sidebar-item(href="/admin/staff" class=(active === 'staff' ? 'active' : '')) Staff
+    .sidebar-spacer
+    .sidebar-divider
     a.sidebar-item.sidebar-logout(href="#" onclick="logout(); return false;") Logout

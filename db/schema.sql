@@ -39,6 +39,7 @@ CREATE TABLE staff (
     phone VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     gender ENUM('male', 'female', 'other', 'prefer_not_to_say') NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

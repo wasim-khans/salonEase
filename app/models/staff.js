@@ -28,14 +28,14 @@ const Staff = {
 
     async getAll() {
         const [rows] = await db.pool.execute(
-            `SELECT id, name, email, phone, gender, created_at FROM staff ORDER BY name`
+            `SELECT id, name, email, phone, gender, is_active, created_at FROM staff WHERE is_active = TRUE ORDER BY name`
         );
         return rows;
     },
 
     async getByGender(gender) {
         const [rows] = await db.pool.execute(
-            `SELECT id, name, email, phone, gender, created_at FROM staff WHERE gender = ? ORDER BY name`,
+            `SELECT id, name, email, phone, gender, created_at FROM staff WHERE gender = ? AND is_active = TRUE ORDER BY name`,
             [gender]
         );
         return rows;
@@ -99,16 +99,8 @@ const Staff = {
     },
 
     async delete(staffId) {
-        await db.pool.execute(
-            `UPDATE appointments SET staff_id = NULL WHERE staff_id = ?`,
-            [staffId]
-        );
-        await db.pool.execute(
-            `UPDATE appointments SET completed_by = NULL WHERE completed_by = ?`,
-            [staffId]
-        );
         const [result] = await db.pool.execute(
-            `DELETE FROM staff WHERE id = ?`,
+            `UPDATE staff SET is_active = FALSE WHERE id = ?`,
             [staffId]
         );
         return result.affectedRows > 0;

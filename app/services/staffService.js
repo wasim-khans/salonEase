@@ -54,7 +54,7 @@ const deleteStaff = async (id) => {
         if (!deleted) {
             return { success: false, message: 'Staff member not found' };
         }
-        return { success: true, message: 'Staff member deleted' };
+        return { success: true, message: 'Staff member deactivated' };
     } catch (error) {
         return { success: false, message: 'Failed to delete staff member', error: error.message };
     }

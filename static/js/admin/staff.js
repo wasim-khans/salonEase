@@ -32,7 +32,7 @@ async function loadStaff() {
                     <td>${escapeHtml(member.gender)}</td>
                     <td class="table-actions">
                         <button class="btn-action" onclick="openEditStaffModal('${member.id}', '${escapeHtml(member.name)}', '${escapeHtml(member.email)}', '${escapeHtml(member.phone)}', '${escapeHtml(member.gender)}')">Edit</button>
-                        <button class="btn-action btn-action-danger" onclick="openDeleteStaffModal('${member.id}', '${escapeHtml(member.name)}')">Delete</button>
+                        <button class="btn-action btn-action-danger" onclick="openDeleteStaffModal('${member.id}', '${escapeHtml(member.name)}')">Deactivate</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -137,7 +137,7 @@ async function confirmDeleteStaff() {
         const data = await apiDelete(`/api/admin/staff/${currentDeleteStaffId}`);
 
         if (data.success) {
-            showSuccess('Staff member deleted.');
+            showSuccess('Staff member deactivated.');
             closeModal('delete-staff-modal');
             loadStaff();
         } else {

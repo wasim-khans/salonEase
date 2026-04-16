@@ -63,6 +63,9 @@ mixin cancelModal()
           strong#cancel-appt-name
           span#cancel-appt-datetime
         form#cancel-form
+          .form-group
+            label(for="cancel-reason") Reason for cancellation
+            textarea#cancel-reason(name="cancellation_reason" rows="3" placeholder="Please tell us why you're cancelling..." required)
           .modal-actions
             button.btn-confirm-cancel(type="submit") Yes, cancel it
             button.btn-confirm-back(type="button" onclick="closeModal('cancel-modal')") No, go back

@@ -3,33 +3,6 @@ let currentCancelId = null;
 let currentCancelAppt = null;
 let editModalChangeListener = null;
 
-const MOCK_APPOINTMENTS = [
-    {
-        id: 1, status: 'confirmed',
-        services: [{ service_name: 'Haircut', service_id: 1 }],
-        appointment_date: '2025-04-12', preferred_time: '10:00',
-        estimated_total: 25, preferred_staff_gender: 'any'
-    },
-    {
-        id: 2, status: 'in_review',
-        services: [{ service_name: 'Manicure', service_id: 6 }],
-        appointment_date: '2025-04-20', preferred_time: '15:30',
-        estimated_total: 20, preferred_staff_gender: 'any'
-    },
-    {
-        id: 3, status: 'completed',
-        services: [{ service_name: 'Hair Treatment', service_id: 3 }],
-        appointment_date: '2025-03-05', preferred_time: '11:00',
-        estimated_total: 60, preferred_staff_gender: 'any'
-    },
-    {
-        id: 4, status: 'cancelled',
-        services: [{ service_name: 'Hair Colouring', service_id: 3 }],
-        appointment_date: '2025-03-01', preferred_time: '09:00',
-        estimated_total: 75, preferred_staff_gender: 'any'
-    },
-];
-
 document.addEventListener('DOMContentLoaded', () => {
     if (!requireAuth('customer')) return;
     loadAppointments();
@@ -45,10 +18,13 @@ async function loadAppointments() {
         if (data.success) {
             renderAppointments(data.appointments);
         } else {
-            renderAppointments(MOCK_APPOINTMENTS);
+            showError('Failed to load appointments.');
+            renderAppointments([]);
         }
-    } catch (_) {
-        renderAppointments(MOCK_APPOINTMENTS);
+    } catch (err) {
+        console.error('Error loading appointments:', err);
+        showError('Failed to load appointments.');
+        renderAppointments([]);
     }
 }
 
@@ -140,10 +116,13 @@ async function openEditModal(appt) {
         if (data.success && data.services.length > 0) {
             renderEditCheckboxes(container, data.services, appt);
         } else {
-            renderEditCheckboxes(container, MOCK_SERVICES_EDIT, appt);
+            showError('Failed to load services.');
+            container.innerHTML = '<p class="empty-state">No services available.</p>';
         }
-    } catch (_) {
-        renderEditCheckboxes(container, MOCK_SERVICES_EDIT, appt);
+    } catch (err) {
+        console.error('Error loading services for edit:', err);
+        showError('Failed to load services.');
+        container.innerHTML = '<p class="empty-state">No services available.</p>';
     }
 
     const dateStr = new Date(appt.appointment_date).toISOString().split('T')[0];
@@ -154,13 +133,6 @@ async function openEditModal(appt) {
 
     openModal('edit-modal');
 }
-
-const MOCK_SERVICES_EDIT = [
-    { id: 1, name: 'Haircut', base_price: 25 }, { id: 2, name: 'Beard Trim', base_price: 15 },
-    { id: 3, name: 'Hair Coloring', base_price: 75 }, { id: 4, name: 'Hair Styling', base_price: 35 },
-    { id: 5, name: 'Hair Wash & Blow Dry', base_price: 20 }, { id: 6, name: 'Manicure', base_price: 20 },
-    { id: 7, name: 'Pedicure', base_price: 25 }, { id: 8, name: 'Facial Treatment', base_price: 60 },
-];
 
 function renderEditCheckboxes(container, services, appt) {
     const selectedIds = appt.services.map(s => s.service_id);

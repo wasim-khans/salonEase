@@ -99,6 +99,14 @@ const Staff = {
     },
 
     async delete(staffId) {
+        await db.pool.execute(
+            `UPDATE appointments SET staff_id = NULL WHERE staff_id = ?`,
+            [staffId]
+        );
+        await db.pool.execute(
+            `UPDATE appointments SET completed_by = NULL WHERE completed_by = ?`,
+            [staffId]
+        );
         const [result] = await db.pool.execute(
             `DELETE FROM staff WHERE id = ?`,
             [staffId]

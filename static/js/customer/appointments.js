@@ -147,7 +147,7 @@ function renderEditCheckboxes(container, services, appt) {
     container.innerHTML = services.map(s => `
         <label class="checkbox-label">
             <input type="checkbox" name="edit_services" value="${s.id}" data-price="${s.base_price}" ${selectedIds.includes(s.id) ? 'checked' : ''}>
-            <span>${escapeHtml(s.name)} — £${parseFloat(s.base_price).toFixed(2)}</span>
+            <span>${escapeHtml(s.name)} - £${parseFloat(s.base_price).toFixed(2)}</span>
         </label>`).join('');
 
     editModalChangeListener = updateEditTotal;

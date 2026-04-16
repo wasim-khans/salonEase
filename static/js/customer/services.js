@@ -1,12 +1,12 @@
 const SERVICE_IMAGES = {
-    'haircut':              'https://plus.unsplash.com/premium_photo-1661423965742-c40ac9c54910?w=900&auto=format&fit=crop&q=60',
-    'beard trim':           'https://plus.unsplash.com/premium_photo-1664303521711-bff2aee233b7?w=900&auto=format&fit=crop&q=60',
-    'hair coloring':        'https://plus.unsplash.com/premium_photo-1728693697217-95df3717cccc?w=900&auto=format&fit=crop&q=60',
-    'hair styling':         'https://plus.unsplash.com/premium_photo-1661326329898-65ac15c9208b?w=900&auto=format&fit=crop&q=60',
-    'hair wash & blow dry': 'https://images.unsplash.com/photo-1717160675332-1a8d1080ae3d?w=900&auto=format&fit=crop&q=60',
-    'manicure':             'https://plus.unsplash.com/premium_photo-1683121980903-496953f1626d?w=900&auto=format&fit=crop&q=60',
-    'pedicure':             'https://plus.unsplash.com/premium_photo-1661868958612-7d52c5fb9647?w=900&auto=format&fit=crop&q=60',
-    'facial treatment':     'https://plus.unsplash.com/premium_photo-1683122082225-26022a0deb5d?w=900&auto=format&fit=crop&q=60',
+    'haircut':              '/images/services/haircut.jpg',
+    'beard trim':           '/images/services/beard-trim.jpg',
+    'hair coloring':        '/images/services/hair-coloring.jpg',
+    'hair styling':         '/images/services/hair-styling.jpg',
+    'hair wash & blow dry': '/images/services/hair-wash.jpg',
+    'manicure':             '/images/services/manicure.jpg',
+    'pedicure':             '/images/services/pedicure.jpg',
+    'facial treatment':     '/images/services/facial-treatment.jpg',
 };
 
 document.addEventListener('DOMContentLoaded', () => {

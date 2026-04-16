@@ -184,7 +184,7 @@ body {
   justify-content: center;
   min-height: calc(100vh - 56px);
   background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url('https://images.unsplash.com/photo-1595475884562-073c30d45670?q=80&w=2069&auto=format&fit=crop');
+    url('/images/landing-hero.jpg');
   background-size: cover;
   background-position: center;
 }

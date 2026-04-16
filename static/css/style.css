@@ -711,8 +711,9 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   padding: 1.25rem;
   margin-bottom: 12px;
-  border: 1px solid transparent;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  border-left: 4px solid #ddd;
+  outline: 2px solid transparent;
+  transition: box-shadow 0.15s ease, outline-color 0.15s ease;
 }
 
 .appt-card-header {
@@ -879,8 +880,7 @@ body {
 
 .appointment-card:hover {
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  border-color: #c0d4e8;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  outline-color: #c0d4e8;
 }
 
 /* ── Filter bar ── */

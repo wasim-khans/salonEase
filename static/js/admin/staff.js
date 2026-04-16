@@ -31,8 +31,8 @@ async function loadStaff() {
                     <td>${escapeHtml(member.phone)}</td>
                     <td>${escapeHtml(member.gender)}</td>
                     <td class="table-actions">
-                        <button class="btn-action" onclick="openEditStaffModal(${member.id}, '${escapeHtml(member.name)}', '${escapeHtml(member.email)}', '${escapeHtml(member.phone)}', '${escapeHtml(member.gender)}')">Edit</button>
-                        <button class="btn-action btn-action-danger" onclick="openDeleteStaffModal(${member.id}, '${escapeHtml(member.name)}')">Delete</button>
+                        <button class="btn-action" onclick="openEditStaffModal('${member.id}', '${escapeHtml(member.name)}', '${escapeHtml(member.email)}', '${escapeHtml(member.phone)}', '${escapeHtml(member.gender)}')">Edit</button>
+                        <button class="btn-action btn-action-danger" onclick="openDeleteStaffModal('${member.id}', '${escapeHtml(member.name)}')">Delete</button>
                     </td>
                 `;
                 tbody.appendChild(tr);

@@ -25,7 +25,10 @@ block content
               th Actions
           tbody#services-table-body
             tr
-              td(colspan="5" style="text-align:center; color:#999;") Loading services...
+              td(colspan="5")
+                .loading-spinner-wrap
+                  .spinner
+                  p Loading services...
 
   //- Add / Edit Service Modal
   .modal-overlay#service-modal

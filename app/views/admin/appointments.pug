@@ -23,7 +23,9 @@ block content
           button.filter-btn(data-status="cancelled") Cancelled
 
         #appointments-container
-          p Loading appointments...
+          .loading-spinner-wrap
+            .spinner
+            p Loading appointments...
 
     +appointmentCardTemplate()
 

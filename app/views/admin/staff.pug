@@ -26,7 +26,10 @@ block content
               th Actions
           tbody#staff-table-body
             tr
-              td(colspan="6" style="text-align:center; color:#999;") Loading staff...
+              td(colspan="6")
+                .loading-spinner-wrap
+                  .spinner
+                  p Loading staff...
 
   //- Add / Edit Staff Modal
   .modal-overlay#staff-modal

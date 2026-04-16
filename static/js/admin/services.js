@@ -23,7 +23,7 @@ async function loadServices() {
                     <td>${escapeHtml(svc.category)}</td>
                     <td>&pound;${parseFloat(svc.base_price).toFixed(2)}</td>
                     <td>${escapeHtml(String(svc.duration))} min</td>
-                    <td>
+                    <td class="table-actions">
                         <button class="btn-action" onclick="openEditServiceModal('${svc.id}')">Edit</button>
                         <button class="btn-action btn-action-danger" onclick="openDeleteServiceModal('${svc.id}')">Delete</button>
                     </td>

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load staff table
 
 async function loadStaff() {
-    showTableLoading('staff-table-body', 5, 'staff');
+    showTableLoading('staff-table-body', 6, 'staff');
 
     try {
         const data = await apiGet('/api/admin/staff');
@@ -20,9 +20,12 @@ async function loadStaff() {
             const tbody = document.getElementById('staff-table-body');
             tbody.innerHTML = '';
 
-            data.staff.forEach(member => {
+            data.staff.sort((a, b) => a.name.localeCompare(b.name));
+
+            data.staff.forEach((member, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td>${index + 1}</td>
                     <td>${escapeHtml(member.name)}</td>
                     <td>${escapeHtml(member.email)}</td>
                     <td>${escapeHtml(member.phone)}</td>
@@ -35,11 +38,11 @@ async function loadStaff() {
                 tbody.appendChild(tr);
             });
         } else {
-            showTableEmpty('staff-table-body', 5, 'staff');
+            showTableEmpty('staff-table-body', 6, 'staff');
         }
     } catch (error) {
         console.error('Error loading staff:', error);
-        showTableEmpty('staff-table-body', 5, 'staff');
+        showTableEmpty('staff-table-body', 6, 'staff');
         showError('Failed to load staff. Please try again.');
     }
 }

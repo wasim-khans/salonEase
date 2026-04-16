@@ -4,4 +4,4 @@ mixin customerSidebar(active)
     a.sidebar-item(href="/customer/appointments" class=(active === 'appointments' ? 'active' : '')) My Appointments
     a.sidebar-item(href="/customer/services" class=(active === 'services' ? 'active' : '')) Services
     a.sidebar-item(href="/customer/book" class=(active === 'book' ? 'active' : '')) Book Appointment
-    a.sidebar-item.logout(href="#" onclick="logout(); return false;") Logout
+    button.btn-logout(onclick="logout(); return false;") Logout

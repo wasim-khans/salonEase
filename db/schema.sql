@@ -64,7 +64,7 @@ CREATE TABLE appointments (
     preferred_time TIME NOT NULL,
     start_time TIME NULL,
     preferred_staff_gender ENUM('male', 'female', 'any') NOT NULL DEFAULT 'any',
-    status ENUM('in_review', 'confirmed', 'completed', 'cancelled', 'no_show') NOT NULL DEFAULT 'in_review',
+    status ENUM('in_review', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'in_review',
     staff_id CHAR(36) NULL COMMENT 'Staff member assigned to this appointment',
     cancelled_by ENUM('customer', 'admin') NULL,
     cancellation_reason TEXT NULL,

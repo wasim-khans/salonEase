@@ -220,7 +220,7 @@ class SmartSeeder {
 
   generateAppointments(customers, staff, count) {
     const appointments = [];
-    const statuses = ['in_review', 'confirmed', 'completed', 'cancelled', 'no_show'];
+    const statuses = ['in_review', 'confirmed', 'completed', 'cancelled'];
     const staffGenders = ['male', 'female', 'any'];
     
     for (let i = 0; i < count; i++) {
@@ -236,7 +236,7 @@ class SmartSeeder {
         start_time: (status === 'confirmed' || status === 'completed') ? `${generators.randomInt(9, 18)}:${generators.randomChoice(['00', '30'])}:00` : null,
         preferred_staff_gender: generators.randomChoice(staffGenders),
         status: status,
-        staff_id: (status !== 'in_review' && status !== 'cancelled' && status !== 'no_show') ? staffMember.id : null,
+        staff_id: (status !== 'in_review' && status !== 'cancelled') ? staffMember.id : null,
         cancelled_by: status === 'cancelled' ? 'customer' : null,
         cancellation_reason: status === 'cancelled' ? 'Schedule conflict' : null,
         actual_price: status === 'completed' ? generators.randomInt(25, 80) : null,

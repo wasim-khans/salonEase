@@ -78,33 +78,36 @@ mixin confirmModal()
         button.modal-close(onclick="closeModal('confirm-modal')") &times;
       .modal-body
         #confirm-appt-details
-        form#confirm-form
-          .form-group
-            label(for="confirm-staff") Assign Staff (required)
-            select#confirm-staff(name="staff_id" required)
-              option(value="") Select a staff member...
+        .confirm-form-section
+          h4.confirm-form-title Assign & Schedule
+          form#confirm-form
+            .form-row
+              .form-group
+                label(for="confirm-staff") Staff Member
+                select#confirm-staff(name="staff_id" required)
+                  option(value="") Select a staff member...
 
-          .form-group
-            label(for="confirm-start-time") Start Time (required)
-            select#confirm-start-time(name="start_time" required)
-              option(value="") Set start time...
-              option(value="09:00") 09:00
-              option(value="09:30") 09:30
-              option(value="10:00") 10:00
-              option(value="10:30") 10:30
-              option(value="11:00") 11:00
-              option(value="11:30") 11:30
-              option(value="12:00") 12:00
-              option(value="14:00") 14:00
-              option(value="14:30") 14:30
-              option(value="15:00") 15:00
-              option(value="15:30") 15:30
-              option(value="16:00") 16:00
-              option(value="17:00") 17:00
+              .form-group
+                label(for="confirm-start-time") Start Time
+                select#confirm-start-time(name="start_time" required)
+                  option(value="") Set start time...
+                  option(value="09:00") 09:00
+                  option(value="09:30") 09:30
+                  option(value="10:00") 10:00
+                  option(value="10:30") 10:30
+                  option(value="11:00") 11:00
+                  option(value="11:30") 11:30
+                  option(value="12:00") 12:00
+                  option(value="14:00") 14:00
+                  option(value="14:30") 14:30
+                  option(value="15:00") 15:00
+                  option(value="15:30") 15:30
+                  option(value="16:00") 16:00
+                  option(value="17:00") 17:00
 
-          .modal-actions
-            button.btn-action(type="submit") Confirm Appointment
-            button.btn-action.btn-action-danger(type="button" onclick="closeModal('confirm-modal')") Discard
+            .modal-actions
+              button.btn-action(type="submit") Confirm Appointment
+              button.btn-action.btn-action-danger(type="button" onclick="closeModal('confirm-modal')") Discard
 
 mixin completeModal()
   .modal-overlay#complete-modal

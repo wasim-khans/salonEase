@@ -243,14 +243,35 @@ async function openConfirmModal(appt) {
     // Show appointment details
     const details = document.getElementById('confirm-appt-details');
     const serviceNames = appt.services ? appt.services.map(s => s.service_name).join(', ') : 'N/A';
+    const date = new Date(appt.appointment_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    const time = appt.preferred_time ? appt.preferred_time.substring(0, 5) : 'TBC';
     details.innerHTML = `
-        <p><strong>Customer:</strong> ${escapeHtml(appt.customer_name || 'Unknown')}</p>
-        <p><strong>Services:</strong> ${escapeHtml(serviceNames)}</p>
-        <p><strong>Date:</strong> ${new Date(appt.appointment_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-        <p><strong>Preferred Time:</strong> ${escapeHtml(appt.preferred_time || 'TBC')}</p>
-        <p><strong>Staff Preference:</strong> ${escapeHtml(appt.preferred_staff_gender || 'any')}</p>
-        <p><strong>Estimated Cost:</strong> £${parseFloat(appt.estimated_total || 0).toFixed(2)}</p>
-        <p><strong>CustomerPhone:</strong> ${escapeHtml(appt.customer_phone || 'None')}</p>
+        <div class="confirm-customer-header">
+            <span class="confirm-customer-name">${escapeHtml(appt.customer_name || 'Unknown')}</span>
+            <span class="confirm-customer-phone">${escapeHtml(appt.customer_phone || '')}</span>
+        </div>
+        <div class="confirm-details-grid">
+            <div class="confirm-detail-item">
+                <span class="confirm-detail-label">Services</span>
+                <span class="confirm-detail-value">${escapeHtml(serviceNames)}</span>
+            </div>
+            <div class="confirm-detail-item">
+                <span class="confirm-detail-label">Date</span>
+                <span class="confirm-detail-value">${date}</span>
+            </div>
+            <div class="confirm-detail-item">
+                <span class="confirm-detail-label">Preferred Time</span>
+                <span class="confirm-detail-value">${time}</span>
+            </div>
+            <div class="confirm-detail-item">
+                <span class="confirm-detail-label">Staff Preference</span>
+                <span class="confirm-detail-value">${escapeHtml(appt.preferred_staff_gender || 'any')}</span>
+            </div>
+            <div class="confirm-detail-item">
+                <span class="confirm-detail-label">Estimated Cost</span>
+                <span class="confirm-detail-value confirm-cost">£${parseFloat(appt.estimated_total || 0).toFixed(2)}</span>
+            </div>
+        </div>
     `;
 
     // Pre-select the preferred time in start_time dropdown

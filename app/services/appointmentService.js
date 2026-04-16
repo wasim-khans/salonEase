@@ -151,9 +151,11 @@ const getCustomerAppointments = async (customerId) => {
 const getAllAppointments = async () => {
     try {
         const [appointments] = await db.pool.execute(
-            `SELECT a.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone
+            `SELECT a.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone,
+                    s.name as staff_name
              FROM appointments a
              JOIN customers c ON a.customer_id = c.id
+             LEFT JOIN staff s ON a.staff_id = s.id
              ORDER BY a.appointment_date DESC`
         );
 

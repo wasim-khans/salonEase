@@ -876,7 +876,7 @@ body {
 
 .detail-cancelled h4 { color: #e74c3c; }
 
-#detail-modal .modal { width: 640px; }
+#detail-modal .modal { width: 700px; }
 
 .appointment-card:hover {
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);

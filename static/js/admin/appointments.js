@@ -193,6 +193,7 @@ function openDetailModal(appt) {
                 <div class="detail-row"><span class="detail-label">Preferred Time</span><span>${escapeHtml(appt.preferred_time || 'TBC')}</span></div>
                 <div class="detail-row"><span class="detail-label">Staff Preference</span><span>${escapeHtml(appt.preferred_staff_gender || 'any')}</span></div>
                 <div class="detail-row"><span class="detail-label">Estimated Cost</span><span>£${parseFloat(appt.estimated_total || 0).toFixed(2)}</span></div>
+                ${appt.staff_name ? `<div class="detail-row"><span class="detail-label">Served By</span><span>${escapeHtml(appt.staff_name)}</span></div>` : ''}
             </div>
         </div>
         ${appt.status === 'cancelled' ? `

@@ -269,6 +269,15 @@ body {
   align-self: flex-start;
 }
 
+.sidebar-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 12px 4px;
+}
+
 .sidebar-item {
   padding: 10px 12px;
   font-size: 0.9rem;

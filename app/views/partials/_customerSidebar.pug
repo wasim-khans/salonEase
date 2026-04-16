@@ -1,6 +1,6 @@
 mixin customerSidebar(active)
   nav.sidebar
-    span.sidebar-label Customer
+    span.sidebar-label#sidebar-user-name Customer
     a.sidebar-item(href="/customer/appointments" class=(active === 'appointments' ? 'active' : '')) My Appointments
     a.sidebar-item(href="/customer/services" class=(active === 'services' ? 'active' : '')) Services
     a.sidebar-item(href="/customer/book" class=(active === 'book' ? 'active' : '')) Book Appointment

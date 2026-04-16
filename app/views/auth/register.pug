@@ -1,40 +1,46 @@
 extends ../layout
 
 block content
-  .auth-wrapper
-    .auth-card
-      h1.auth-title Create account
-      p.auth-subtitle Sign up to start booking appointments
+  .auth-split
+    .auth-split-image(style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1695527081874-b674c46f40fb?q=80&w=987&auto=format&fit=crop')")
+      .auth-split-image-text
+        h2 SalonEase
+        p Your perfect salon experience, just a tap away
 
-      form#registerForm
-        .field
-          label(for="name") Full name
-          input#name(type="text" name="name" placeholder="Your name" required)
+    .auth-split-form
+      .auth-split-form-inner
+        h1.auth-title Create account
+        p.auth-subtitle Sign up to start booking appointments
 
-        .field
-          label(for="email") Email address
-          input#email(type="email" name="email" placeholder="email@example.com" required)
+        form#registerForm
+          .field
+            label(for="name") Full name
+            input#name(type="text" name="name" placeholder="Your name" required)
 
-        .field
-          label(for="phone") Phone number
-          input#phone(type="tel" name="phone" placeholder="+44 7700 000000" required)
+          .field
+            label(for="email") Email address
+            input#email(type="email" name="email" placeholder="email@example.com" required)
 
-        .field
-          label(for="password") Password
-          input#password(type="password" name="password" placeholder="••••••••" required)
+          .field
+            label(for="phone") Phone number
+            input#phone(type="tel" name="phone" placeholder="+44 7700 000000" required)
 
-        .field
-          label(for="gender") Gender
-          select#gender(name="gender")
-            option(value="prefer_not_to_say") Prefer not to say
-            option(value="male") Male
-            option(value="female") Female
-            option(value="other") Other
+          .field
+            label(for="password") Password
+            input#password(type="password" name="password" placeholder="••••••••" required)
 
-        button.btn-full-width.btn-primary(type="submit") Create account
+          .field
+            label(for="gender") Gender
+            select#gender(name="gender")
+              option(value="prefer_not_to_say") Prefer not to say
+              option(value="male") Male
+              option(value="female") Female
+              option(value="other") Other
 
-      p.auth-footer Already have an account?&nbsp;
-        a(href="/auth/login") Sign in
+          button.btn-full-width.btn-primary(type="submit") Create account
+
+        p.auth-footer Already have an account?&nbsp;
+          a(href="/auth/login") Sign in
 
 block scripts
   script(src="/js/auth/register.js")

@@ -63,7 +63,6 @@ function openEditServiceModal(id) {
         document.getElementById('service-price').value = parseFloat(row.dataset.price).toFixed(2);
         document.getElementById('service-duration').value = row.dataset.duration;
     }
-
     openModal('service-modal');
 }
 

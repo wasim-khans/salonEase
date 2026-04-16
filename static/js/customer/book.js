@@ -1,52 +1,55 @@
-document.addEventListener('DOMContentLoaded', () => {
+// Services selected for this booking (array of service objects)
+let selectedServices = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
     if (!requireAuth('customer')) return;
 
-    loadServicesCheckboxes();
+    await loadInitialService();
     setupBookingForm();
 });
 
-async function loadServicesCheckboxes() {
-    const container = document.getElementById('services-checkboxes');
+async function loadInitialService() {
+    const params = new URLSearchParams(window.location.search);
+    const serviceId = params.get('service');
+    if (!serviceId) return;
+
+    let service = null;
 
     try {
         const data = await apiGet('/api/services');
-
-        if (data.success && data.services.length > 0) {
-            container.innerHTML = '';
-            data.services.forEach(service => {
-                const label = document.createElement('label');
-                label.className = 'checkbox-label';
-                label.innerHTML = `
-                    <input type="checkbox" name="services" value="${service.id}" data-price="${service.base_price}">
-                    <span>${escapeHtml(service.name)} — £${parseFloat(service.base_price).toFixed(2)}</span>
-                `;
-                container.appendChild(label);
-            });
-
-            // Update estimated total when checkboxes change
-            container.addEventListener('change', updateEstimatedTotal);
-        } else {
-            container.innerHTML = '<p>No services available.</p>';
+        if (data.success) {
+            service = data.services.find(s => String(s.id) === String(serviceId));
         }
-    } catch (error) {
-        console.error('Error loading services:', error);
-        container.innerHTML = '<p>Failed to load services.</p>';
+    } catch (err) {
+        console.error('Error loading service:', err);
+        showError('Failed to load service details.');
+    }
+
+    if (service) {
+        selectedServices.push(service);
+        renderServiceChips();
     }
 }
 
-function updateEstimatedTotal() {
-    const checked = document.querySelectorAll('input[name="services"]:checked');
-    let total = 0;
-    checked.forEach(cb => {
-        total += parseFloat(cb.dataset.price);
-    });
+function renderServiceChips() {
+    const container = document.getElementById('selected-services');
+    container.innerHTML = selectedServices.map(s => `
+        <div class="service-chip" data-id="${s.id}">
+            <div class="service-chip-info">
+                <strong>${escapeHtml(s.name)}</strong>
+                <span>${s.duration_minutes ? s.duration_minutes + ' min' : ''}</span>
+            </div>
+            <span class="service-chip-price">£${parseFloat(s.base_price).toFixed(2)}</span>
+        </div>
+    `).join('');
 
-    const totalEl = document.getElementById('estimated-total');
-    if (checked.length > 0) {
-        totalEl.textContent = `Estimated total: £${total.toFixed(2)}`;
-    } else {
-        totalEl.textContent = '';
-    }
+    updateEstimatedTotal();
+}
+
+function updateEstimatedTotal() {
+    const total = selectedServices.reduce((sum, s) => sum + parseFloat(s.base_price), 0);
+    const el = document.getElementById('estimated-total');
+    el.textContent = selectedServices.length > 0 ? `Estimated total: £${total.toFixed(2)}` : '';
 }
 
 function setupBookingForm() {
@@ -55,29 +58,21 @@ function setupBookingForm() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const checkedServices = document.querySelectorAll('input[name="services"]:checked');
         const appointmentDate = document.getElementById('date').value;
-        const preferredTime = document.getElementById('time').value;
+        const preferredTime   = document.getElementById('time').value;
         const preferredStaffGender = document.querySelector('input[name="preferred_staff_gender"]:checked')?.value || 'any';
 
-        if (checkedServices.length === 0) {
+        if (selectedServices.length === 0) {
             showError('Please select at least one service.');
             return;
         }
 
-        if (!appointmentDate) {
-            showError('Please select a date.');
-            return;
-        }
+        if (!appointmentDate) { showError('Please select a date.'); return; }
+        if (!preferredTime)   { showError('Please select a time slot.'); return; }
 
-        if (!preferredTime) {
-            showError('Please select a time slot.');
-            return;
-        }
-
-        const services = Array.from(checkedServices).map(cb => ({
-            service_id: cb.value,
-            price: parseFloat(cb.dataset.price)
+        const services = selectedServices.map(s => ({
+            service_id: s.id,
+            price: parseFloat(s.base_price)
         }));
 
         try {

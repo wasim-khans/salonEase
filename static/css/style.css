@@ -620,6 +620,14 @@ body {
 
 .appt-service { font-weight: bold; }
 
+.appt-serial {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #aaa;
+  width: 32px;
+  text-align: center;
+}
+
 .badge {
   font-size: 0.75rem;
   padding: 3px 12px;

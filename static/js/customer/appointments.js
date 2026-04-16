@@ -59,7 +59,7 @@ function renderAppointments(appointments) {
 
 function buildTable(appointments, showActions) {
     const actionCol = showActions ? '<th>Action</th>' : '';
-    const rows = appointments.map(appt => {
+    const rows = appointments.map((appt, idx) => {
         const name = appt.services.map(s => escapeHtml(s.service_name)).join(', ');
         const date = new Date(appt.appointment_date).toLocaleDateString('en-GB', {
             day: 'numeric', month: 'short', year: 'numeric'
@@ -80,6 +80,7 @@ function buildTable(appointments, showActions) {
 
         return `
             <tr>
+                <td class="appt-serial">${idx + 1}</td>
                 <td class="appt-service">${name}</td>
                 <td>${date}</td>
                 <td>${time}</td>
@@ -93,6 +94,7 @@ function buildTable(appointments, showActions) {
         <table class="appointments-table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Service</th>
                     <th>Date</th>
                     <th>Time</th>

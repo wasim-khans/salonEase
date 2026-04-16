@@ -1,6 +1,10 @@
 const db = require('../services/db');
 
-const AppointmentServiceMap = {
+class AppointmentServiceMap {
+    constructor() {
+        this.pool = db.pool;
+    }
+
     async addServices(connection, appointmentId, services) {
         if (!services || services.length === 0) {
             return [];
@@ -19,10 +23,10 @@ const AppointmentServiceMap = {
         }
         
         return insertedIds;
-    },
+    }
 
     async findByAppointmentId(appointmentId) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT 
                 aps.id,
                 aps.appointment_id,
@@ -37,26 +41,26 @@ const AppointmentServiceMap = {
             [appointmentId]
         );
         return rows;
-    },
+    }
 
     async removeService(appointmentServiceId) {
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `DELETE FROM appointment_services WHERE id = ?`,
             [appointmentServiceId]
         );
         return result.affectedRows > 0;
-    },
+    }
 
     async removeAllByAppointmentId(appointmentId) {
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `DELETE FROM appointment_services WHERE appointment_id = ?`,
             [appointmentId]
         );
         return result.affectedRows;
-    },
+    }
 
     async getTotalPrice(appointmentId) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT SUM(price) as total_price 
             FROM appointment_services 
             WHERE appointment_id = ?`,
@@ -64,6 +68,6 @@ const AppointmentServiceMap = {
         );
         return rows[0]?.total_price || 0;
     }
-};
+}
 
-module.exports = AppointmentServiceMap;
+module.exports = new AppointmentServiceMap();

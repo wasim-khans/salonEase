@@ -1,7 +1,11 @@
 const db = require('../services/db');
 const { v4: uuidv4 } = require('uuid');
 
-const Appointment = {
+class Appointment {
+    constructor() {
+        this.pool = db.pool;
+    }
+
     async create(connection, appointmentData) {
         const { 
             customer_id, 
@@ -20,31 +24,31 @@ const Appointment = {
         );
         
         return id;
-    },
+    }
 
     async findById(appointmentId) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT * FROM appointments WHERE id = ?`,
             [appointmentId]
         );
         return rows[0];
-    },
+    }
 
     async findByCustomerId(customerId) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT * FROM appointments WHERE customer_id = ? ORDER BY appointment_date DESC`,
             [customerId]
         );
         return rows;
-    },
+    }
 
     async findByStatus(status) {
-        const [rows] = await db.pool.execute(
+        const [rows] = await this.pool.execute(
             `SELECT * FROM appointments WHERE status = ? ORDER BY appointment_date ASC`,
             [status]
         );
         return rows;
-    },
+    }
 
     async updateStatus(appointmentId, status, additionalData = {}) {
         const fields = ['status = ?'];
@@ -91,21 +95,21 @@ const Appointment = {
 
         values.push(appointmentId);
 
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `UPDATE appointments SET ${fields.join(', ')} WHERE id = ?`,
             values
         );
 
         return result.affectedRows > 0;
-    },
+    }
 
     async delete(appointmentId) {
-        const [result] = await db.pool.execute(
+        const [result] = await this.pool.execute(
             `DELETE FROM appointments WHERE id = ?`,
             [appointmentId]
         );
         return result.affectedRows > 0;
     }
-};
+}
 
-module.exports = Appointment;
+module.exports = new Appointment();

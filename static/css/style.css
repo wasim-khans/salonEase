@@ -288,6 +288,9 @@ body {
 
 .sidebar-item:hover { background: #f0f0f0; }
 
+.sidebar-logout { color: #e74c3c; }
+.sidebar-logout:hover { background: #fef2f2; }
+
 .sidebar-item.active {
   color: #3498db;
   font-weight: 600;

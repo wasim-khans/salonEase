@@ -4,4 +4,4 @@ mixin adminSidebar(active)
     a.sidebar-item(href="/admin/appointments" class=(active === 'appointments' ? 'active' : '')) Appointments
     a.sidebar-item(href="/admin/services" class=(active === 'services' ? 'active' : '')) Services
     a.sidebar-item(href="/admin/staff" class=(active === 'staff' ? 'active' : '')) Staff
-    button.btn-logout(onclick="logout(); return false;") Logout
+    a.sidebar-item.sidebar-logout(href="#" onclick="logout(); return false;") Logout

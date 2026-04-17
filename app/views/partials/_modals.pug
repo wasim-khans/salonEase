@@ -111,26 +111,27 @@ mixin confirmModal()
 
 mixin completeModal()
   .modal-overlay#complete-modal
-    .modal
-      .modal-header
-        h3 Complete Appointment
-        button.modal-close(onclick="closeModal('complete-modal')") &times;
+    .modal.modal-confirm
       .modal-body
+        h3.modal-confirm-title Complete this appointment?
+        p.modal-confirm-subtitle Confirm the final details and mark this appointment as completed.
         #complete-appt-details
-        form#complete-form
-          .form-group
-            label(for="complete-price") Actual Price Charged (required)
-            input#complete-price(type="number" name="actual_price" step="0.01" min="0" required placeholder="0.00")
+        .confirm-form-section
+          h4.confirm-form-title Final Details
+          form#complete-form
+            .form-group
+              label(for="complete-price") Actual Price Charged (required)
+              input#complete-price(type="number" name="actual_price" step="0.01" min="0" required placeholder="0.00")
 
-          .form-group
-            label(for="complete-staff") Service Provided By (required)
-            select#complete-staff(name="completed_by" required)
-              option(value="") Select a staff member...
+            .form-group
+              label(for="complete-staff") Service Provided By (required)
+              select#complete-staff(name="completed_by" required)
+                option(value="") Select a staff member...
 
-          .form-group
-            label(for="complete-notes") Admin Notes (optional)
-            textarea#complete-notes(name="admin_notes" rows="3" placeholder="Any additional notes...")
+            .form-group
+              label(for="complete-notes") Admin Notes (optional)
+              textarea#complete-notes(name="admin_notes" rows="3" placeholder="Any additional notes...")
 
-          .modal-actions
-            button.btn-action(type="submit") Mark as Completed
-            button.btn-action.btn-action-danger(type="button" onclick="closeModal('complete-modal')") Discard
+            .modal-actions
+              button.btn-confirm-cancel(type="submit") Mark as Completed
+              button.btn-confirm-back(type="button" onclick="closeModal('complete-modal')") Discard

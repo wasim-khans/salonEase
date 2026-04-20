@@ -13,6 +13,14 @@ class Customer {
         return rows[0];
     }
 
+    async findByPhone(phone) {
+        const [rows] = await this.pool.execute(
+            `SELECT id FROM customers WHERE phone = ?`,
+            [phone]
+        );
+        return rows[0];
+    }
+
     async findByEmailOrPhone(email, phone) {
         const [rows] = await this.pool.execute(
             `SELECT id FROM customers WHERE email = ? OR phone = ?`,

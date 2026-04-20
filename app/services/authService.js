@@ -48,12 +48,19 @@ const registerCustomer = async (userData) => {
     try {
         const { name, email, phone, password, gender } = userData;
 
-        const existingCustomer = await Customer.findByEmailOrPhone(email, phone);
-
-        if (existingCustomer) {
+        const existingEmail = await Customer.findByEmail(email);
+        if (existingEmail) {
             return {
                 success: false,
-                message: 'Customer already exists with this email'
+                message: 'A customer already exists with this email'
+            };
+        }
+
+        const existingPhone = await Customer.findByPhone(phone);
+        if (existingPhone) {
+            return {
+                success: false,
+                message: 'A customer already exists with this phone number'
             };
         }
 

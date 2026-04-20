@@ -2,9 +2,71 @@ extends layout
 
 block content
   .landing-hero
-    .landing-content
-      h1.landing-title SalonEase
-      p.landing-subtitle Book your perfect salon experience, anytime, anywhere
-      .landing-actions
-        a.btn-landing(href="/auth/login") Sign in
-        a.btn-landing-outline(href="/auth/register") Create account
+    .landing-split
+      .landing-left
+        h1.landing-title SalonEase
+        p.landing-subtitle Book your perfect salon experience, anytime, anywhere
+        .landing-actions
+          a.btn-landing(href="/auth/register") Sign up!
+          a.btn-landing-outline(href="/auth/login") Sign in
+
+      .landing-right
+        p.landing-how-label How it works
+        .landing-how
+          .landing-how-step
+            .landing-how-num 1
+            .landing-how-text
+              strong Create account
+              span Sign up free, takes no more than a minute.
+          .landing-how-step
+            .landing-how-num 2
+            .landing-how-text
+              strong Choose services
+              span Pick one or more, set your date & stylist preference.
+          .landing-how-step
+            .landing-how-num 3
+            .landing-how-text
+              strong We confirm
+              span Our team reviews your request and contacts you.
+
+        .landing-slider
+          .landing-slider-track#sliderTrack
+            .landing-slide
+              img(src="/images/services/haircut.jpg" alt="Haircut")
+            .landing-slide
+              img(src="/images/services/hair-styling.jpg" alt="Hair Styling")
+            .landing-slide
+              img(src="/images/services/hair-coloring.jpg" alt="Hair Coloring")
+            .landing-slide
+              img(src="/images/services/facial-treatment.jpg" alt="Facial Treatment")
+            .landing-slide
+              img(src="/images/services/manicure.jpg" alt="Manicure")
+            .landing-slide
+              img(src="/images/services/beard-trim.jpg" alt="Beard Trim")
+          .landing-slider-dots#sliderDots
+
+block scripts
+  script.
+    (function() {
+      var track = document.getElementById('sliderTrack');
+      var dotsWrap = document.getElementById('sliderDots');
+      if (!track) return;
+      var visible = 3;
+      var total = track.querySelectorAll('.landing-slide').length;
+      var maxIdx = total - visible;
+      var idx = 0;
+      for (var i = 0; i <= maxIdx; i++) {
+        var d = document.createElement('button');
+        d.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        d.dataset.i = i;
+        d.addEventListener('click', function() { idx = +this.dataset.i; go(); });
+        dotsWrap.appendChild(d);
+      }
+      function go() {
+        track.style.transform = 'translateX(-' + (idx * (100 / visible)) + '%)';
+        dotsWrap.querySelectorAll('.slider-dot').forEach(function(dot, j) {
+          dot.classList.toggle('active', j === idx);
+        });
+      }
+      setInterval(function() { idx = (idx + 1) % (maxIdx + 1); go(); }, 2500);
+    })();

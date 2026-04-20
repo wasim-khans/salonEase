@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
 /* SalonEase Stylesheet */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -183,32 +185,66 @@ body {
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 56px);
-  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+  overflow: hidden;
+  background-image: linear-gradient(160deg, rgba(44,62,80,0.92), rgba(44,62,80,0.72)),
     url('/images/landing-hero.jpg');
   background-size: cover;
   background-position: center;
+  font-family: 'DM Sans', sans-serif;
 }
 
-.landing-content {
+.landing-split {
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  width: 100%;
+  max-width: 1060px;
+  padding: 2rem 3rem;
+}
+
+.landing-left {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-  padding: 2rem;
+  justify-content: center;
+}
+
+.landing-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 28px 24px;
+  backdrop-filter: blur(4px);
 }
 
 .landing-title {
-  font-size: 3rem;
-  font-weight: bold;
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
   color: #fff;
-  margin-bottom: 4px;
+  line-height: 1.1;
+  margin-bottom: 12px;
 }
 
 .landing-subtitle {
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: rgba(255,255,255,0.85);
-  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 380px;
+}
+
+.landing-how-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: -8px;
 }
 
 .landing-actions {
@@ -217,34 +253,124 @@ body {
 }
 
 .btn-landing {
-  padding: 0.75rem 2rem;
-  background: #3498db;
-  border: 2px solid #3498db;
+  padding: 13px 30px;
+  background: #fff;
+  border: 2px solid #fff;
   border-radius: 6px;
-  color: white;
-  font-size: 1rem;
-  font-weight: bold;
+  color: #2c3e50;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
   text-decoration: none;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  transition: background 0.2s, transform 0.15s;
 }
 
-.btn-landing:hover { background: #2980b9; border-color: #2980b9; }
-.btn-landing:active { transform: scale(0.97); }
+.btn-landing:hover { background: #f0f0f0; border-color: #f0f0f0; transform: translateY(-1px); }
 
 .btn-landing-outline {
-  padding: 0.75rem 2rem;
-  background: rgba(255,255,255,0.15);
-  border: 2px solid rgba(255,255,255,0.9);
+  padding: 13px 30px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.35);
   border-radius: 6px;
   color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
   text-decoration: none;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 0.2s, border-color 0.2s;
 }
 
-.btn-landing-outline:hover { background: rgba(255,255,255,0.25); }
-.btn-landing-outline:active { transform: scale(0.97); }
+.btn-landing-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.6); }
+
+/* ── How it works (right side) ── */
+.landing-how {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.landing-how-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.landing-how-num {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.landing-how-text strong {
+  display: block;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.landing-how-text span {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+/* ── Image slider ── */
+.landing-slider {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.landing-slider-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.landing-slide {
+  min-width: calc(100% / 3);
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+
+.landing-slide img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
+.landing-slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.slider-dot.active { background: #fff; }
+.slider-dot:hover { background: rgba(255,255,255,0.6); }
 
 /* ── App layout with sidebar ── */
 .app-layout {
@@ -451,7 +577,7 @@ body {
 @media (min-width: 1201px) {
   .app-layout { max-width: 1400px; }
   .services-grid { grid-template-columns: repeat(4, 1fr); }
-  .landing-title { font-size: 3.5rem; }
+  .landing-title { font-size: 3.6rem; }
 }
 
 /* ── Tablet (481px – 768px) ── */
@@ -495,10 +621,12 @@ body {
 
   .appt-card-body { flex-wrap: wrap; gap: 1rem; }
 
-  .landing-title { font-size: 2rem; }
-  .landing-subtitle { font-size: 0.9rem; }
-  .landing-actions { flex-direction: column; gap: 10px; }
-  .btn-landing, .btn-landing-outline { width: 100%; text-align: center; }
+  .landing-split { flex-direction: column; gap: 32px; text-align: center; padding: 2rem 1.5rem; }
+  .landing-left { text-align: center; }
+  .landing-subtitle { max-width: 100%; }
+  .landing-actions { justify-content: center; }
+  .landing-title { font-size: 2.2rem; }
+  .landing-slide img { height: 80px; }
 
   .auth-split-image { flex: 0 0 30%; min-height: 180px; }
   .auth-split-form { padding: 2rem 1.5rem; }
@@ -555,10 +683,12 @@ body {
   .modal { width: 98vw !important; }
   .modal-body { padding: 1rem; }
 
-  .landing-hero { min-height: 80vh; }
-  .landing-title { font-size: 1.6rem; }
-  .landing-subtitle { font-size: 0.85rem; }
-  .landing-content { padding: 1.5rem; }
+  .landing-split { padding: 1.5rem 1rem; gap: 24px; }
+  .landing-title { font-size: 1.8rem; }
+  .landing-subtitle { font-size: 0.9rem; }
+  .landing-actions { flex-direction: column; gap: 10px; }
+  .btn-landing, .btn-landing-outline { width: 100%; text-align: center; }
+  .landing-slide img { height: 65px; }
 
   .auth-split { flex-direction: column; }
   .auth-split-image { min-height: 160px; flex: 0 0 auto; padding: 1.5rem; }

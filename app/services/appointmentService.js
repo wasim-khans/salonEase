@@ -4,24 +4,39 @@ const AppointmentServiceMap = require('../models/appointmentServiceMap');
 
 const createAppointment = async (appointmentData) => {
     const connection = await db.pool.getConnection();
-    
+
     try {
+        // Validate that the appointment date is not in the past
+        if (appointmentData.appointment_date) {
+            const appointmentDate = new Date(appointmentData.appointment_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            appointmentDate.setHours(0, 0, 0, 0);
+
+            if (appointmentDate < today) {
+                return {
+                    success: false,
+                    message: 'Cannot book appointments in the past. Please select a future date.'
+                };
+            }
+        }
+
         await connection.beginTransaction();
-        
+
         const { services, ...appointmentFields } = appointmentData;
-        
+
         const appointmentId = await Appointment.create(connection, appointmentFields);
-        
+
         await AppointmentServiceMap.addServices(connection, appointmentId, services);
-        
+
         await connection.commit();
-        
+
         return {
             success: true,
             message: 'Appointment created successfully',
             appointment_id: appointmentId
         };
-        
+
     } catch (error) {
         await connection.rollback();
         return {
@@ -38,6 +53,21 @@ const editAppointment = async (appointmentId, customerId, updateData) => {
     const { appointment_date, preferred_time, preferred_staff_gender, services } = updateData;
 
     try {
+        // Validate that the appointment date is not in the past
+        if (appointment_date) {
+            const appointmentDate = new Date(appointment_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            appointmentDate.setHours(0, 0, 0, 0);
+
+            if (appointmentDate < today) {
+                return {
+                    success: false,
+                    message: 'Cannot book appointments in the past. Please select a future date.'
+                };
+            }
+        }
+
         const appointment = await Appointment.findById(appointmentId);
 
         if (!appointment) {

@@ -4,6 +4,13 @@ let selectedServices = [];
 document.addEventListener('DOMContentLoaded', async () => {
     if (!requireAuth('customer')) return;
 
+    // Set minimum date to today for the date picker
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    }
+
     restoreSelectedServices();
     await loadInitialService();
     renderServiceChips();
@@ -89,6 +96,17 @@ function setupBookingForm() {
 
         if (!appointmentDate) { showError('Please select a date.'); return; }
         if (!preferredTime)   { showError('Please select a time slot.'); return; }
+
+        // Validate that the appointment date is not in the past
+        const selectedDate = new Date(appointmentDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            showError('Cannot book appointments in the past. Please select a future date.');
+            return;
+        }
 
         const services = selectedServices.map(s => ({
             service_id: s.id,

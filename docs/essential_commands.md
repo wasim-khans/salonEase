@@ -43,7 +43,7 @@ docker-compose up
 node db/cleaner.js
 
 3. Seed test data: 
-node db/smart-seeder.js
+docker exec -it salonease-salonease-web-1 node db/smart-seeder.js
 
 4. Access the app: 
 http://localhost:3000

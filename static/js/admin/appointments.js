@@ -123,7 +123,7 @@ function displayAppointments(appointments) {
         // Action buttons per status
         const footer = card.querySelector('.appt-card-footer');
         appendActionButtons(footer, appt);
-
+        // Open appointment detail modal when card is clicked
         const cardEl = card.querySelector('.appointment-card');
         cardEl.style.cursor = 'pointer';
         cardEl.addEventListener('click', (e) => {
@@ -164,7 +164,7 @@ function appendActionButtons(container, appt) {
         container.appendChild(cancelBtn);
     }
 }
-
+// open detail modal for specific appointment 
 function openDetailModal(appt) {
     const ref = apptRef(appt.id);
     const serviceNames = appt.services ? appt.services.map(s => s.service_name).join(', ') : 'N/A';

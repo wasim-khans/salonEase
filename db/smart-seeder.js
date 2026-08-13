@@ -145,7 +145,7 @@ class SmartSeeder {
   async generateCustomers(count) {
     const customers = [];
     const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
-    const passwordHash = await bcrypt.hash(requiredEnv('SEED_PASSWORD'), 10);
+    const passwordHash = await bcrypt.hash('test123', 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
@@ -154,7 +154,7 @@ class SmartSeeder {
       customers.push({
         id: uuidv4(),
         name: `${firstName} ${lastName}`,
-        email: `customer${i + 1}@example.com`,
+        email: `customer${i + 1}@gmail.com`,
         phone: generators.randomPhone(),
         password: passwordHash,
         gender: generators.randomChoice(genders),
@@ -168,7 +168,7 @@ class SmartSeeder {
 
   async generateAdmins(count) {
     const admins = [];
-    const passwordHash = await bcrypt.hash(requiredEnv('SEED_PASSWORD'), 10);
+    const passwordHash = await bcrypt.hash('test123', 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
@@ -177,7 +177,7 @@ class SmartSeeder {
       admins.push({
         id: uuidv4(),
         name: `${firstName} ${lastName}`,
-        email: `admin${i + 1}@example.com`,
+        email: `admin${i + 1}@gmail.com`,
         phone: generators.randomPhone(),
         password: passwordHash,
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')

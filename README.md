@@ -61,14 +61,9 @@ phpMyAdmin: http://localhost:8081
 
 TEST ACCOUNTS
 -------------
-customer1@gmail.com
-admin1@gmail.com
-All accounts use the password: test123
-
-Role        Email
-----------  ------------------------------------------
-Admin       admin1@gmail.com, admin2@gmail.com
-Customer    customer1@gmail.com to customer8@gmail.com
+The optional database seeder creates local-only accounts under example.com.
+Set a strong, unique SEED_PASSWORD in your untracked .env file before seeding.
+Do not use seeded accounts or passwords in a deployed environment.
 
 
 TECH STACK

@@ -14,6 +14,14 @@ const execAsync = promisify(exec);
 
 const containerName = 'salonease-salonease-db-1';
 
+function requiredEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} must be set before running the database seeder`);
+  }
+  return value;
+}
+
 // Data generators
 const generators = {
   firstNames: ['John', 'Sarah', 'Mike', 'Emma', 'David', 'Lisa', 'James', 'Anna', 'Robert', 'Maria'],
@@ -46,8 +54,8 @@ class SmartSeeder {
   async connect() {
     this.connection = await mysql.createConnection({
       host: process.env.MYSQL_HOST || 'salonease-db',
-      user: 'root',
-      password: process.env.MYSQL_ROOT_PASSWORD || 'root',
+      user: requiredEnv('MYSQL_USER'),
+      password: requiredEnv('MYSQL_PASS'),
       database: process.env.MYSQL_DATABASE || 'salonease_db'
     });
   }
@@ -137,7 +145,7 @@ class SmartSeeder {
   async generateCustomers(count) {
     const customers = [];
     const genders = ['male', 'female', 'other', 'prefer_not_to_say'];
-    const passwordHash = await bcrypt.hash('test123', 10);
+    const passwordHash = await bcrypt.hash(requiredEnv('SEED_PASSWORD'), 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
@@ -146,7 +154,7 @@ class SmartSeeder {
       customers.push({
         id: uuidv4(),
         name: `${firstName} ${lastName}`,
-        email: `customer${i + 1}@gmail.com`,
+        email: `customer${i + 1}@example.com`,
         phone: generators.randomPhone(),
         password: passwordHash,
         gender: generators.randomChoice(genders),
@@ -160,7 +168,7 @@ class SmartSeeder {
 
   async generateAdmins(count) {
     const admins = [];
-    const passwordHash = await bcrypt.hash('test123', 10);
+    const passwordHash = await bcrypt.hash(requiredEnv('SEED_PASSWORD'), 10);
     
     for (let i = 0; i < count; i++) {
       const firstName = generators.randomChoice(generators.firstNames);
@@ -169,7 +177,7 @@ class SmartSeeder {
       admins.push({
         id: uuidv4(),
         name: `${firstName} ${lastName}`,
-        email: `admin${i + 1}@gmail.com`,
+        email: `admin${i + 1}@example.com`,
         phone: generators.randomPhone(),
         password: passwordHash,
         created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')

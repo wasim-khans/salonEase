@@ -17,21 +17,11 @@ docker exec -it salonease-salonease-web-1 node db/cleaner.js
 ### Seed Database (Add test data)
 
 docker exec -it salonease-salonease-web-1 node db/smart-seeder.js
-## Login Credentials (After Seeding)
+## Seeded Accounts
 
-**Customer:**
-- Email: 
-customer1@gmail.com
-
-- Password: 
-test123
-
-
-**Admin:**
-- Email: 
-admin1@gmail.com
-- Password: 
-test123
+The seeder creates local-only customer and admin accounts under `example.com`.
+Set `SEED_PASSWORD` to a strong, unique value in your untracked `.env` file
+before running the seeder. Never reuse this value in a deployed environment.
 
 
 ## Quick Start

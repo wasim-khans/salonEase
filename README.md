@@ -7,11 +7,11 @@ admins review, confirm, and manage them. Built with Node.js, Express, MySQL, and
 TEAM
 Name                    Role                  
 ----------------------  --------------------
-Muhammad Wasim Khan     Scrum Master
+Muhammad Wasim Khan   -   Scrum Master
 
-America Bernal Hluz     Product Owner
+America Bernal Hluz   -   Product Owner
 
-Ravula Bhavya Sree      Full Stack Dev
+Ravula Bhavya Sree   -   Full Stack Dev
 
 
 TASKBOARD

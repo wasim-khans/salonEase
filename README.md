@@ -5,13 +5,13 @@ admins review, confirm, and manage them. Built with Node.js, Express, MySQL, and
 
 
 TEAM
-Name                    Role                  Student ID
-----------------------  --------------------  ----------
-Muhammad Wasim Khan     Scrum Master          A00069573
+Name                    Role                  
+----------------------  --------------------  
+Muhammad Wasim Khan     Scrum Master
 
-America Bernal Hluz     Product Owner         A00081045
+America Bernal Hluz     Product Owner
 
-Ravula Bhavya Sree      Full Stack Dev        A00080748
+Ravula Bhavya Sree      Full Stack Dev
 
 
 TASKBOARD

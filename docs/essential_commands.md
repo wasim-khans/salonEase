@@ -20,17 +20,17 @@ docker exec -it salonease-salonease-web-1 node db/smart-seeder.js
 ## Login Credentials (After Seeding)
 
 **Customer:**
-- Email: 
+- Email:
 customer1@gmail.com
 
-- Password: 
+- Password:
 test123
 
 
 **Admin:**
-- Email: 
+- Email:
 admin1@gmail.com
-- Password: 
+- Password:
 test123
 
 

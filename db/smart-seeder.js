@@ -14,6 +14,14 @@ const execAsync = promisify(exec);
 
 const containerName = 'salonease-salonease-db-1';
 
+function requiredEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} must be set before running the database seeder`);
+  }
+  return value;
+}
+
 // Data generators
 const generators = {
   firstNames: ['John', 'Sarah', 'Mike', 'Emma', 'David', 'Lisa', 'James', 'Anna', 'Robert', 'Maria'],
@@ -46,8 +54,8 @@ class SmartSeeder {
   async connect() {
     this.connection = await mysql.createConnection({
       host: process.env.MYSQL_HOST || 'salonease-db',
-      user: 'root',
-      password: process.env.MYSQL_ROOT_PASSWORD || 'root',
+      user: requiredEnv('MYSQL_USER'),
+      password: requiredEnv('MYSQL_PASS'),
       database: process.env.MYSQL_DATABASE || 'salonease_db'
     });
   }

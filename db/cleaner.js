@@ -5,6 +5,14 @@ require('dotenv').config();
 
 const mysql = require('mysql2/promise');
 
+function requiredEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} must be set before cleaning the database`);
+  }
+  return value;
+}
+
 async function cleanDatabase() {
   let connection = null;
   
@@ -14,8 +22,8 @@ async function cleanDatabase() {
     // Connect to database
     connection = await mysql.createConnection({
       host: process.env.MYSQL_HOST || 'salonease-db',
-      user: 'root',
-      password: process.env.MYSQL_ROOT_PASSWORD || 'root',
+      user: requiredEnv('MYSQL_USER'),
+      password: requiredEnv('MYSQL_PASS'),
       database: process.env.MYSQL_DATABASE || 'salonease_db'
     });
     
